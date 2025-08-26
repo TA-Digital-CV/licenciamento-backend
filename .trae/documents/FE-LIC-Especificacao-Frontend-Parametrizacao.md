@@ -148,7 +148,7 @@ Setor
 
 **Layout da Página:**
 
-* Painel esquerdo: Árvore de navegação (Setores > Categorias > Tipos)
+* Painel tabulado: (Setores > Categorias > Tipos)
 
 * Painel direito: Lista/Formulário do item selecionado
 
