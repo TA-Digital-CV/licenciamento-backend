@@ -1,5 +1,7 @@
 # Arquitetura Técnica - Sistema de Gestão de Licenças Emitidas
 
+## Sistema de Licenciamento de Cabo Verde
+
 ## 1. Arquitetura DDD
 
 ```mermaid
@@ -14,9 +16,10 @@ graph TD
     G --> H[Activity Server]
     G --> I[Financial System]
     G --> J[Notification System]
+    G --> K[Parametrização System]
     
-    C --> K[Cache Layer - Redis]
-    E --> L[Event Store]
+    C --> L[Cache Layer - Redis]
+    E --> M[Event Store]
     
     subgraph "Presentation Layer"
         A
@@ -34,14 +37,15 @@ graph TD
     subgraph "Infrastructure Layer"
         E
         F
-        K
         L
+        M
     end
     
     subgraph "External Bounded Contexts"
         H
         I
         J
+        K
     end
 ```
 
@@ -49,23 +53,37 @@ graph TD
 
 #### Aggregates Principais:
 
-* **IssuedLicense** - Aggregate Root para licenças emitidas
+* **IssuedLicense** - Aggregate Root para licenças emitidas com controle de ciclo de vida
 
-* **LicenseHolder** - Aggregate para titulares de licenças
+* **LicenseIssuer** - Aggregate para órgãos emissores de licenças
+
+* **LicenseHolder** - Aggregate base para titulares de licenças
+
+* **IndividualHolder** - Aggregate para pessoas físicas titulares
+
+* **CorporateHolder** - Aggregate para pessoas jurídicas titulares
+
+* **LegalRepresentative** - Entity para representantes legais
 
 * **LicenseRenewal** - Aggregate para processos de renovação
+
+* **LicenseAmendment** - Aggregate para alterações de licenças
 
 * **LicenseTransfer** - Aggregate para transferências de titularidade
 
 #### Domain Services:
 
-* **LicenseValidationService** - Validações de regras de negócio
+* **LicenseValidationService** - Validações de regras de negócio e integridade
+
+* **HolderValidationService** - Validações específicas de titulares (PF/PJ)
 
 * **NotificationService** - Gestão de alertas e notificações
 
 * **FeeCalculationService** - Cálculo de taxas e valores
 
-* **AuditService** - Rastreabilidade e auditoria
+* **AuditService** - Rastreabilidade e auditoria completa
+
+* **LicenseLifecycleService** - Gestão do ciclo de vida das licenças
 
 ## 2. Stack Tecnológico DDD
 
@@ -149,7 +167,248 @@ graph TD
 
 ## 4. APIs DDD (Application Layer)
 
-### 4.1 IssuedLicense Aggregate APIs
+### 4.1 LicenseIssuer Aggregate APIs
+
+#### Query: Consulta de Emissores
+
+```
+GET /api/v1/license-issuers
+```
+
+**Query Parameters:**
+
+| Parâmetro  | Tipo    | Obrigatório | Descrição                     | Validação Domain |
+| ---------- | ------- | ----------- | ----------------------------- | ---------------- |
+| page       | number  | false       | Página atual (padrão: 1)      | PaginationVO     |
+| limit      | number  | false       | Itens por página (padrão: 25) | PaginationVO     |
+| search     | string  | false       | Busca por nome ou código      | SearchVO         |
+| is\_active | boolean | false       | Filtro por status ativo       | StatusVO         |
+
+**Response:**
+
+```json
+{
+  "data": [
+    {
+      "id": "uuid",
+      "name": "Ministério da Economia Marítima",
+      "code": "MEM",
+      "description": "Responsável por licenças marítimas e portuárias",
+      "contact_info": {
+        "email": "licencas@mem.gov.cv",
+        "phone": "+238 260 3000",
+        "address": "Palácio do Governo, Praia"
+      },
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "pagination": {
+    "total": 15,
+    "page": 1,
+    "limit": 25,
+    "total_pages": 1
+  }
+}
+```
+
+#### Command: Criar Emissor
+
+```
+POST /api/v1/license-issuers
+```
+
+**Request:**
+
+```json
+{
+  "name": "Câmara Municipal da Praia",
+  "code": "CMP",
+  "description": "Emissão de licenças municipais",
+  "contact_info": {
+    "email": "licencas@cmpraia.cv",
+    "phone": "+238 260 1000",
+    "address": "Câmara Municipal, Praia"
+  },
+  "is_active": true
+}
+```
+
+### 4.2 LicenseHolder Aggregate APIs
+
+#### Query: Consulta de Titulares
+
+```
+GET /api/v1/license-holders
+```
+
+**Query Parameters:**
+
+| Parâmetro        | Tipo   | Obrigatório | Descrição                      | Validação Domain |
+| ---------------- | ------ | ----------- | ------------------------------ | ---------------- |
+| page             | number | false       | Página atual (padrão: 1)       | PaginationVO     |
+| limit            | number | false       | Itens por página (padrão: 25)  | PaginationVO     |
+| holder\_type     | string | false       | 'individual' ou 'corporate'    | HolderTypeVO     |
+| search           | string | false       | Busca por nome ou documento    | SearchVO         |
+| document\_number | string | false       | Filtro por número de documento | DocumentVO       |
+
+**Response:**
+
+```json
+{
+  "data": [
+    {
+      "id": "uuid",
+      "holder_type": "individual",
+      "full_name": "Maria Santos Silva",
+      "document_number": "123456789",
+      "document_type": "citizen_card",
+      "birth_date": "1985-03-15",
+      "nationality": "cabo-verdiana",
+      "gender": "female",
+      "profession": "Comerciante",
+      "contacts": [
+        {
+          "type": "email",
+          "value": "maria.santos@email.cv",
+          "is_primary": true
+        },
+        {
+          "type": "phone",
+          "value": "+238 991 2345",
+          "is_primary": true
+        }
+      ],
+      "created_at": "2024-01-10T00:00:00Z"
+    },
+    {
+      "id": "uuid",
+      "holder_type": "corporate",
+      "company_name": "Empresa ABC Ltda",
+      "trade_name": "ABC Comércio",
+      "tax_id": "987654321",
+      "registration_number": "REG-2024-001",
+      "incorporation_date": "2020-05-10",
+      "legal_form": "sociedade_limitada",
+      "share_capital": 1000000.00,
+      "business_activity": "Comércio geral",
+      "legal_representatives": [
+        {
+          "id": "uuid",
+          "full_name": "João Silva",
+          "document_number": "987654321",
+          "role": "gerente",
+          "appointment_date": "2020-05-10"
+        }
+      ],
+      "contacts": [
+        {
+          "type": "email",
+          "value": "geral@abc.cv",
+          "is_primary": true
+        }
+      ],
+      "created_at": "2024-01-05T00:00:00Z"
+    }
+  ],
+  "pagination": {
+    "total": 2500,
+    "page": 1,
+    "limit": 25,
+    "total_pages": 100
+  }
+}
+```
+
+#### Command: Criar Titular Pessoa Física
+
+```
+POST /api/v1/license-holders/individual
+```
+
+**Request:**
+
+```json
+{
+  "full_name": "Ana Costa Pereira",
+  "document_number": "456789123",
+  "document_type": "citizen_card",
+  "birth_date": "1990-07-20",
+  "nationality": "cabo-verdiana",
+  "gender": "female",
+  "marital_status": "single",
+  "profession": "Arquiteta",
+  "contacts": [
+    {
+      "type": "email",
+      "value": "ana.costa@email.cv",
+      "is_primary": true
+    },
+    {
+      "type": "phone",
+      "value": "+238 995 6789",
+      "is_primary": true
+    },
+    {
+      "type": "address",
+      "value": "Rua da Liberdade, 45, Praia",
+      "is_primary": true
+    }
+  ]
+}
+```
+
+#### Command: Criar Titular Pessoa Jurídica
+
+```
+POST /api/v1/license-holders/corporate
+```
+
+**Request:**
+
+```json
+{
+  "company_name": "Construtora XYZ S.A.",
+  "trade_name": "XYZ Construções",
+  "tax_id": "123987456",
+  "registration_number": "REG-2024-002",
+  "incorporation_date": "2019-03-15",
+  "legal_form": "sociedade_anonima",
+  "share_capital": 5000000.00,
+  "business_activity": "Construção civil",
+  "legal_representatives": [
+    {
+      "full_name": "Pedro Mendes",
+      "document_number": "321654987",
+      "document_type": "citizen_card",
+      "birth_date": "1975-11-30",
+      "nationality": "cabo-verdiana",
+      "role": "administrador",
+      "appointment_date": "2019-03-15",
+      "powers": "Representação legal e assinatura de contratos"
+    }
+  ],
+  "contacts": [
+    {
+      "type": "email",
+      "value": "geral@xyz.cv",
+      "is_primary": true
+    },
+    {
+      "type": "phone",
+      "value": "+238 260 5000",
+      "is_primary": true
+    },
+    {
+      "type": "address",
+      "value": "Zona Industrial, Lote 15, Praia",
+      "is_primary": true
+    }
+  ]
+}
+```
+
+### 4.3 IssuedLicense Aggregate APIs
 
 #### Query: Consulta de Licenças com RLS
 
@@ -166,6 +425,9 @@ GET /api/v1/issued-licenses
 | search             | string | false       | Busca por número, titular (T\_LICENSE\_HOLDER) | SearchVO         |
 | status             | string | false       | Filtro por status via T\_OPTIONS               | StatusVO         |
 | license\_type\_id  | uuid   | false       | Filtro por T\_LICENSE\_TYPE                    | LicenseTypeVO    |
+| issuer\_id         | uuid   | false       | Filtro por T\_LICENSE\_ISSUER                  | IssuerVO         |
+| holder\_id         | uuid   | false       | Filtro por T\_LICENSE\_HOLDER                  | HolderVO         |
+| holder\_type       | string | false       | Filtro por tipo: 'individual' ou 'corporate'   | HolderTypeVO     |
 | sector\_id         | uuid   | false       | Filtro por T\_SECTOR                           | SectorVO         |
 | issue\_date\_from  | date   | false       | Data inicial de emissão                        | DateRangeVO      |
 | issue\_date\_to    | date   | false       | Data final de emissão                          | DateRangeVO      |
@@ -174,18 +436,26 @@ GET /api/v1/issued-licenses
 
 **Response (DTO via Application Service):**
 
-````json
+```json
 {
   "data": [
     {
       "id": "uuid",
       "license_number": "LIC-2024-001234",
+      "issuer": {
+        "id": "uuid",
+        "name": "Ministério da Economia Marítima",
+        "code": "MEM"
+      },
       "holder": {
         "id": "uuid",
+        "holder_type": "corporate",
         "name": "Empresa XYZ Ltda",
         "document_number": "123456789",
-        "email": "contato@empresa.cv",
-        "organization_id": "uuid"
+        "primary_contact": {
+          "email": "contato@empresa.cv",
+          "phone": "+238 260 1234"
+        }
       },
       "license_type": {
         "id": "uuid",
@@ -220,19 +490,22 @@ GET /api/v1/issued-licenses
     "has_next": true,
     "has_previous": false
   }
-}```
+}
+```
 
 #### Query: Detalhes da Licença (Aggregate Root)
 
-````
+```
 
 GET /api/v1/issued-licenses/{id}
 
-````
+```
 
 **Headers:**
-- `Authorization: Bearer {jwt_token}`
-- `Content-Type: application/json`
+
+* `Authorization: Bearer {jwt_token}`
+
+* `Content-Type: application/json`
 
 **RLS Validation:** Acesso filtrado por perfil de usuário via Supabase RLS
 
@@ -242,28 +515,75 @@ GET /api/v1/issued-licenses/{id}
 {
   "id": "uuid",
   "license_number": "LIC-2024-001234",
+  "issuer": {
+    "id": "uuid",
+    "name": "Ministério da Economia Marítima",
+    "code": "MEM",
+    "description": "Responsável por licenças marítimas e portuárias",
+    "contact_info": {
+      "email": "licencas@mem.gov.cv",
+      "phone": "+238 260 3000",
+      "address": "Palácio do Governo, Praia"
+    }
+  },
   "holder": {
     "id": "uuid",
-    "name": "Empresa XYZ Ltda",
-    "document_number": "123456789",
-    "email": "contato@empresa.cv",
-    "phone": "+238 123 4567",
-    "address": {
-      "street": "Rua Principal, 123",
-      "city": "Praia",
-      "island": "Santiago",
-      "postal_code": "7600"
-    },
-    "organization_id": "uuid",
+    "holder_type": "corporate",
+    "company_name": "Empresa XYZ Ltda",
+    "trade_name": "XYZ Comércio",
+    "tax_id": "123456789",
+    "registration_number": "REG-2024-001",
+    "incorporation_date": "2020-05-10",
+    "legal_form": "sociedade_limitada",
+    "share_capital": 1000000.00,
+    "business_activity": "Comércio geral",
+    "contacts": [
+      {
+        "id": "uuid",
+        "type": "email",
+        "value": "contato@empresa.cv",
+        "is_primary": true
+      },
+      {
+        "id": "uuid",
+        "type": "phone",
+        "value": "+238 123 4567",
+        "is_primary": true
+      },
+      {
+        "id": "uuid",
+        "type": "address",
+        "value": "Rua Principal, 123, Praia, Santiago",
+        "is_primary": true
+      }
+    ],
     "created_at": "2024-01-10T00:00:00Z"
   },
-  "legal_representative": {
-    "id": "uuid",
-    "name": "João Silva",
-    "document_number": "987654321",
-    "email": "joao@empresa.cv",
-    "phone": "+238 987 6543"
-  },
+  "legal_representatives": [
+    {
+      "id": "uuid",
+      "full_name": "João Silva",
+      "document_number": "987654321",
+      "document_type": "citizen_card",
+      "birth_date": "1980-05-15",
+      "nationality": "cabo-verdiana",
+      "role": "gerente",
+      "appointment_date": "2020-05-10",
+      "powers": "Representação legal e assinatura de contratos",
+      "contacts": [
+        {
+          "type": "email",
+          "value": "joao@empresa.cv",
+          "is_primary": true
+        },
+        {
+          "type": "phone",
+          "value": "+238 987 6543",
+          "is_primary": true
+        }
+      ]
+    }
+  ],
   "license_type": {
     "id": "uuid",
     "name": "Licença Comercial",
@@ -329,20 +649,209 @@ GET /api/v1/issued-licenses/{id}
       "due_date": "2024-12-15T00:00:00Z"
     }
   },
+  "amendments": [
+    {
+      "id": "uuid",
+      "amendment_type": "status_change",
+      "description": "Alteração de status para ativo",
+      "amendment_date": "2024-01-20T00:00:00Z",
+      "requested_by": "uuid",
+      "approved_by": "uuid",
+      "status": "approved",
+      "justification": "Documentação complementar apresentada"
+    }
+  ],
+  "transfers": [
+    {
+      "id": "uuid",
+      "previous_holder_id": "uuid",
+      "new_holder_id": "uuid",
+      "transfer_date": "2024-02-01T00:00:00Z",
+      "transfer_reason": "Venda da empresa",
+      "status": "completed",
+      "conditions": "Transferência com todas as obrigações"
+    }
+  ],
+  "documents": [
+    {
+      "id": "uuid",
+      "name": "Licença Original",
+      "document_type": "license_certificate",
+      "file_type": "PDF",
+      "file_size": 2048576,
+      "upload_date": "2024-01-15T10:30:00Z",
+      "uploaded_by": "uuid",
+      "download_url": "/api/v1/documents/uuid/download"
+    }
+  ],
+  "fees": [
+    {
+      "id": "uuid",
+      "fee_type": "issuance",
+      "amount": 5000.00,
+      "currency": "CVE",
+      "status": "paid",
+      "due_date": "2024-01-10T00:00:00Z",
+      "payment_date": "2024-01-10T00:00:00Z",
+      "payment_reference": "PAY-2024-001234"
+    },
+    {
+      "id": "uuid",
+      "fee_type": "renewal",
+      "amount": 3000.00,
+      "currency": "CVE",
+      "status": "pending",
+      "due_date": "2024-12-15T00:00:00Z"
+    }
+  ],
   "created_at": "2024-01-15T10:30:00Z",
   "updated_at": "2024-01-15T10:30:00Z"
-}```
+}
+```
+
+### 4.4 License Process APIs
+
+#### Command: Criar Alteração de Licença
+
+```
+POST /api/v1/issued-licenses/{id}/amendments
+```
+
+**Request:**
+
+```json
+{
+  "amendment_type": "status_change",
+  "description": "Solicitação de reativação da licença",
+  "justification": "Regularização da situação fiscal",
+  "requested_by": "uuid",
+  "new_values": {
+    "status": "active",
+    "conditions": "Licença reativada mediante regularização"
+  },
+  "supporting_documents": [
+    {
+      "document_type": "tax_clearance",
+      "file_id": "uuid"
+    }
+  ]
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "amendment_id": "uuid",
+  "process_number": "AMD-2024-001234",
+  "status": "pending_approval",
+  "estimated_completion_days": 5,
+  "created_at": "2024-01-20T10:00:00Z"
+}
+```
+
+#### Command: Criar Transferência de Licença
+
+```
+POST /api/v1/issued-licenses/{id}/transfers
+```
+
+**Request:**
+
+```json
+{
+  "new_holder_id": "uuid",
+  "transfer_reason": "Venda da empresa",
+  "transfer_date": "2024-02-01T00:00:00Z",
+  "conditions": "Transferência com todas as obrigações e direitos",
+  "supporting_documents": [
+    {
+      "document_type": "sale_contract",
+      "file_id": "uuid"
+    },
+    {
+      "document_type": "new_holder_documents",
+      "file_id": "uuid"
+    }
+  ],
+  "requested_by": "uuid"
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "transfer_id": "uuid",
+  "process_number": "TRF-2024-001234",
+  "status": "pending_approval",
+  "estimated_completion_days": 10,
+  "transfer_fee": {
+    "amount": 2500.00,
+    "currency": "CVE",
+    "due_date": "2024-01-25T00:00:00Z"
+  },
+  "created_at": "2024-01-20T10:00:00Z"
+}
+```
+
+#### Command: Renovar Licença
+
+```
+POST /api/v1/issued-licenses/{id}/renewals
+```
+
+**Request:**
+
+```json
+{
+  "renewal_type": "standard",
+  "new_expiry_date": "2026-01-15T00:00:00Z",
+  "observations": "Renovação padrão - documentação em dia",
+  "supporting_documents": [
+    {
+      "document_type": "updated_business_license",
+      "file_id": "uuid"
+    }
+  ],
+  "requested_by": "uuid"
+}
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "renewal_id": "uuid",
+  "process_number": "REN-2024-001234",
+  "status": "approved",
+  "new_expiry_date": "2026-01-15T00:00:00Z",
+  "renewal_fee": {
+    "amount": 3000.00,
+    "currency": "CVE",
+    "status": "pending",
+    "due_date": "2024-12-15T00:00:00Z",
+    "payment_reference": "REN-PAY-2024-001234"
+  },
+  "created_at": "2024-12-01T10:00:00Z"
+}
+```
 
 #### Command: Renovação de Licença (Domain Service)
 
 **Endpoint:** `POST /api/v1/issued-licenses/{id}/renew`
 
 **Headers:**
-- Authorization: Bearer {supabase_jwt_token}
-- Content-Type: application/json
 
-**Domain Service:** `LicenseRenewalService`  
-**Aggregate:** `IssuedLicense` + `LicenseRenewal`  
+* Authorization: Bearer {supabase\_jwt\_token}
+
+* Content-Type: application/json
+
+**Domain Service:** `LicenseRenewalService`\
+**Aggregate:** `IssuedLicense` + `LicenseRenewal`\
 **Tables:** `T_ISSUED_LICENSE`, `T_LICENSE_RENEWAL`, `T_PROCESS_TYPE_FEE`, `T_LICENSE_AUDIT`
 
 **Request:**
@@ -360,7 +869,7 @@ GET /api/v1/issued-licenses/{id}
     }
   ]
 }
-````
+```
 
 **Response (Command Result via CQRS):**
 
@@ -650,188 +1159,657 @@ graph TD
 
 ```mermaid
 erDiagram
-  T_ISSUED_LICENSE {
-    uuid id PK
-    string license_number UK
-    uuid holder_id FK
-    uuid license_type_id FK
-    string status
-    date issue_date
-    date expiry_date
-    date provisional_validity
-    text observations
-    string process_number
-    uuid created_by FK
-    uuid updated_by FK
-    timestamp created_at
-    timestamp updated_at
-  }
-  
-  T_LICENSE_HOLDER {
-    uuid id PK
-    string name
-    string document_number UK
-    string email
-    string phone
-    string address_street
-    string address_city
-    string address_island
-    string address_postal_code
-    uuid organization_id FK
-    uuid legal_representative_id FK
-    boolean is_active
-    uuid created_by FK
-    uuid updated_by FK
-    timestamp created_at
-    timestamp updated_at
-  }
-  
-  T_LICENSE_TYPE {
-    uuid id PK
-    string name
-    string code UK
-    text description
-    integer validity_months
-    uuid sector_id FK
-    uuid category_id FK
-    boolean is_active
-    uuid created_by FK
-    uuid updated_by FK
-    timestamp created_at
-    timestamp updated_at
-  }
-  
-  T_SECTOR {
-    uuid id PK
-    string name
-    string code UK
-    text description
-    boolean is_active
-    integer sort_order
-    uuid created_by FK
-    uuid updated_by FK
-    timestamp created_at
-    timestamp updated_at
-  }
-  
-  T_CATEGORY {
-    uuid id PK
-    string name
-    string code UK
-    text description
-    uuid sector_id FK
-    boolean is_active
-    integer sort_order
-    uuid created_by FK
-    uuid updated_by FK
-    timestamp created_at
-    timestamp updated_at
-  }
-  
-  T_LICENSE_RENEWAL {
-    uuid id PK
-    uuid license_id FK
-    string process_number UK
-    string renewal_type
-    date start_date
-    date completion_date
-    string status
-    text observations
-    uuid requested_by FK
-    uuid processed_by FK
-    timestamp created_at
-    timestamp updated_at
-  }
-  
-  T_LICENSE_AUDIT {
-    uuid id PK
-    uuid license_id FK
-    string action
-    text description
-    uuid user_id FK
-    string user_name
-    json metadata
-    string ip_address
-    string user_agent
-    timestamp timestamp
-  }
-  
-  T_LICENSE_ALERT {
-    uuid id PK
-    uuid license_id FK
-    string alert_type
-    string priority
-    string status
-    date trigger_date
-    integer days_ahead
-    text message
-    uuid acknowledged_by FK
-    timestamp acknowledged_at
-    timestamp created_at
-    timestamp updated_at
-  }
-  
-  T_OPTIONS {
-    uuid id PK
-    string option_group
-    string option_key UK
-    string option_value
-    text description
-    boolean is_active
-    integer sort_order
-    uuid created_by FK
-    uuid updated_by FK
-    timestamp created_at
-    timestamp updated_at
-  }
-  
-  T_ISSUED_LICENSE ||--|| T_LICENSE_HOLDER : "holder_id"
-  T_ISSUED_LICENSE ||--|| T_LICENSE_TYPE : "license_type_id"
-  T_LICENSE_TYPE ||--|| T_SECTOR : "sector_id"
-  T_LICENSE_TYPE ||--|| T_CATEGORY : "category_id"
-  T_CATEGORY ||--|| T_SECTOR : "sector_id"
-  T_ISSUED_LICENSE ||--o{ T_LICENSE_RENEWAL : "license_id"
-  T_ISSUED_LICENSE ||--o{ T_LICENSE_AUDIT : "license_id"
-  T_ISSUED_LICENSE ||--o{ T_LICENSE_ALERT : "license_id"
+    %% Entidades de Emissão
+    T_LICENSE_ISSUER ||--o{ T_ISSUED_LICENSE : "issues"
+    T_ISSUED_LICENSE ||--|| T_LICENSE_TYPE : "is of type"
+    
+    %% Entidades de Titularidade
+    T_LICENSE_HOLDER ||--o{ T_ISSUED_LICENSE : "owns"
+    T_LICENSE_HOLDER ||--o| T_INDIVIDUAL_HOLDER : "extends"
+    T_LICENSE_HOLDER ||--o| T_CORPORATE_HOLDER : "extends"
+    T_CORPORATE_HOLDER ||--o{ T_LEGAL_REPRESENTATIVE : "has representatives"
+    T_LICENSE_HOLDER ||--o{ T_HOLDER_CONTACT : "has contacts"
+    
+    %% Entidades de Processo
+    T_ISSUED_LICENSE ||--o{ T_LICENSE_RENEWAL : "has renewals"
+    T_ISSUED_LICENSE ||--o{ T_LICENSE_AMENDMENT : "has amendments"
+    T_ISSUED_LICENSE ||--o{ T_LICENSE_TRANSFER : "has transfers"
+    T_ISSUED_LICENSE ||--o{ T_LICENSE_AUDIT : "has audit trail"
+    T_ISSUED_LICENSE ||--o{ T_LICENSE_DOCUMENT : "has documents"
+    T_ISSUED_LICENSE ||--o{ T_LICENSE_FEE : "has fees"
+    T_ISSUED_LICENSE ||--o{ T_LICENSE_ALERT : "generates alerts"
+    
+    %% Parametrização
+    T_LICENSE_TYPE ||--|| T_SECTOR : "belongs to"
+    T_LICENSE_TYPE ||--|| T_CATEGORY : "belongs to"
+    T_CATEGORY ||--|| T_SECTOR : "belongs to"
+    
+    %% Definições das Entidades
+    T_LICENSE_ISSUER {
+        uuid id PK
+        varchar issuer_code UK
+        varchar name
+        varchar jurisdiction
+        varchar competence_area
+        varchar contact_email
+        varchar contact_phone
+        varchar status
+        timestamp created_at
+        timestamp updated_at
+        uuid created_by FK
+        uuid updated_by FK
+    }
+    
+    T_LICENSE_HOLDER {
+        uuid id PK
+        varchar holder_type
+        varchar status
+        varchar classification
+        timestamp created_at
+        timestamp updated_at
+        uuid created_by FK
+        uuid updated_by FK
+    }
+    
+    T_INDIVIDUAL_HOLDER {
+        uuid id PK
+        uuid holder_id FK
+        varchar full_name
+        varchar father_name
+        varchar mother_name
+        varchar marital_status
+        varchar nationality
+        varchar birthplace
+        date birth_date
+        varchar document_type
+        varchar document_number UK
+        varchar gender
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_CORPORATE_HOLDER {
+        uuid id PK
+        uuid holder_id FK
+        varchar corporate_name
+        varchar trade_name
+        varchar tax_id UK
+        varchar registration_number
+        varchar economic_activity
+        varchar corporate_type
+        date incorporation_date
+        varchar share_capital
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_LEGAL_REPRESENTATIVE {
+        uuid id PK
+        uuid corporate_holder_id FK
+        varchar full_name
+        varchar document_type
+        varchar document_number UK
+        varchar representation_type
+        varchar powers_description
+        date valid_from
+        date valid_until
+        varchar status
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_HOLDER_CONTACT {
+        uuid id PK
+        uuid holder_id FK
+        varchar contact_type
+        varchar contact_value
+        varchar classification
+        boolean is_primary
+        boolean is_verified
+        varchar verification_method
+        timestamp verified_at
+        varchar communication_preference
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_ISSUED_LICENSE {
+        uuid id PK
+        varchar license_number UK
+        uuid issuer_id FK
+        uuid license_type_id FK
+        uuid holder_id FK
+        varchar status
+        date issue_date
+        date expiry_date
+        date provisional_expiry_date
+        varchar licensing_model
+        boolean renewable
+        integer renewal_count
+        text observations
+        jsonb metadata
+        timestamp created_at
+        timestamp updated_at
+        uuid created_by FK
+        uuid updated_by FK
+    }
+    
+    T_LICENSE_TYPE {
+        uuid id PK
+        varchar name
+        varchar code UK
+        text description
+        integer validity_months
+        uuid sector_id FK
+        uuid category_id FK
+        boolean is_active
+        uuid created_by FK
+        uuid updated_by FK
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_SECTOR {
+        uuid id PK
+        varchar name
+        varchar code UK
+        text description
+        boolean is_active
+        integer sort_order
+        uuid created_by FK
+        uuid updated_by FK
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_CATEGORY {
+        uuid id PK
+        varchar name
+        varchar code UK
+        text description
+        uuid sector_id FK
+        boolean is_active
+        integer sort_order
+        uuid created_by FK
+        uuid updated_by FK
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_LICENSE_RENEWAL {
+        uuid id PK
+        uuid license_id FK
+        varchar process_number UK
+        varchar renewal_type
+        date start_date
+        date completion_date
+        varchar status
+        text observations
+        uuid requested_by FK
+        uuid processed_by FK
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_LICENSE_AMENDMENT {
+        uuid id PK
+        uuid license_id FK
+        varchar amendment_type
+        varchar process_number UK
+        text description
+        jsonb old_values
+        jsonb new_values
+        varchar status
+        date effective_date
+        uuid requested_by FK
+        uuid approved_by FK
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_LICENSE_TRANSFER {
+        uuid id PK
+        uuid license_id FK
+        uuid old_holder_id FK
+        uuid new_holder_id FK
+        varchar process_number UK
+        varchar transfer_type
+        text reason
+        varchar status
+        date effective_date
+        uuid requested_by FK
+        uuid approved_by FK
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_LICENSE_AUDIT {
+        uuid id PK
+        uuid license_id FK
+        varchar action
+        text description
+        uuid user_id FK
+        varchar user_name
+        jsonb metadata
+        varchar ip_address
+        varchar user_agent
+        timestamp timestamp
+    }
+    
+    T_LICENSE_DOCUMENT {
+        uuid id PK
+        uuid license_id FK
+        varchar document_name
+        varchar document_type
+        varchar file_type
+        varchar file_path
+        integer file_size
+        varchar status
+        uuid uploaded_by FK
+        timestamp uploaded_at
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_LICENSE_FEE {
+        uuid id PK
+        uuid license_id FK
+        varchar fee_type
+        decimal amount
+        varchar currency
+        varchar status
+        date due_date
+        date payment_date
+        varchar payment_reference
+        uuid fee_category_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_LICENSE_ALERT {
+        uuid id PK
+        uuid license_id FK
+        varchar alert_type
+        varchar priority
+        varchar status
+        date trigger_date
+        integer days_ahead
+        text message
+        uuid acknowledged_by FK
+        timestamp acknowledged_at
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_OPTIONS {
+        uuid id PK
+        varchar option_group
+        varchar option_key UK
+        varchar option_value
+        text description
+        boolean is_active
+        integer sort_order
+        uuid created_by FK
+        uuid updated_by FK
+        timestamp created_at
+        timestamp updated_at
+    }
 ```
 
 ### 6.2 Data Definition Language (DDL)
 
-#### Tabela Principal: T\_ISSUED\_LICENSE
+#### Tabela de Emissores: T\_LICENSE\_ISSUER
 
 ```sql
--- Tabela de Licenças Emitidas
-CREATE TABLE T_ISSUED_LICENSE (
+-- Tabela de Órgãos Emissores de Licenças
+CREATE TABLE T_LICENSE_ISSUER (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    license_number VARCHAR(50) UNIQUE NOT NULL,
-    holder_id UUID NOT NULL,
-    license_type_id UUID NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'expired', 'suspended', 'cancelled', 'provisional')),
-    issue_date DATE NOT NULL,
-    expiry_date DATE NOT NULL,
-    provisional_validity DATE,
-    observations TEXT,
-    process_number VARCHAR(50),
+    issuer_code VARCHAR(20) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    jurisdiction VARCHAR(100),
+    competence_area TEXT,
+    contact_email VARCHAR(255),
+    contact_phone VARCHAR(20),
+    status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'suspended')),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by UUID NOT NULL,
-    updated_by UUID,
+    updated_by UUID
+);
+
+-- Índices
+CREATE INDEX idx_license_issuer_code ON T_LICENSE_ISSUER(issuer_code);
+CREATE INDEX idx_license_issuer_status ON T_LICENSE_ISSUER(status);
+```
+
+#### Tabela Base de Titulares: T\_LICENSE\_HOLDER
+
+```sql
+-- Tabela Base de Titulares (Herança)
+CREATE TABLE T_LICENSE_HOLDER (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    holder_type VARCHAR(20) NOT NULL CHECK (holder_type IN ('individual', 'corporate')),
+    status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'suspended', 'blocked')),
+    classification VARCHAR(50),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by UUID NOT NULL,
+    updated_by UUID
+);
+
+-- Índices
+CREATE INDEX idx_license_holder_type ON T_LICENSE_HOLDER(holder_type);
+CREATE INDEX idx_license_holder_status ON T_LICENSE_HOLDER(status);
+```
+
+#### Tabela de Pessoas Físicas: T\_INDIVIDUAL\_HOLDER
+
+```sql
+-- Tabela de Titulares Pessoas Físicas
+CREATE TABLE T_INDIVIDUAL_HOLDER (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    holder_id UUID NOT NULL UNIQUE,
+    full_name VARCHAR(255) NOT NULL,
+    father_name VARCHAR(255),
+    mother_name VARCHAR(255),
+    marital_status VARCHAR(20),
+    nationality VARCHAR(50),
+    birthplace VARCHAR(100),
+    birth_date DATE,
+    document_type VARCHAR(20) NOT NULL,
+    document_number VARCHAR(50) UNIQUE NOT NULL,
+    gender VARCHAR(10),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     
+    CONSTRAINT fk_individual_holder FOREIGN KEY (holder_id) REFERENCES T_LICENSE_HOLDER(id) ON DELETE CASCADE
+);
+
+-- Índices
+CREATE INDEX idx_individual_holder_document ON T_INDIVIDUAL_HOLDER(document_number);
+CREATE INDEX idx_individual_holder_name ON T_INDIVIDUAL_HOLDER(full_name);
+CREATE INDEX idx_individual_holder_birth_date ON T_INDIVIDUAL_HOLDER(birth_date);
+```
+
+#### Tabela de Pessoas Jurídicas: T\_CORPORATE\_HOLDER
+
+```sql
+-- Tabela de Titulares Pessoas Jurídicas
+CREATE TABLE T_CORPORATE_HOLDER (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    holder_id UUID NOT NULL UNIQUE,
+    corporate_name VARCHAR(255) NOT NULL,
+    trade_name VARCHAR(255),
+    tax_id VARCHAR(50) UNIQUE NOT NULL,
+    registration_number VARCHAR(50),
+    economic_activity VARCHAR(100),
+    corporate_type VARCHAR(50),
+    incorporation_date DATE,
+    share_capital VARCHAR(50),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    
+    CONSTRAINT fk_corporate_holder FOREIGN KEY (holder_id) REFERENCES T_LICENSE_HOLDER(id) ON DELETE CASCADE
+);
+
+-- Índices
+CREATE INDEX idx_corporate_holder_tax_id ON T_CORPORATE_HOLDER(tax_id);
+CREATE INDEX idx_corporate_holder_corporate_name ON T_CORPORATE_HOLDER(corporate_name);
+CREATE INDEX idx_corporate_holder_registration ON T_CORPORATE_HOLDER(registration_number);
+```
+
+#### Tabela de Representantes Legais: T\_LEGAL\_REPRESENTATIVE
+
+```sql
+-- Tabela de Representantes Legais
+CREATE TABLE T_LEGAL_REPRESENTATIVE (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    corporate_holder_id UUID NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
+    document_type VARCHAR(20) NOT NULL,
+    document_number VARCHAR(50) UNIQUE NOT NULL,
+    representation_type VARCHAR(50) NOT NULL,
+    powers_description TEXT,
+    valid_from DATE NOT NULL,
+    valid_until DATE,
+    status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'expired')),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    
+    CONSTRAINT fk_legal_representative_corporate FOREIGN KEY (corporate_holder_id) REFERENCES T_CORPORATE_HOLDER(id) ON DELETE CASCADE
+);
+
+-- Índices
+CREATE INDEX idx_legal_representative_corporate ON T_LEGAL_REPRESENTATIVE(corporate_holder_id);
+CREATE INDEX idx_legal_representative_document ON T_LEGAL_REPRESENTATIVE(document_number);
+CREATE INDEX idx_legal_representative_validity ON T_LEGAL_REPRESENTATIVE(valid_from, valid_until);
+```
+
+#### Tabela de Contatos: T\_HOLDER\_CONTACT
+
+```sql
+-- Tabela de Contatos dos Titulares
+CREATE TABLE T_HOLDER_CONTACT (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    holder_id UUID NOT NULL,
+    contact_type VARCHAR(20) NOT NULL CHECK (contact_type IN ('email', 'phone', 'mobile', 'address', 'fax')),
+    contact_value VARCHAR(255) NOT NULL,
+    classification VARCHAR(20) DEFAULT 'personal' CHECK (classification IN ('personal', 'business', 'emergency')),
+    is_primary BOOLEAN DEFAULT false,
+    is_verified BOOLEAN DEFAULT false,
+    verification_method VARCHAR(50),
+    verified_at TIMESTAMP WITH TIME ZONE,
+    communication_preference VARCHAR(20) DEFAULT 'optional' CHECK (communication_preference IN ('required', 'preferred', 'optional', 'blocked')),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    
+    CONSTRAINT fk_holder_contact FOREIGN KEY (holder_id) REFERENCES T_LICENSE_HOLDER(id) ON DELETE CASCADE
+);
+
+-- Índices
+CREATE INDEX idx_holder_contact_holder_id ON T_HOLDER_CONTACT(holder_id);
+CREATE INDEX idx_holder_contact_type ON T_HOLDER_CONTACT(contact_type);
+CREATE INDEX idx_holder_contact_primary ON T_HOLDER_CONTACT(is_primary) WHERE is_primary = true;
+```
+
+#### Tabela Principal: T\_ISSUED\_LICENSE
+
+```sql
+-- Tabela de Licenças Emitidas (Atualizada)
+CREATE TABLE T_ISSUED_LICENSE (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    license_number VARCHAR(50) UNIQUE NOT NULL,
+    issuer_id UUID NOT NULL,
+    license_type_id UUID NOT NULL,
+    holder_id UUID NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'expired', 'suspended', 'cancelled', 'provisional')),
+    issue_date DATE NOT NULL,
+    expiry_date DATE NOT NULL,
+    provisional_expiry_date DATE,
+    licensing_model VARCHAR(20) DEFAULT 'standard' CHECK (licensing_model IN ('standard', 'simplified', 'provisional', 'emergency')),
+    renewable BOOLEAN DEFAULT true,
+    renewal_count INTEGER DEFAULT 0,
+    observations TEXT,
+    metadata JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by UUID NOT NULL,
+    updated_by UUID,
+    
+    CONSTRAINT fk_issued_license_issuer FOREIGN KEY (issuer_id) REFERENCES T_LICENSE_ISSUER(id),
     CONSTRAINT fk_issued_license_holder FOREIGN KEY (holder_id) REFERENCES T_LICENSE_HOLDER(id),
     CONSTRAINT fk_issued_license_type FOREIGN KEY (license_type_id) REFERENCES T_LICENSE_TYPE(id)
 );
 
 -- Índices para performance
+CREATE INDEX idx_issued_license_issuer_id ON T_ISSUED_LICENSE(issuer_id);
 CREATE INDEX idx_issued_license_holder_id ON T_ISSUED_LICENSE(holder_id);
 CREATE INDEX idx_issued_license_type_id ON T_ISSUED_LICENSE(license_type_id);
 CREATE INDEX idx_issued_license_status ON T_ISSUED_LICENSE(status);
 CREATE INDEX idx_issued_license_expiry_date ON T_ISSUED_LICENSE(expiry_date);
 CREATE INDEX idx_issued_license_issue_date ON T_ISSUED_LICENSE(issue_date DESC);
+CREATE INDEX idx_issued_license_number ON T_ISSUED_LICENSE(license_number);
+```
 
--- RLS (Row Level Security)
+#### Tabela de Alterações: T\_LICENSE\_AMENDMENT
+
+```sql
+-- Tabela de Alterações de Licenças
+CREATE TABLE T_LICENSE_AMENDMENT (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    license_id UUID NOT NULL,
+    amendment_type VARCHAR(50) NOT NULL,
+    process_number VARCHAR(50) UNIQUE NOT NULL,
+    description TEXT,
+    old_values JSONB,
+    new_values JSONB,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'cancelled')),
+    effective_date DATE,
+    requested_by UUID NOT NULL,
+    approved_by UUID,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    
+    CONSTRAINT fk_license_amendment_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id)
+);
+
+-- Índices
+CREATE INDEX idx_license_amendment_license_id ON T_LICENSE_AMENDMENT(license_id);
+CREATE INDEX idx_license_amendment_status ON T_LICENSE_AMENDMENT(status);
+CREATE INDEX idx_license_amendment_type ON T_LICENSE_AMENDMENT(amendment_type);
+```
+
+#### Tabela de Transferências: T\_LICENSE\_TRANSFER
+
+```sql
+-- Tabela de Transferências de Licenças
+CREATE TABLE T_LICENSE_TRANSFER (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    license_id UUID NOT NULL,
+    old_holder_id UUID NOT NULL,
+    new_holder_id UUID NOT NULL,
+    process_number VARCHAR(50) UNIQUE NOT NULL,
+    transfer_type VARCHAR(20) NOT NULL CHECK (transfer_type IN ('sale', 'inheritance', 'merger', 'other')),
+    reason TEXT,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'cancelled')),
+    effective_date DATE,
+    requested_by UUID NOT NULL,
+    approved_by UUID,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    
+    CONSTRAINT fk_license_transfer_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id),
+    CONSTRAINT fk_license_transfer_old_holder FOREIGN KEY (old_holder_id) REFERENCES T_LICENSE_HOLDER(id),
+    CONSTRAINT fk_license_transfer_new_holder FOREIGN KEY (new_holder_id) REFERENCES T_LICENSE_HOLDER(id)
+);
+
+-- Índices
+CREATE INDEX idx_license_transfer_license_id ON T_LICENSE_TRANSFER(license_id);
+CREATE INDEX idx_license_transfer_old_holder ON T_LICENSE_TRANSFER(old_holder_id);
+CREATE INDEX idx_license_transfer_new_holder ON T_LICENSE_TRANSFER(new_holder_id);
+CREATE INDEX idx_license_transfer_status ON T_LICENSE_TRANSFER(status);
+```
+
+#### Tabela de Documentos: T\_LICENSE\_DOCUMENT
+
+```sql
+-- Tabela de Documentos das Licenças
+CREATE TABLE T_LICENSE_DOCUMENT (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    license_id UUID NOT NULL,
+    document_name VARCHAR(255) NOT NULL,
+    document_type VARCHAR(50) NOT NULL,
+    file_type VARCHAR(10),
+    file_path VARCHAR(500),
+    file_size INTEGER,
+    status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'archived', 'deleted')),
+    uploaded_by UUID NOT NULL,
+    uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    
+    CONSTRAINT fk_license_document_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id)
+);
+
+-- Índices
+CREATE INDEX idx_license_document_license_id ON T_LICENSE_DOCUMENT(license_id);
+CREATE INDEX idx_license_document_type ON T_LICENSE_DOCUMENT(document_type);
+CREATE INDEX idx_license_document_status ON T_LICENSE_DOCUMENT(status);
+```
+
+#### Tabela de Taxas: T\_LICENSE\_FEE
+
+```sql
+-- Tabela de Taxas das Licenças
+CREATE TABLE T_LICENSE_FEE (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    license_id UUID NOT NULL,
+    fee_type VARCHAR(50) NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    currency VARCHAR(3) DEFAULT 'CVE',
+    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'paid', 'overdue', 'cancelled', 'refunded')),
+    due_date DATE,
+    payment_date DATE,
+    payment_reference VARCHAR(100),
+    fee_category_id UUID,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    
+    CONSTRAINT fk_license_fee_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id)
+);
+
+-- Índices
+CREATE INDEX idx_license_fee_license_id ON T_LICENSE_FEE(license_id);
+CREATE INDEX idx_license_fee_status ON T_LICENSE_FEE(status);
+CREATE INDEX idx_license_fee_due_date ON T_LICENSE_FEE(due_date);
+CREATE INDEX idx_license_fee_type ON T_LICENSE_FEE(fee_type);
+
+-- RLS (Row Level Security) para todas as tabelas
+
+-- T_LICENSE_ISSUER
+ALTER TABLE T_LICENSE_ISSUER ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view issuers" ON T_LICENSE_ISSUER
+    FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Admins can manage issuers" ON T_LICENSE_ISSUER
+    FOR ALL USING (auth.role() = 'authenticated' AND auth.jwt() ->> 'user_role' = 'admin_sistema');
+
+-- T_LICENSE_HOLDER
+ALTER TABLE T_LICENSE_HOLDER ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view holders" ON T_LICENSE_HOLDER
+    FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Managers can manage holders" ON T_LICENSE_HOLDER
+    FOR ALL USING (auth.role() = 'authenticated' AND auth.jwt() ->> 'user_role' IN ('gestor_licencas', 'admin_sistema'));
+
+-- T_INDIVIDUAL_HOLDER
+ALTER TABLE T_INDIVIDUAL_HOLDER ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view individual holders" ON T_INDIVIDUAL_HOLDER
+    FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Managers can manage individual holders" ON T_INDIVIDUAL_HOLDER
+    FOR ALL USING (auth.role() = 'authenticated' AND auth.jwt() ->> 'user_role' IN ('gestor_licencas', 'admin_sistema'));
+
+-- T_CORPORATE_HOLDER
+ALTER TABLE T_CORPORATE_HOLDER ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view corporate holders" ON T_CORPORATE_HOLDER
+    FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Managers can manage corporate holders" ON T_CORPORATE_HOLDER
+    FOR ALL USING (auth.role() = 'authenticated' AND auth.jwt() ->> 'user_role' IN ('gestor_licencas', 'admin_sistema'));
+
+-- T_LEGAL_REPRESENTATIVE
+ALTER TABLE T_LEGAL_REPRESENTATIVE ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view legal representatives" ON T_LEGAL_REPRESENTATIVE
+    FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Managers can manage legal representatives" ON T_LEGAL_REPRESENTATIVE
+    FOR ALL USING (auth.role() = 'authenticated' AND auth.jwt() ->> 'user_role' IN ('gestor_licencas', 'admin_sistema'));
+
+-- T_HOLDER_CONTACT
+ALTER TABLE T_HOLDER_CONTACT ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view holder contacts" ON T_HOLDER_CONTACT
+    FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Managers can manage holder contacts" ON T_HOLDER_CONTACT
+    FOR ALL USING (auth.role() = 'authenticated' AND auth.jwt() ->> 'user_role' IN ('gestor_licencas', 'admin_sistema'));
+
+-- T_ISSUED_LICENSE
 ALTER TABLE T_ISSUED_LICENSE ENABLE ROW LEVEL SECURITY;
-
--- Política para usuários autenticados
 CREATE POLICY "Users can view licenses based on role" ON T_ISSUED_LICENSE
     FOR SELECT USING (
         auth.role() = 'authenticated' AND (
@@ -843,18 +1821,44 @@ CREATE POLICY "Users can view licenses based on role" ON T_ISSUED_LICENSE
             (auth.jwt() ->> 'user_role' = 'admin_sistema')
         )
     );
-
 CREATE POLICY "Managers can insert licenses" ON T_ISSUED_LICENSE
     FOR INSERT WITH CHECK (
         auth.role() = 'authenticated' AND
         auth.jwt() ->> 'user_role' IN ('gestor_licencas', 'admin_sistema')
     );
-
 CREATE POLICY "Managers can update licenses" ON T_ISSUED_LICENSE
     FOR UPDATE USING (
         auth.role() = 'authenticated' AND
         auth.jwt() ->> 'user_role' IN ('gestor_licencas', 'admin_sistema')
     );
+
+-- T_LICENSE_AMENDMENT
+ALTER TABLE T_LICENSE_AMENDMENT ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view amendments" ON T_LICENSE_AMENDMENT
+    FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Managers can manage amendments" ON T_LICENSE_AMENDMENT
+    FOR ALL USING (auth.role() = 'authenticated' AND auth.jwt() ->> 'user_role' IN ('gestor_licencas', 'admin_sistema'));
+
+-- T_LICENSE_TRANSFER
+ALTER TABLE T_LICENSE_TRANSFER ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view transfers" ON T_LICENSE_TRANSFER
+    FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Managers can manage transfers" ON T_LICENSE_TRANSFER
+    FOR ALL USING (auth.role() = 'authenticated' AND auth.jwt() ->> 'user_role' IN ('gestor_licencas', 'admin_sistema'));
+
+-- T_LICENSE_DOCUMENT
+ALTER TABLE T_LICENSE_DOCUMENT ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view documents" ON T_LICENSE_DOCUMENT
+    FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Managers can manage documents" ON T_LICENSE_DOCUMENT
+    FOR ALL USING (auth.role() = 'authenticated' AND auth.jwt() ->> 'user_role' IN ('gestor_licencas', 'admin_sistema'));
+
+-- T_LICENSE_FEE
+ALTER TABLE T_LICENSE_FEE ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view fees" ON T_LICENSE_FEE
+    FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Managers can manage fees" ON T_LICENSE_FEE
+    FOR ALL USING (auth.role() = 'authenticated' AND auth.jwt() ->> 'user_role' IN ('gestor_licencas', 'admin_sistema'));
 ```
 
 #### Tabela de Titulares: T\_LICENSE\_HOLDER

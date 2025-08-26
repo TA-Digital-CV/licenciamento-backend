@@ -24,26 +24,77 @@ O módulo de **Gestão de Licenças Emitidas** é responsável pela gestão comp
 
 ### 1.2 Entidades Principais
 
-* **T\_ISSUED\_LICENSE**: Licenças emitidas com controle de ciclo de vida
+#### 1.2.1 Entidades de Emissão
 
-* **T\_LICENSE\_HOLDER**: Titulares de licenças (pessoas físicas/jurídicas)
+* **T\_LICENSE\_ISSUER**: Órgãos emissores de licenças
+  - Identificação única do emissor
+  - Competências e jurisdições
+  - Dados de contato institucional
+  - Status operacional
+
+* **T\_ISSUED\_LICENSE**: Licenças emitidas com controle de ciclo de vida
+  - Vinculação ao emissor e titular
+  - Controle de validade e status
+  - Metadados específicos do tipo de licença
+
+#### 1.2.2 Entidades de Titularidade
+
+* **T\_LICENSE\_HOLDER**: Entidade base para titulares de licenças
+  - Tipo de titular (pessoa física/jurídica)
+  - Dados comuns (identificação, contatos)
+  - Status e classificação
+
+* **T\_INDIVIDUAL\_HOLDER**: Pessoas físicas titulares de licenças
+  - Nome completo e dados pessoais
+  - Filiação (pai e mãe)
+  - Estado civil e naturalidade
+  - Documentos de identificação específicos
+
+* **T\_CORPORATE\_HOLDER**: Pessoas jurídicas titulares de licenças
+  - Razão social e nome fantasia
+  - CNPJ/NIF e inscrições
+  - Atividade econômica principal
+  - Dados societários
+
+* **T\_LEGAL\_REPRESENTATIVE**: Representantes legais de pessoas jurídicas
+  - Vinculação à pessoa jurídica
+  - Dados pessoais do representante
+  - Tipo e poderes de representação
+  - Período de validade da representação
+
+#### 1.2.3 Entidades de Contato
+
+* **T\_HOLDER\_CONTACT**: Contatos dos titulares
+  - Tipo de contato (telefone, email, endereço)
+  - Classificação (principal, secundário, comercial)
+  - Status de verificação
+  - Preferências de comunicação
+
+#### 1.2.4 Entidades de Processo
 
 * **T\_LICENSE\_RENEWAL**: Processos de renovação de licenças
-
 * **T\_LICENSE\_AMENDMENT**: Alterações e aditivos às licenças
-
 * **T\_LICENSE\_TRANSFER**: Transferências de titularidade
-
 * **T\_LICENSE\_AUDIT**: Histórico completo de auditoria
 
 ## 2. Modelo de Dados Normalizado
 
-### 2.1 Diagrama ER
+### 2.1 Diagrama ER Normalizado
 
 ```mermaid
 erDiagram
-    T_ISSUED_LICENSE ||--|| T_LICENSE_HOLDER : "belongs to"
+    %% Entidades de Emissão
+    T_LICENSE_ISSUER ||--o{ T_ISSUED_LICENSE : "issues"
     T_ISSUED_LICENSE ||--|| T_LICENSE_TYPE : "is of type"
+    
+    %% Entidades de Titularidade
+    T_LICENSE_HOLDER ||--o{ T_ISSUED_LICENSE : "owns"
+    T_LICENSE_HOLDER ||--o| T_INDIVIDUAL_HOLDER : "extends"
+    T_LICENSE_HOLDER ||--o| T_CORPORATE_HOLDER : "extends"
+    T_CORPORATE_HOLDER ||--o{ T_LEGAL_REPRESENTATIVE : "has representatives"
+    T_LICENSE_HOLDER ||--o{ T_HOLDER_CONTACT : "has contacts"
+    
+    %% Entidades de Processo
     T_ISSUED_LICENSE ||--o{ T_LICENSE_RENEWAL : "has renewals"
     T_ISSUED_LICENSE ||--o{ T_LICENSE_AMENDMENT : "has amendments"
     T_ISSUED_LICENSE ||--o{ T_LICENSE_TRANSFER : "has transfers"
@@ -52,26 +103,101 @@ erDiagram
     T_ISSUED_LICENSE ||--o{ T_LICENSE_FEE : "has fees"
     T_ISSUED_LICENSE ||--o{ T_LICENSE_ALERT : "generates alerts"
     
-    T_LICENSE_HOLDER {
+    %% Definições das Entidades
+    T_LICENSE_ISSUER {
         uuid id PK
-        varchar holder_type
+        varchar issuer_code UK
         varchar name
-        varchar document_number
-        varchar email
-        varchar phone
-        jsonb address
+        varchar jurisdiction
+        varchar competence_area
+        varchar contact_email
+        varchar contact_phone
         varchar status
         timestamp created_at
         timestamp updated_at
-        varchar created_by
-        varchar updated_by
+        uuid created_by FK
+        uuid updated_by FK
+    }
+    
+    T_LICENSE_HOLDER {
+        uuid id PK
+        varchar holder_type
+        varchar status
+        varchar classification
+        timestamp created_at
+        timestamp updated_at
+        uuid created_by FK
+        uuid updated_by FK
+    }
+    
+    T_INDIVIDUAL_HOLDER {
+        uuid id PK
+        uuid holder_id FK
+        varchar full_name
+        varchar father_name
+        varchar mother_name
+        varchar marital_status
+        varchar nationality
+        varchar birthplace
+        date birth_date
+        varchar document_type
+        varchar document_number UK
+        varchar gender
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_CORPORATE_HOLDER {
+        uuid id PK
+        uuid holder_id FK
+        varchar corporate_name
+        varchar trade_name
+        varchar tax_id UK
+        varchar registration_number
+        varchar economic_activity
+        varchar corporate_type
+        date incorporation_date
+        varchar share_capital
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_LEGAL_REPRESENTATIVE {
+        uuid id PK
+        uuid corporate_holder_id FK
+        varchar full_name
+        varchar document_type
+        varchar document_number UK
+        varchar representation_type
+        varchar powers_description
+        date valid_from
+        date valid_until
+        varchar status
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_HOLDER_CONTACT {
+        uuid id PK
+        uuid holder_id FK
+        varchar contact_type
+        varchar contact_value
+        varchar classification
+        boolean is_primary
+        boolean is_verified
+        varchar verification_method
+        timestamp verified_at
+        varchar communication_preference
+        timestamp created_at
+        timestamp updated_at
     }
     
     T_ISSUED_LICENSE {
         uuid id PK
-        varchar license_number
-        uuid license_type_id_fk FK
-        uuid holder_id_fk FK
+        varchar license_number UK
+        uuid issuer_id FK
+        uuid license_type_id FK
+        uuid holder_id FK
         varchar status
         date issue_date
         date expiry_date
@@ -83,10 +209,194 @@ erDiagram
         jsonb metadata
         timestamp created_at
         timestamp updated_at
-        varchar created_by
-        varchar updated_by
+        uuid created_by FK
+        uuid updated_by FK
     }
 ```
+
+### 2.2 Descrição das Entidades Normalizadas
+
+#### Entidades de Emissão
+
+##### T_LICENSE_ISSUER (Emissores de Licenças)
+Entidade que representa os órgãos ou entidades responsáveis pela emissão de licenças.
+
+**Campos principais:**
+- `issuer_code`: Código único do emissor
+- `name`: Nome oficial do órgão emissor
+- `jurisdiction`: Jurisdição de competência
+- `competence_area`: Área de competência específica
+- `contact_email`: Email oficial de contato
+- `contact_phone`: Telefone oficial de contato
+- `status`: Status do emissor (ativo, inativo)
+
+##### T_ISSUED_LICENSE (Licenças Emitidas)
+Entidade principal que representa uma licença emitida pelo sistema.
+
+**Campos principais:**
+- `license_number`: Número único da licença
+- `issuer_id`: Referência ao emissor da licença
+- `license_type_id`: Referência ao tipo de licença
+- `holder_id`: Referência ao titular da licença
+- `status`: Estado atual da licença (ativa, suspensa, cancelada, expirada)
+- `issue_date`: Data de emissão
+- `expiry_date`: Data de expiração
+- `renewable`: Indica se a licença é renovável
+- `renewal_count`: Contador de renovações realizadas
+
+#### Entidades de Titularidade
+
+##### T_LICENSE_HOLDER (Titular Base)
+Entidade base que representa os titulares das licenças, servindo como superclasse para pessoas físicas e jurídicas.
+
+**Campos principais:**
+- `holder_type`: Tipo de titular (individual, corporate)
+- `status`: Status do titular (ativo, inativo, suspenso)
+- `classification`: Classificação adicional do titular
+
+##### T_INDIVIDUAL_HOLDER (Pessoa Física)
+Entidade específica para titulares pessoas físicas, contendo atributos específicos.
+
+**Campos principais:**
+- `holder_id`: Referência ao titular base
+- `full_name`: Nome completo da pessoa
+- `father_name`: Nome do pai (filiação paterna)
+- `mother_name`: Nome da mãe (filiação materna)
+- `marital_status`: Estado civil
+- `nationality`: Nacionalidade
+- `birthplace`: Local de nascimento
+- `birth_date`: Data de nascimento
+- `document_type`: Tipo de documento de identificação
+- `document_number`: Número do documento (único)
+- `gender`: Gênero
+
+##### T_CORPORATE_HOLDER (Pessoa Jurídica)
+Entidade específica para titulares pessoas jurídicas, contendo atributos corporativos.
+
+**Campos principais:**
+- `holder_id`: Referência ao titular base
+- `corporate_name`: Razão social
+- `trade_name`: Nome fantasia
+- `tax_id`: Número de identificação fiscal (único)
+- `registration_number`: Número de registro comercial
+- `economic_activity`: Atividade econômica principal
+- `corporate_type`: Tipo societário
+- `incorporation_date`: Data de constituição
+- `share_capital`: Capital social
+
+##### T_LEGAL_REPRESENTATIVE (Representante Legal)
+Entidade que representa os representantes legais de pessoas jurídicas.
+
+**Campos principais:**
+- `corporate_holder_id`: Referência à pessoa jurídica
+- `full_name`: Nome completo do representante
+- `document_type`: Tipo de documento de identificação
+- `document_number`: Número do documento (único)
+- `representation_type`: Tipo de representação (administrador, procurador, etc.)
+- `powers_description`: Descrição dos poderes de representação
+- `valid_from`: Data de início da representação
+- `valid_until`: Data de fim da representação
+- `status`: Status da representação (ativa, inativa)
+
+#### Entidades de Contato
+
+##### T_HOLDER_CONTACT (Contatos do Titular)
+Entidade que armazena os diferentes tipos de contato dos titulares.
+
+**Campos principais:**
+- `holder_id`: Referência ao titular
+- `contact_type`: Tipo de contato (email, phone, address, etc.)
+- `contact_value`: Valor do contato
+- `classification`: Classificação do contato (pessoal, comercial, etc.)
+- `is_primary`: Indica se é o contato principal
+- `is_verified`: Indica se o contato foi verificado
+- `verification_method`: Método de verificação utilizado
+- `verified_at`: Data/hora da verificação
+- `communication_preference`: Preferência de comunicação
+
+#### Entidades de Processo
+
+As entidades de processo mantêm a estrutura original, mas agora se relacionam com a nova estrutura normalizada de titulares:
+
+- **T_LICENSE_RENEWAL**: Processos de renovação de licenças
+- **T_LICENSE_AMENDMENT**: Alterações em licenças existentes
+- **T_LICENSE_TRANSFER**: Transferências de titularidade
+- **T_LICENSE_AUDIT**: Trilha de auditoria completa
+- **T_LICENSE_DOCUMENT**: Documentos anexos às licenças
+- **T_LICENSE_FEE**: Taxas associadas às licenças
+- **T_LICENSE_ALERT**: Alertas e notificações do sistema
+
+### 2.3 Relacionamentos e Regras de Negócio
+
+#### Relacionamentos Principais
+
+**Emissão de Licenças:**
+- Um `T_LICENSE_ISSUER` pode emitir múltiplas `T_ISSUED_LICENSE`
+- Uma `T_ISSUED_LICENSE` pertence a exatamente um `T_LICENSE_ISSUER`
+- Uma `T_ISSUED_LICENSE` é de exatamente um `T_LICENSE_TYPE`
+- Uma `T_ISSUED_LICENSE` pertence a exatamente um `T_LICENSE_HOLDER`
+
+**Titularidade:**
+- Um `T_LICENSE_HOLDER` pode possuir múltiplas `T_ISSUED_LICENSE`
+- Um `T_LICENSE_HOLDER` pode ser estendido por um `T_INDIVIDUAL_HOLDER` OU um `T_CORPORATE_HOLDER` (herança)
+- Um `T_CORPORATE_HOLDER` pode ter múltiplos `T_LEGAL_REPRESENTATIVE`
+- Um `T_LICENSE_HOLDER` pode ter múltiplos `T_HOLDER_CONTACT`
+
+**Processos:**
+- Uma `T_ISSUED_LICENSE` pode ter múltiplos processos de cada tipo (renovação, alteração, transferência)
+- Todos os processos mantêm trilha de auditoria através de `T_LICENSE_AUDIT`
+
+#### Regras de Integridade
+
+**Titulares Pessoas Físicas:**
+- `document_number` deve ser único no sistema
+- `full_name`, `father_name`, `mother_name` são obrigatórios
+- `birth_date` deve ser anterior à data atual
+- `marital_status` deve seguir valores pré-definidos
+
+**Titulares Pessoas Jurídicas:**
+- `tax_id` deve ser único no sistema
+- `corporate_name` é obrigatório
+- `incorporation_date` deve ser anterior à data atual
+- Deve ter pelo menos um representante legal ativo
+
+**Representantes Legais:**
+- `document_number` deve ser único por pessoa jurídica
+- `valid_from` deve ser anterior ou igual a `valid_until`
+- Não pode haver sobreposição de períodos para o mesmo tipo de representação
+
+**Contatos:**
+- Apenas um contato pode ser marcado como `is_primary` por tipo
+- `contact_value` deve seguir formato específico por tipo (email, telefone, etc.)
+- Contatos verificados não podem ser alterados sem nova verificação
+
+**Licenças:**
+- `license_number` deve ser único no sistema
+- `issue_date` deve ser anterior ou igual a `expiry_date`
+- Status deve seguir transições válidas (ativa → suspensa → ativa, etc.)
+- Licenças expiradas não podem ser renovadas após período de carência
+
+#### Validações de Negócio
+
+**Emissão de Licenças:**
+- Verificar se o emissor tem competência para o tipo de licença
+- Validar se o titular atende aos requisitos do tipo de licença
+- Verificar se não existem impedimentos legais
+
+**Transferência de Titularidade:**
+- Novo titular deve atender aos mesmos requisitos do titular original
+- Licenças suspensas não podem ser transferidas
+- Transferência deve ser aprovada pelo emissor competente
+
+**Renovação:**
+- Licença deve estar dentro do período de renovação
+- Titular deve manter os requisitos originais
+- Taxas devem estar quitadas
+
+**Alterações:**
+- Apenas campos não críticos podem ser alterados sem novo processo
+- Alterações críticas requerem aprovação do emissor
+- Histórico completo deve ser mantido
 
 ## 3. Requisitos Funcionais
 
