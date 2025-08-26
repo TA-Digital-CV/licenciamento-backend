@@ -10,6 +10,12 @@ O módulo de **Gestão de Licenças Emitidas** é responsável pela gestão comp
 
 * Implementar gestão completa do ciclo de vida de licenças emitidas
 
+* **Estabelecer obrigatoriedade de registro de estabelecimentos como pré-requisito para licenciamento**
+
+* **Implementar sistema de registro matricial com identificação única para estabelecimentos**
+
+* **Integrar sistema de georreferenciamento com coordenadas GPS para localização precisa**
+
 * Fornecer monitoramento automatizado de validade e alertas
 
 * Processar renovações, alterações e transferências de titularidade
@@ -20,6 +26,10 @@ O módulo de **Gestão de Licenças Emitidas** é responsável pela gestão comp
 
 * Suportar diferentes modelos de licenciamento (simples, complexo, automático)
 
+* **Validar documentação específica por segmento (comercial, turístico, industrial)**
+
+* **Implementar controles de conformidade com legislação vigente de Cabo Verde**
+
 * Implementar controles de acesso baseados em perfis de usuário
 
 ### 1.2 Entidades Principais
@@ -27,54 +37,127 @@ O módulo de **Gestão de Licenças Emitidas** é responsável pela gestão comp
 #### 1.2.1 Entidades de Emissão
 
 * **T\_LICENSE\_ISSUER**: Órgãos emissores de licenças
-  - Identificação única do emissor
-  - Competências e jurisdições
-  - Dados de contato institucional
-  - Status operacional
+
+  * Identificação única do emissor
+
+  * Competências e jurisdições
+
+  * Dados de contato institucional
+
+  * Status operacional
 
 * **T\_ISSUED\_LICENSE**: Licenças emitidas com controle de ciclo de vida
-  - Vinculação ao emissor e titular
-  - Controle de validade e status
-  - Metadados específicos do tipo de licença
+
+  * Vinculação ao emissor e titular
+
+  * Controle de validade e status
+
+  * Metadados específicos do tipo de licença
 
 #### 1.2.2 Entidades de Titularidade
 
 * **T\_LICENSE\_HOLDER**: Entidade base para titulares de licenças
-  - Tipo de titular (pessoa física/jurídica)
-  - Dados comuns (identificação, contatos)
-  - Status e classificação
+
+  * Tipo de titular (pessoa física/jurídica)
+
+  * Dados comuns (identificação, contatos)
+
+  * Status e classificação
 
 * **T\_INDIVIDUAL\_HOLDER**: Pessoas físicas titulares de licenças
-  - Nome completo e dados pessoais
-  - Filiação (pai e mãe)
-  - Estado civil e naturalidade
-  - Documentos de identificação específicos
+
+  * Nome completo e dados pessoais
+
+  * Filiação (pai e mãe)
+
+  * Estado civil e naturalidade
+
+  * Documentos de identificação específicos
 
 * **T\_CORPORATE\_HOLDER**: Pessoas jurídicas titulares de licenças
-  - Razão social e nome fantasia
-  - CNPJ/NIF e inscrições
-  - Atividade econômica principal
-  - Dados societários
+
+  * Razão social e nome fantasia
+
+  * NIF e inscrições
+
+  * Atividade econômica principal
+
+  * Dados societários
 
 * **T\_LEGAL\_REPRESENTATIVE**: Representantes legais de pessoas jurídicas
-  - Vinculação à pessoa jurídica
-  - Dados pessoais do representante
-  - Tipo e poderes de representação
-  - Período de validade da representação
+
+  * Vinculação à pessoa jurídica
+
+  * Dados pessoais do representante
+
+  * Tipo e poderes de representação
+
+  * Período de validade da representação
 
 #### 1.2.3 Entidades de Contato
 
 * **T\_HOLDER\_CONTACT**: Contatos dos titulares
-  - Tipo de contato (telefone, email, endereço)
-  - Classificação (principal, secundário, comercial)
-  - Status de verificação
-  - Preferências de comunicação
 
-#### 1.2.4 Entidades de Processo
+  * Tipo de contato (telefone, email, endereço)
+
+  * Classificação (principal, secundário, comercial)
+
+  * Status de verificação
+
+  * Preferências de comunicação
+
+#### 1.2.4 Entidades de Estabelecimento
+
+* **T\_ESTABLISHMENT**: Estabelecimentos registrados no sistema
+
+  * Registro matricial único
+  
+  * Dados de localização e georreferenciamento
+  
+  * Classificação por segmento (comercial, turístico, industrial)
+  
+  * Status operacional e conformidade
+
+* **T\_ESTABLISHMENT\_LOCATION**: Dados de georreferenciamento
+
+  * Coordenadas GPS (latitude/longitude)
+  
+  * Endereço completo normalizado
+  
+  * Área de influência e zoneamento
+  
+  * Validação cartográfica
+
+* **T\_ESTABLISHMENT\_DOCUMENT**: Documentação específica por segmento
+
+  * Documentos obrigatórios por tipo de estabelecimento
+  
+  * Status de validação e conformidade
+  
+  * Datas de validade e renovação
+  
+  * Histórico de alterações
+
+* **T\_ESTABLISHMENT\_CLASSIFICATION**: Classificação de estabelecimentos
+
+  * Segmento de atividade (comercial, turístico, industrial, serviços)
+  
+  * Categoria específica dentro do segmento
+  
+  * Porte do estabelecimento (micro, pequeno, médio, grande)
+  
+  * Critérios de classificação aplicáveis
+
+#### 1.2.5 Entidades de Processo
 
 * **T\_LICENSE\_RENEWAL**: Processos de renovação de licenças
+
 * **T\_LICENSE\_AMENDMENT**: Alterações e aditivos às licenças
+
 * **T\_LICENSE\_TRANSFER**: Transferências de titularidade
+
+* **T\_ESTABLISHMENT\_REGISTRATION**: Processos de registro de estabelecimentos
+
 * **T\_LICENSE\_AUDIT**: Histórico completo de auditoria
 
 ## 2. Modelo de Dados Normalizado
@@ -93,6 +176,14 @@ erDiagram
     T_LICENSE_HOLDER ||--o| T_CORPORATE_HOLDER : "extends"
     T_CORPORATE_HOLDER ||--o{ T_LEGAL_REPRESENTATIVE : "has representatives"
     T_LICENSE_HOLDER ||--o{ T_HOLDER_CONTACT : "has contacts"
+    
+    %% Entidades de Estabelecimento
+    T_ISSUED_LICENSE }o--|| T_ESTABLISHMENT : "licensed_establishment"
+    T_ESTABLISHMENT }o--|| T_LICENSE_HOLDER : "owned_by"
+    T_ESTABLISHMENT }o--|| T_ESTABLISHMENT_CLASSIFICATION : "classified_as"
+    T_ESTABLISHMENT ||--|| T_ESTABLISHMENT_LOCATION : "located_at"
+    T_ESTABLISHMENT ||--o{ T_ESTABLISHMENT_DOCUMENT : "has_documents"
+    T_ESTABLISHMENT ||--o{ T_ESTABLISHMENT_REGISTRATION : "registration_process"
     
     %% Entidades de Processo
     T_ISSUED_LICENSE ||--o{ T_LICENSE_RENEWAL : "has renewals"
@@ -198,6 +289,7 @@ erDiagram
         uuid issuer_id FK
         uuid license_type_id FK
         uuid holder_id FK
+        uuid establishment_id FK
         varchar status
         date issue_date
         date expiry_date
@@ -212,191 +304,384 @@ erDiagram
         uuid created_by FK
         uuid updated_by FK
     }
+    
+    T_ESTABLISHMENT {
+        uuid id PK
+        varchar matricial_number UK
+        varchar name
+        uuid holder_id FK
+        uuid classification_id FK
+        varchar segment
+        varchar category
+        varchar size_classification
+        varchar operational_status
+        date registration_date
+        date last_inspection_date
+        boolean compliance_status
+        text compliance_notes
+        timestamp created_at
+        timestamp updated_at
+        uuid created_by FK
+    }
+    
+    T_ESTABLISHMENT_LOCATION {
+        uuid id PK
+        uuid establishment_id FK
+        decimal latitude
+        decimal longitude
+        varchar address_line1
+        varchar address_line2
+        varchar city
+        varchar parish
+        varchar municipality
+        varchar postal_code
+        varchar zone_classification
+        varchar land_use_type
+        boolean cartographic_validated
+        timestamp validation_date
+        uuid validated_by FK
+    }
+    
+    T_ESTABLISHMENT_DOCUMENT {
+        uuid id PK
+        uuid establishment_id FK
+        varchar document_type
+        varchar document_name
+        varchar file_path
+        varchar mime_type
+        bigint file_size
+        varchar validation_status
+        date issue_date
+        date expiry_date
+        varchar issuing_authority
+        text validation_notes
+        timestamp uploaded_at
+        uuid uploaded_by FK
+    }
+    
+    T_ESTABLISHMENT_CLASSIFICATION {
+        uuid id PK
+        varchar code UK
+        varchar name
+        varchar segment
+        varchar category
+        text description
+        json required_documents
+        json validation_criteria
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    T_ESTABLISHMENT_REGISTRATION {
+        uuid id PK
+        uuid establishment_id FK
+        varchar registration_type
+        varchar status
+        date application_date
+        date approval_date
+        uuid approved_by FK
+        text approval_notes
+        json submitted_documents
+        json validation_results
+        timestamp created_at
+        uuid created_by FK
+    }
 ```
 
 ### 2.2 Descrição das Entidades Normalizadas
 
 #### Entidades de Emissão
 
-##### T_LICENSE_ISSUER (Emissores de Licenças)
+##### T\_LICENSE\_ISSUER (Emissores de Licenças)
+
 Entidade que representa os órgãos ou entidades responsáveis pela emissão de licenças.
 
 **Campos principais:**
-- `issuer_code`: Código único do emissor
-- `name`: Nome oficial do órgão emissor
-- `jurisdiction`: Jurisdição de competência
-- `competence_area`: Área de competência específica
-- `contact_email`: Email oficial de contato
-- `contact_phone`: Telefone oficial de contato
-- `status`: Status do emissor (ativo, inativo)
 
-##### T_ISSUED_LICENSE (Licenças Emitidas)
+* `issuer_code`: Código único do emissor
+
+* `name`: Nome oficial do órgão emissor
+
+* `jurisdiction`: Jurisdição de competência
+
+* `competence_area`: Área de competência específica
+
+* `contact_email`: Email oficial de contato
+
+* `contact_phone`: Telefone oficial de contato
+
+* `status`: Status do emissor (ativo, inativo)
+
+##### T\_ISSUED\_LICENSE (Licenças Emitidas)
+
 Entidade principal que representa uma licença emitida pelo sistema.
 
 **Campos principais:**
-- `license_number`: Número único da licença
-- `issuer_id`: Referência ao emissor da licença
-- `license_type_id`: Referência ao tipo de licença
-- `holder_id`: Referência ao titular da licença
-- `status`: Estado atual da licença (ativa, suspensa, cancelada, expirada)
-- `issue_date`: Data de emissão
-- `expiry_date`: Data de expiração
-- `renewable`: Indica se a licença é renovável
-- `renewal_count`: Contador de renovações realizadas
+
+* `license_number`: Número único da licença
+
+* `issuer_id`: Referência ao emissor da licença
+
+* `license_type_id`: Referência ao tipo de licença
+
+* `holder_id`: Referência ao titular da licença
+
+* `status`: Estado atual da licença (ativa, suspensa, cancelada, expirada)
+
+* `issue_date`: Data de emissão
+
+* `expiry_date`: Data de expiração
+
+* `renewable`: Indica se a licença é renovável
+
+* `renewal_count`: Contador de renovações realizadas
 
 #### Entidades de Titularidade
 
-##### T_LICENSE_HOLDER (Titular Base)
+##### T\_LICENSE\_HOLDER (Titular Base)
+
 Entidade base que representa os titulares das licenças, servindo como superclasse para pessoas físicas e jurídicas.
 
 **Campos principais:**
-- `holder_type`: Tipo de titular (individual, corporate)
-- `status`: Status do titular (ativo, inativo, suspenso)
-- `classification`: Classificação adicional do titular
 
-##### T_INDIVIDUAL_HOLDER (Pessoa Física)
+* `holder_type`: Tipo de titular (individual, corporate)
+
+* `status`: Status do titular (ativo, inativo, suspenso)
+
+* `classification`: Classificação adicional do titular
+
+##### T\_INDIVIDUAL\_HOLDER (Pessoa Física)
+
 Entidade específica para titulares pessoas físicas, contendo atributos específicos.
 
 **Campos principais:**
-- `holder_id`: Referência ao titular base
-- `full_name`: Nome completo da pessoa
-- `father_name`: Nome do pai (filiação paterna)
-- `mother_name`: Nome da mãe (filiação materna)
-- `marital_status`: Estado civil
-- `nationality`: Nacionalidade
-- `birthplace`: Local de nascimento
-- `birth_date`: Data de nascimento
-- `document_type`: Tipo de documento de identificação
-- `document_number`: Número do documento (único)
-- `gender`: Gênero
 
-##### T_CORPORATE_HOLDER (Pessoa Jurídica)
+* `holder_id`: Referência ao titular base
+
+* `full_name`: Nome completo da pessoa
+
+* `father_name`: Nome do pai (filiação paterna)
+
+* `mother_name`: Nome da mãe (filiação materna)
+
+* `marital_status`: Estado civil
+
+* `nationality`: Nacionalidade
+
+* `birthplace`: Local de nascimento
+
+* `birth_date`: Data de nascimento
+
+* `document_type`: Tipo de documento de identificação
+
+* `document_number`: Número do documento (único)
+
+* `gender`: Gênero
+
+##### T\_CORPORATE\_HOLDER (Pessoa Jurídica)
+
 Entidade específica para titulares pessoas jurídicas, contendo atributos corporativos.
 
 **Campos principais:**
-- `holder_id`: Referência ao titular base
-- `corporate_name`: Razão social
-- `trade_name`: Nome fantasia
-- `tax_id`: Número de identificação fiscal (único)
-- `registration_number`: Número de registro comercial
-- `economic_activity`: Atividade econômica principal
-- `corporate_type`: Tipo societário
-- `incorporation_date`: Data de constituição
-- `share_capital`: Capital social
 
-##### T_LEGAL_REPRESENTATIVE (Representante Legal)
+* `holder_id`: Referência ao titular base
+
+* `corporate_name`: Razão social
+
+* `trade_name`: Nome fantasia
+
+* `tax_id`: Número de identificação fiscal (único)
+
+* `registration_number`: Número de registro comercial
+
+* `economic_activity`: Atividade econômica principal
+
+* `corporate_type`: Tipo societário
+
+* `incorporation_date`: Data de constituição
+
+* `share_capital`: Capital social
+
+##### T\_LEGAL\_REPRESENTATIVE (Representante Legal)
+
 Entidade que representa os representantes legais de pessoas jurídicas.
 
 **Campos principais:**
-- `corporate_holder_id`: Referência à pessoa jurídica
-- `full_name`: Nome completo do representante
-- `document_type`: Tipo de documento de identificação
-- `document_number`: Número do documento (único)
-- `representation_type`: Tipo de representação (administrador, procurador, etc.)
-- `powers_description`: Descrição dos poderes de representação
-- `valid_from`: Data de início da representação
-- `valid_until`: Data de fim da representação
-- `status`: Status da representação (ativa, inativa)
+
+* `corporate_holder_id`: Referência à pessoa jurídica
+
+* `full_name`: Nome completo do representante
+
+* `document_type`: Tipo de documento de identificação
+
+* `document_number`: Número do documento (único)
+
+* `representation_type`: Tipo de representação (administrador, procurador, etc.)
+
+* `powers_description`: Descrição dos poderes de representação
+
+* `valid_from`: Data de início da representação
+
+* `valid_until`: Data de fim da representação
+
+* `status`: Status da representação (ativa, inativa)
 
 #### Entidades de Contato
 
-##### T_HOLDER_CONTACT (Contatos do Titular)
+##### T\_HOLDER\_CONTACT (Contatos do Titular)
+
 Entidade que armazena os diferentes tipos de contato dos titulares.
 
 **Campos principais:**
-- `holder_id`: Referência ao titular
-- `contact_type`: Tipo de contato (email, phone, address, etc.)
-- `contact_value`: Valor do contato
-- `classification`: Classificação do contato (pessoal, comercial, etc.)
-- `is_primary`: Indica se é o contato principal
-- `is_verified`: Indica se o contato foi verificado
-- `verification_method`: Método de verificação utilizado
-- `verified_at`: Data/hora da verificação
-- `communication_preference`: Preferência de comunicação
+
+* `holder_id`: Referência ao titular
+
+* `contact_type`: Tipo de contato (email, phone, address, etc.)
+
+* `contact_value`: Valor do contato
+
+* `classification`: Classificação do contato (pessoal, comercial, etc.)
+
+* `is_primary`: Indica se é o contato principal
+
+* `is_verified`: Indica se o contato foi verificado
+
+* `verification_method`: Método de verificação utilizado
+
+* `verified_at`: Data/hora da verificação
+
+* `communication_preference`: Preferência de comunicação
 
 #### Entidades de Processo
 
 As entidades de processo mantêm a estrutura original, mas agora se relacionam com a nova estrutura normalizada de titulares:
 
-- **T_LICENSE_RENEWAL**: Processos de renovação de licenças
-- **T_LICENSE_AMENDMENT**: Alterações em licenças existentes
-- **T_LICENSE_TRANSFER**: Transferências de titularidade
-- **T_LICENSE_AUDIT**: Trilha de auditoria completa
-- **T_LICENSE_DOCUMENT**: Documentos anexos às licenças
-- **T_LICENSE_FEE**: Taxas associadas às licenças
-- **T_LICENSE_ALERT**: Alertas e notificações do sistema
+* **T\_LICENSE\_RENEWAL**: Processos de renovação de licenças
+
+* **T\_LICENSE\_AMENDMENT**: Alterações em licenças existentes
+
+* **T\_LICENSE\_TRANSFER**: Transferências de titularidade
+
+* **T\_LICENSE\_AUDIT**: Trilha de auditoria completa
+
+* **T\_LICENSE\_DOCUMENT**: Documentos anexos às licenças
+
+* **T\_LICENSE\_FEE**: Taxas associadas às licenças
+
+* **T\_LICENSE\_ALERT**: Alertas e notificações do sistema
 
 ### 2.3 Relacionamentos e Regras de Negócio
 
 #### Relacionamentos Principais
 
 **Emissão de Licenças:**
-- Um `T_LICENSE_ISSUER` pode emitir múltiplas `T_ISSUED_LICENSE`
-- Uma `T_ISSUED_LICENSE` pertence a exatamente um `T_LICENSE_ISSUER`
-- Uma `T_ISSUED_LICENSE` é de exatamente um `T_LICENSE_TYPE`
-- Uma `T_ISSUED_LICENSE` pertence a exatamente um `T_LICENSE_HOLDER`
+
+* Um `T_LICENSE_ISSUER` pode emitir múltiplas `T_ISSUED_LICENSE`
+
+* Uma `T_ISSUED_LICENSE` pertence a exatamente um `T_LICENSE_ISSUER`
+
+* Uma `T_ISSUED_LICENSE` é de exatamente um `T_LICENSE_TYPE`
+
+* Uma `T_ISSUED_LICENSE` pertence a exatamente um `T_LICENSE_HOLDER`
 
 **Titularidade:**
-- Um `T_LICENSE_HOLDER` pode possuir múltiplas `T_ISSUED_LICENSE`
-- Um `T_LICENSE_HOLDER` pode ser estendido por um `T_INDIVIDUAL_HOLDER` OU um `T_CORPORATE_HOLDER` (herança)
-- Um `T_CORPORATE_HOLDER` pode ter múltiplos `T_LEGAL_REPRESENTATIVE`
-- Um `T_LICENSE_HOLDER` pode ter múltiplos `T_HOLDER_CONTACT`
+
+* Um `T_LICENSE_HOLDER` pode possuir múltiplas `T_ISSUED_LICENSE`
+
+* Um `T_LICENSE_HOLDER` pode ser estendido por um `T_INDIVIDUAL_HOLDER` OU um `T_CORPORATE_HOLDER` (herança)
+
+* Um `T_CORPORATE_HOLDER` pode ter múltiplos `T_LEGAL_REPRESENTATIVE`
+
+* Um `T_LICENSE_HOLDER` pode ter múltiplos `T_HOLDER_CONTACT`
 
 **Processos:**
-- Uma `T_ISSUED_LICENSE` pode ter múltiplos processos de cada tipo (renovação, alteração, transferência)
-- Todos os processos mantêm trilha de auditoria através de `T_LICENSE_AUDIT`
+
+* Uma `T_ISSUED_LICENSE` pode ter múltiplos processos de cada tipo (renovação, alteração, transferência)
+
+* Todos os processos mantêm trilha de auditoria através de `T_LICENSE_AUDIT`
 
 #### Regras de Integridade
 
 **Titulares Pessoas Físicas:**
-- `document_number` deve ser único no sistema
-- `full_name`, `father_name`, `mother_name` são obrigatórios
-- `birth_date` deve ser anterior à data atual
-- `marital_status` deve seguir valores pré-definidos
+
+* `document_number` deve ser único no sistema
+
+* `full_name`, `father_name`, `mother_name` são obrigatórios
+
+* `birth_date` deve ser anterior à data atual
+
+* `marital_status` deve seguir valores pré-definidos
 
 **Titulares Pessoas Jurídicas:**
-- `tax_id` deve ser único no sistema
-- `corporate_name` é obrigatório
-- `incorporation_date` deve ser anterior à data atual
-- Deve ter pelo menos um representante legal ativo
+
+* `tax_id` deve ser único no sistema
+
+* `corporate_name` é obrigatório
+
+* `incorporation_date` deve ser anterior à data atual
+
+* Deve ter pelo menos um representante legal ativo
 
 **Representantes Legais:**
-- `document_number` deve ser único por pessoa jurídica
-- `valid_from` deve ser anterior ou igual a `valid_until`
-- Não pode haver sobreposição de períodos para o mesmo tipo de representação
+
+* `document_number` deve ser único por pessoa jurídica
+
+* `valid_from` deve ser anterior ou igual a `valid_until`
+
+* Não pode haver sobreposição de períodos para o mesmo tipo de representação
 
 **Contatos:**
-- Apenas um contato pode ser marcado como `is_primary` por tipo
-- `contact_value` deve seguir formato específico por tipo (email, telefone, etc.)
-- Contatos verificados não podem ser alterados sem nova verificação
+
+* Apenas um contato pode ser marcado como `is_primary` por tipo
+
+* `contact_value` deve seguir formato específico por tipo (email, telefone, etc.)
+
+* Contatos verificados não podem ser alterados sem nova verificação
 
 **Licenças:**
-- `license_number` deve ser único no sistema
-- `issue_date` deve ser anterior ou igual a `expiry_date`
-- Status deve seguir transições válidas (ativa → suspensa → ativa, etc.)
-- Licenças expiradas não podem ser renovadas após período de carência
+
+* `license_number` deve ser único no sistema
+
+* `issue_date` deve ser anterior ou igual a `expiry_date`
+
+* Status deve seguir transições válidas (ativa → suspensa → ativa, etc.)
+
+* Licenças expiradas não podem ser renovadas após período de carência
 
 #### Validações de Negócio
 
 **Emissão de Licenças:**
-- Verificar se o emissor tem competência para o tipo de licença
-- Validar se o titular atende aos requisitos do tipo de licença
-- Verificar se não existem impedimentos legais
+
+* Verificar se o emissor tem competência para o tipo de licença
+
+* Validar se o titular atende aos requisitos do tipo de licença
+
+* Verificar se não existem impedimentos legais
 
 **Transferência de Titularidade:**
-- Novo titular deve atender aos mesmos requisitos do titular original
-- Licenças suspensas não podem ser transferidas
-- Transferência deve ser aprovada pelo emissor competente
+
+* Novo titular deve atender aos mesmos requisitos do titular original
+
+* Licenças suspensas não podem ser transferidas
+
+* Transferência deve ser aprovada pelo emissor competente
 
 **Renovação:**
-- Licença deve estar dentro do período de renovação
-- Titular deve manter os requisitos originais
-- Taxas devem estar quitadas
+
+* Licença deve estar dentro do período de renovação
+
+* Titular deve manter os requisitos originais
+
+* Taxas devem estar quitadas
 
 **Alterações:**
-- Apenas campos não críticos podem ser alterados sem novo processo
-- Alterações críticas requerem aprovação do emissor
-- Histórico completo deve ser mantido
+
+* Apenas campos não críticos podem ser alterados sem novo processo
+
+* Alterações críticas requerem aprovação do emissor
+
+* Histórico completo deve ser mantido
 
 ## 3. Requisitos Funcionais
 
@@ -690,7 +975,123 @@ flowchart TD
     M --> N[Domain Service: NotificationService]
 ```
 
-### 4.3 Fluxo de Suspensão/Cancelamento
+## 3. Processos de Registro de Estabelecimentos
+
+### 3.1 Obrigatoriedade de Registro
+
+O sistema implementa a **obrigatoriedade de registro de estabelecimentos** como pré-requisito fundamental para o licenciamento, especialmente para:
+
+#### 3.1.1 Segmentos Obrigatórios
+
+* **Estabelecimentos Comerciais**
+  * Lojas de varejo e atacado
+  * Centros comerciais e galerias
+  * Mercados e feiras permanentes
+  * Postos de combustível
+  * Farmácias e estabelecimentos de saúde
+
+* **Estabelecimentos Turísticos**
+  * Hotéis, pousadas e alojamentos
+  * Restaurantes e estabelecimentos de alimentação
+  * Agências de viagem e turismo
+  * Estabelecimentos de entretenimento
+  * Operadores turísticos
+
+* **Estabelecimentos Industriais**
+  * Fábricas e unidades de produção
+  * Armazéns e centros de distribuição
+  * Oficinas e serviços técnicos
+  * Estabelecimentos de transformação
+
+#### 3.1.2 Critérios de Registro
+
+* **Registro Matricial Único**: Cada estabelecimento recebe um número matricial único e permanente
+
+* **Georreferenciamento Obrigatório**: Coordenadas GPS precisas (latitude/longitude) validadas cartograficamente
+
+* **Documentação Específica por Segmento**: Conjunto de documentos obrigatórios definidos por tipo de estabelecimento
+
+* **Conformidade Legal**: Alinhamento com legislação vigente de Cabo Verde
+
+* **Validação Técnica**: Inspeção e validação das condições operacionais
+
+### 3.2 Processo de Registro de Estabelecimento
+
+```mermaid
+flowchart TD
+    A[Solicitação de Registro] --> B[Validação de Documentos]
+    B --> C{Documentos Completos?}
+    C -->|Não| D[Notificação de Pendências]
+    D --> A
+    C -->|Sim| E[Validação de Localização]
+    E --> F[Georreferenciamento GPS]
+    F --> G[Validação Cartográfica]
+    G --> H{Localização Válida?}
+    H -->|Não| I[Correção de Coordenadas]
+    I --> F
+    H -->|Sim| J[Inspeção Técnica]
+    J --> K[Avaliação de Conformidade]
+    K --> L{Conforme?}
+    L -->|Não| M[Notificação de Não Conformidades]
+    M --> N[Correções Necessárias]
+    N --> J
+    L -->|Sim| O[Aprovação do Registro]
+    O --> P[Emissão de Número Matricial]
+    P --> Q[Estabelecimento Registrado]
+    Q --> R[Habilitado para Licenciamento]
+```
+
+### 3.3 Documentação Obrigatória por Segmento
+
+#### 3.3.1 Estabelecimentos Comerciais
+
+* Certidão de registo comercial
+* Planta de localização e layout
+* Certificado de conformidade urbanística
+* Licença de funcionamento municipal
+* Certificado de segurança contra incêndios
+* Alvará sanitário (quando aplicável)
+* Comprovativo de propriedade ou arrendamento
+
+#### 3.3.2 Estabelecimentos Turísticos
+
+* Licença de estabelecimento turístico
+* Certificado de classificação turística
+* Plano de segurança e evacuação
+* Certificado ambiental
+* Licença de restauração (quando aplicável)
+* Certificado de acessibilidade
+* Seguro de responsabilidade civil
+
+#### 3.3.3 Estabelecimentos Industriais
+
+* Licença industrial
+* Estudo de impacto ambiental
+* Certificado de conformidade técnica
+* Plano de gestão de resíduos
+* Certificado de segurança ocupacional
+* Licença de emissões atmosféricas
+* Autorização de captação de água (quando aplicável)
+
+### 3.4 Sistema de Georreferenciamento
+
+#### 3.4.1 Requisitos Técnicos
+
+* **Precisão**: Coordenadas GPS com precisão mínima de 3 metros
+* **Sistema de Referência**: WGS84 (EPSG:4326)
+* **Validação**: Verificação cartográfica obrigatória
+* **Atualização**: Revisão periódica das coordenadas
+
+#### 3.4.2 Dados de Localização
+
+* Latitude e longitude em graus decimais
+* Endereço completo normalizado
+* Código postal e zona administrativa
+* Classificação de zoneamento urbano
+* Tipo de uso do solo
+* Área de influência do estabelecimento
+
+### 3.5 Fluxo de Suspensão/Cancelamento
 
 ```mermaid
 graph TD
@@ -893,7 +1294,9 @@ graph TD
 
   * Configuração de T\_LICENSE\_PARAMETER
 
-  * Gerenciamento de usuários via Supabase Auth
+  * **Gerenciamento de usuários via Spring Security**
+
+  * **Configuração de JWT tokens e refresh tokens**
 
   * Execução de operações em lote via Domain Services
 
@@ -977,9 +1380,183 @@ graph TD
 
 * Relatórios de segurança semanais
 
-## 7. Considerações de Implementação
+## 7. Especificações Técnicas
 
-### 7.1 Arquitetura DDD Recomendada
+### 7.1 Stack Tecnológica
+
+#### Framework Backend
+
+* **Spring Boot 3.2+** - Framework principal para desenvolvimento
+
+  * Configuração automática e convenções sobre configuração
+
+  * Embedded server (Tomcat) para facilitar deployment
+
+  * Starter dependencies para integração simplificada
+
+  * Profile-based configuration para diferentes ambientes
+
+#### Autenticação e Segurança
+
+* **Spring Security 6** - Framework de segurança enterprise
+
+  * Method-level security com anotações
+
+  * CORS configuration para integração frontend
+
+  * CSRF protection configurável
+
+  * Password encoding com BCrypt
+
+* **JWT (JSON Web Tokens)** - Autenticação stateless
+
+  * Access tokens com expiração configurável
+
+  * Refresh tokens para renovação automática
+
+  * Claims customizados para roles e permissões
+
+  * Assinatura HMAC SHA-512 para segurança
+
+#### Banco de Dados
+
+* **PostgreSQL 15+** - Banco de dados relacional principal
+
+  * Row Level Security (RLS) para controle granular
+
+  * Índices especializados para performance
+
+  * Extensões para UUID e funções avançadas
+
+  * Particionamento para tabelas de auditoria
+
+* **Redis 7+** - Cache distribuído e sessões
+
+  * Cache de consultas frequentes
+
+  * Armazenamento de refresh tokens
+
+  * Rate limiting e throttling
+
+  * Pub/Sub para notificações em tempo real
+
+#### Persistência e Mapeamento
+
+* **Spring Data JPA** - Abstração para acesso a dados
+
+  * Repository pattern com interfaces declarativas
+
+  * Specifications para consultas dinâmicas
+
+  * Auditing automático com @EntityListeners
+
+  * Pagination e sorting nativos
+
+* **Hibernate** - ORM para mapeamento objeto-relacional
+
+  * Lazy loading otimizado
+
+  * Second-level cache integration
+
+  * Batch processing para operações em lote
+
+  * Custom types para campos específicos
+
+* **MapStruct** - Mapeamento entre DTOs e Entities
+
+  * Geração de código em tempo de compilação
+
+  * Performance superior a reflection-based mappers
+
+  * Type-safe mapping com validação
+
+  * Custom mapping methods para casos complexos
+
+#### Versionamento e Migração
+
+* **Flyway** - Controle de versão do banco de dados
+
+  * Scripts SQL versionados
+
+  * Migração automática em startup
+
+  * Rollback controlado para ambientes de desenvolvimento
+
+  * Validação de integridade do schema
+
+### 7.2 Padrões Arquiteturais
+
+#### Domain-Driven Design (DDD)
+
+* **Aggregates** - Consistência transacional
+
+  * IssuedLicense como Aggregate Root
+
+  * LicenseHolder com invariantes de negócio
+
+  * Boundaries bem definidos entre contextos
+
+* **Domain Services** - Lógica de negócio complexa
+
+  * ValidationService para regras de validação
+
+  * NotificationService para comunicação
+
+  * FeeCalculationService para cálculos financeiros
+
+* **Repository Pattern** - Abstração de persistência
+
+  * Interfaces no domínio, implementação na infraestrutura
+
+  * Queries específicas do negócio
+
+  * Unit of Work pattern com @Transactional
+
+#### Arquitetura em Camadas
+
+* **Presentation Layer** - Controllers REST
+
+  * @RestController com endpoints RESTful
+
+  * DTOs para request/response
+
+  * Validation com Bean Validation
+
+  * Exception handling global
+
+* **Application Layer** - Orquestração de casos de uso
+
+  * Application Services com @Service
+
+  * Command/Query separation
+
+  * Transaction management
+
+  * Event publishing
+
+* **Domain Layer** - Regras de negócio
+
+  * Entities com comportamentos ricos
+
+  * Value Objects imutáveis
+
+  * Domain Events para comunicação
+
+  * Specifications para consultas complexas
+
+* **Infrastructure Layer** - Detalhes técnicos
+
+  * JPA Repositories
+
+  * External service integrations
+
+  * Configuration properties
+
+  * Monitoring e logging
+
+## 8. Considerações de Implementação
+
+### 8.1 Arquitetura DDD Recomendada
 
 #### Frontend
 
@@ -993,57 +1570,127 @@ graph TD
 
 #### Backend (Domain-Driven Design)
 
-* Node.js com NestJS ou .NET Core
+* **Spring Boot 3.2+** com Java 17+ para arquitetura robusta
 
-* Supabase (PostgreSQL) com RLS nativo
+* **PostgreSQL 15+** com Row Level Security (RLS) nativo
 
-* Redis distribuído para cache
+* **Spring Security 6** com autenticação JWT
 
-* Event-Driven Architecture com RabbitMQ
+* **Redis 7+** distribuído para cache de alta performance
+
+* **Event-Driven Architecture** com Spring Events e RabbitMQ
+
+* **Spring Data JPA** com Hibernate para persistência
+
+* **MapStruct** para mapeamento entre DTOs e Entities
 
 #### Infraestrutura
 
-* Containerização com Docker
+* Containerização com Docker e OpenJDK 17
 
 * Orquestração com Kubernetes
 
 * Load balancer com NGINX
 
-* Observabilidade com Prometheus/Grafana
+* Observabilidade com Prometheus/Grafana e Spring Actuator
 
-### 7.2 Fases de Implementação DDD
+* **Flyway** para versionamento de banco de dados
+
+### 8.2 Fases de Implementação DDD
 
 #### Fase 1 - Domain Core (3 meses)
 
-* Implementação de Aggregates principais (IssuedLicense, LicenseHolder)
+* **Implementação de Aggregates principais** (IssuedLicense, LicenseHolder)
 
-* Domain Services essenciais (ValidationService, NotificationService)
+  * Entities JPA com anotações Spring Data
 
-* Repository Pattern com Supabase integration
+  * Value Objects com validações Bean Validation
 
-* Consulta básica com RLS implementado
+  * Domain Services com @Service e @Transactional
+
+* **Repository Pattern com Spring Data JPA**
+
+  * Interfaces JpaRepository customizadas
+
+  * Queries nativas para PostgreSQL com RLS
+
+  * Specifications para consultas dinâmicas
+
+* **Segurança e Autenticação**
+
+  * Spring Security com JWT Token Provider
+
+  * Row Level Security (RLS) no PostgreSQL
+
+  * Method-level security com @PreAuthorize
+
+* **Consulta básica com cache Redis**
+
+  * @Cacheable em services críticos
+
+  * Cache distribuído para consultas frequentes
 
 #### Fase 2 - Application Services (2 meses)
 
-* Command/Query handlers para operações CRUD
+* **Command/Query Pattern com Spring**
 
-* Integration Events para comunicação entre bounded contexts
+  * Controllers REST com @RestController
 
-* Workflow integration com Activity Server
+  * DTOs com MapStruct para conversão
 
-* Monitoramento automatizado de validade
+  * Validation com Bean Validation (@Valid)
+
+* **Integration Events com Spring Events**
+
+  * @EventListener para eventos de domínio
+
+  * @Async para processamento assíncrono
+
+  * RabbitMQ para comunicação entre bounded contexts
+
+* **Monitoramento e Observabilidade**
+
+  * Spring Actuator para health checks
+
+  * Micrometer para métricas customizadas
+
+  * Scheduled tasks para validação automática
 
 #### Fase 3 - Advanced Features (2 meses)
 
-* Complex Domain Services (FeeCalculationService, TransferService)
+* **Complex Domain Services**
 
-* Event Sourcing para auditoria avançada
+  * FeeCalculationService com regras de negócio complexas
 
-* Relatórios com Business Intelligence integration
+  * TransferService com workflow de aprovação
 
-* Otimizações de performance com índices especializados
+  * NotificationService integrado com email/SMS
 
-### 7.3 Critérios de Sucesso DDD
+* **Auditoria Avançada com JPA Auditing**
+
+  * @EntityListeners para auditoria automática
+
+  * @CreatedDate, @LastModifiedDate, @CreatedBy
+
+  * Histórico completo de alterações
+
+* **Performance e Otimização**
+
+  * Índices especializados no PostgreSQL
+
+  * Connection pooling com HikariCP
+
+  * Query optimization com @Query nativas
+
+* **Relatórios e Business Intelligence**
+
+  * JasperReports para relatórios complexos
+
+  * Spring Batch para processamento em lote
+
+  * Exportação para Excel/PDF
+
+### 8.3 Critérios de Sucesso DDD
 
 #### Métricas de Performance
 
