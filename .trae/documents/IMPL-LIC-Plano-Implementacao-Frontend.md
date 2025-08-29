@@ -137,7 +137,7 @@ Baseado na especificação técnica, implementaremos as seguintes rotas:
 | `/alertas` | Central de alertas | `/api/v1/notifications` | AlertsPage |
 | `/relatorios` | Relatórios do sistema | `/api/v1/reports` | ReportsPage |
 | `/auditoria` | Logs de auditoria | `/api/v1/audit-logs` | AuditPage |
-| `/parametrizacao` | Configurações do sistema | `/api/v1/base-options` | ParametrizationPage |
+| `/parametrizacao` | Configurações do sistema | `/api/v1/options` | ParametrizationPage |
 
 ### 2.3 Padrões Arquiteturais Frontend
 

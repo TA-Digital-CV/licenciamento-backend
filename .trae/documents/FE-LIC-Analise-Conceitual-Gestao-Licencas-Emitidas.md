@@ -497,10 +497,10 @@ erDiagram
 #### 3.1.1 Parametrização
 
 ```http
-GET    /api/v1/base-options
-POST   /api/v1/base-options
-PUT    /api/v1/base-options/{id}
-DELETE /api/v1/base-options/{id}
+GET    /api/v1/options
+POST   /api/v1/options
+PUT    /api/v1/options/{id}
+DELETE /api/v1/options/{id}
 
 GET    /api/v1/licensing-sectors
 POST   /api/v1/licensing-sectors

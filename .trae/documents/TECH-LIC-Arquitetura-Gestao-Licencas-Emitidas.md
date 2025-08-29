@@ -599,10 +599,10 @@ public class LicenseApplicationService {
 #### Opções Base do Sistema
 
 ```http
-GET    /api/v1/base-options
-POST   /api/v1/base-options
-PUT    /api/v1/base-options/{id}
-DELETE /api/v1/base-options/{id}
+GET    /api/v1/options
+POST   /api/v1/options
+PUT    /api/v1/options/{id}
+DELETE /api/v1/options/{id}
 ```
 
 #### Setores de Licenciamento

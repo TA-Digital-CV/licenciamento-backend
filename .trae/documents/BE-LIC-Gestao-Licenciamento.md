@@ -441,10 +441,10 @@ erDiagram
 #### 4.1.1 Parametrização
 
 ```http
-GET    /api/v1/base-options
-POST   /api/v1/base-options
-PUT    /api/v1/base-options/{id}
-DELETE /api/v1/base-options/{id}
+GET    /api/v1/options
+POST   /api/v1/options
+PUT    /api/v1/options/{id}
+DELETE /api/v1/options/{id}
 
 GET    /api/v1/licensing-sectors
 POST   /api/v1/licensing-sectors
@@ -991,7 +991,7 @@ Os módulos se comunicam através de eventos de domínio:
 
 Cada módulo possui documentação detalhada nos seguintes arquivos:
 
-* **PR00-BE-LIC-Parametrizacao-Base-Options.md**: Opções base do sistema
+* **PR00-BE-LIC-Parametrizacao-options.md**: Opções base do sistema
 
 * **PR01-BE-LIC-Parametrizacao-Licenciamento-Sector-Categoria-Tipos-Licencas.md**: Parametrização de licenciamento
 
