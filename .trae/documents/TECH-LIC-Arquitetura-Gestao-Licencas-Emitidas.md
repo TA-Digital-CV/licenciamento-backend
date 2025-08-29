@@ -63,145 +63,133 @@ graph TD
 
 #### Aggregates Principais:
 
-- **IssuedLicense** - Aggregate Root para licenças emitidas com controle de ciclo de vida
+* **LicensingProcess** - Aggregate Root para controle completo do fluxo de processos de licenciamento
 
-- **Establishment** - **Aggregate Root para estabelecimentos registrados (NOVO)**
+* **IssuedLicense** - Aggregate Root para licenças emitidas com controle de ciclo de vida
 
-- **EstablishmentRegistration** - **Aggregate para processos de registro de estabelecimentos (NOVO)**
+* **LicenseHolder** - Aggregate Root para titulares de licenças (pessoas físicas e jurídicas)
 
-- **LicenseIssuer** - Aggregate para órgãos emissores de licenças
+* **LicenseIssuer** - Aggregate Root para órgãos emissores de licenças
 
-- **LicenseHolder** - Aggregate base para titulares de licenças
+* **LicenseType** - Aggregate Root para tipos de licença e suas características
 
-- **IndividualHolder** - Aggregate para pessoas físicas titulares
-
-- **CorporateHolder** - Aggregate para pessoas jurídicas titulares
-
-- **LegalRepresentative** - Entity para representantes legais
-
-- **LicenseRenewal** - Aggregate para processos de renovação
-
-- **LicenseAmendment** - Aggregate para alterações de licenças
-
-- **LicenseTransfer** - Aggregate para transferências de titularidade
+* **Establishment** - Entity para estabelecimentos registrados no sistema
 
 #### Domain Services:
 
-- **EstablishmentValidationService** - **Validações de registro e conformidade de estabelecimentos (NOVO)**
+* **ProcessWorkflowService** - Gerencia transições de status e fluxo de processos
 
-- **GeoreferencingService** - **Validação de coordenadas GPS e dados cartográficos (NOVO)**
+* **DocumentValidationService** - Valida documentos submetidos nos processos
 
-- **DocumentValidationService** - **Validação de documentação específica por segmento (NOVO)**
+* **AnalysisAssignmentService** - Atribui análises técnicas a especialistas
 
-- **ComplianceService** - **Verificação de conformidade com legislação vigente (NOVO)**
+* **ProcessNotificationService** - Gerencia notificações de processos
 
-- **LicenseValidationService** - Validações de regras de negócio e integridade
+* **PaymentTrackingService** - Rastreia pagamentos de taxas
 
-- **HolderValidationService** - Validações específicas de titulares (PF/PJ)
+* **LicenseValidationService** - Validações de regras de negócio e integridade
 
-- **NotificationService** - Gestão de alertas e notificações
+* **HolderValidationService** - Validações específicas de titulares (PF/PJ)
 
-- **FeeCalculationService** - Cálculo de taxas e valores
+* **AuditService** - Rastreabilidade e auditoria completa
 
-- **AuditService** - Rastreabilidade e auditoria completa
-
-- **LicenseLifecycleService** - Gestão do ciclo de vida das licenças
+* **LicenseLifecycleService** - Gestão do ciclo de vida das licenças
 
 ## 2. Stack Tecnológico Spring Boot DDD
 
 ### 2.1 Frontend (Presentation Layer)
 
-- **React 18** - Framework principal com TypeScript
+* **React 18** - Framework principal com TypeScript
 
-- **Axios** - Cliente HTTP para integração com Spring Boot REST APIs
+* **Axios** - Cliente HTTP para integração com Spring Boot REST APIs
 
-- **TanStack Query** - Cache e sincronização de estado servidor
+* **TanStack Query** - Cache e sincronização de estado servidor
 
-- **React Hook Form** - Gerenciamento de formulários com validação
+* **React Hook Form** - Gerenciamento de formulários com validação
 
-- **React Router v6** - Roteamento SPA
+* **React Router v6** - Roteamento SPA
 
-- **Material-UI v5** - Design System corporativo
+* **Material-UI v5** - Design System corporativo
 
-- **Recharts** - Visualização de dados e dashboards
+* **Recharts** - Visualização de dados e dashboards
 
-- **Date-fns** - Manipulação de datas e períodos
+* **Date-fns** - Manipulação de datas e períodos
 
 ### 2.2 Backend Spring Boot (Domain + Application + Infrastructure)
 
 #### Framework Principal
 
-- **Spring Boot 3.2+** - Framework principal com Java 17+
+* **Spring Boot 3.2+** - Framework principal com Java 17+
 
-- **Spring Web MVC** - Controllers REST e tratamento de requisições
+* **Spring Web MVC** - Controllers REST e tratamento de requisições
 
-- **Spring Security 6** - Autenticação e autorização com JWT
+* **Spring Security 6** - Autenticação e autorização com JWT
 
-- **Spring Data JPA** - Abstração de persistência e repositórios
+* **Spring Data JPA** - Abstração de persistência e repositórios
 
 #### Domain Layer
 
-- **Java 17+** - Linguagem principal com records e pattern matching
+* **Java 17+** - Linguagem principal com records e pattern matching
 
-- **Bean Validation (JSR-303)** - Validação de Value Objects e Entities
+* **Bean Validation (JSR-303)** - Validação de Value Objects e Entities
 
-- **Domain Events** - Comunicação entre Aggregates via Spring Events
+* **Domain Events** - Comunicação entre Aggregates via Spring Events
 
-- **MapStruct** - Mapeamento entre DTOs e Domain Objects
+* **MapStruct** - Mapeamento entre DTOs e Domain Objects
 
 #### Application Layer
 
-- **Spring Boot Starters** - Configuração automática de dependências
+* **Spring Boot Starters** - Configuração automática de dependências
 
-- **CQRS Pattern** - Separação Command/Query com Spring Components
+* **CQRS Pattern** - Separação Command/Query com Spring Components
 
-- **Spring Transaction Management** - Controle transacional declarativo
+* **Spring Transaction Management** - Controle transacional declarativo
 
-- **Spring Validation** - Validação de entrada via annotations
+* **Spring Validation** - Validação de entrada via annotations
 
 #### Infrastructure Layer
 
-- **PostgreSQL 15+** - Banco de dados relacional principal
+* **PostgreSQL 15+** - Banco de dados relacional principal
 
-- **HikariCP** - Pool de conexões de alta performance
+* **HikariCP** - Pool de conexões de alta performance
 
-- **Flyway** - Versionamento e migração de schema
+* **Flyway** - Versionamento e migração de schema
 
-- **Redis** - Cache distribuído e sessões via Spring Data Redis
+* **Redis** - Cache distribuído e sessões via Spring Data Redis
 
-- **Spring Boot Actuator** - Monitoramento e métricas
+* **Spring Boot Actuator** - Monitoramento e métricas
 
-- **Logback** - Logging estruturado com SLF4J
+* **Logback** - Logging estruturado com SLF4J
 
 ### 2.3 Segurança e Autenticação
 
-- **JWT (JSON Web Tokens)** - Autenticação stateless
+* **JWT (JSON Web Tokens)** - Autenticação stateless
 
-- **Spring Security JWT** - Implementação segura de JWT
+* **Spring Security JWT** - Implementação segura de JWT
 
-- **BCrypt** - Hash de senhas com salt
+* **BCrypt** - Hash de senhas com salt
 
-- **CORS Configuration** - Configuração de Cross-Origin Resource Sharing
+* **CORS Configuration** - Configuração de Cross-Origin Resource Sharing
 
-- **Rate Limiting** - Controle de taxa de requisições
+* **Rate Limiting** - Controle de taxa de requisições
 
 ### 2.4 Infraestrutura e DevOps
 
-- **Docker** - Containerização de serviços
+* **Docker** - Containerização de serviços
 
-- **Docker Compose** - Orquestração local de containers
+* **Docker Compose** - Orquestração local de containers
 
-- **NGINX** - Load balancer e proxy reverso
+* **NGINX** - Load balancer e proxy reverso
 
-- **Prometheus + Grafana** - Observabilidade e métricas de negócio
+* **Prometheus + Grafana** - Observabilidade e métricas de negócio
 
-- **Sentry** - Monitoramento de erros e performance
+* **Sentry** - Monitoramento de erros e performance
 
 ## 3. Estrutura de Pacotes Spring Boot
 
 ### 3.1 Organização do Projeto
 
-```
+```HTML
 src/main/java/cv/gov/licensing/
 ├── LicensingApplication.java                    # Classe principal Spring Boot
 ├── config/                                      # Configurações
@@ -213,12 +201,13 @@ src/main/java/cv/gov/licensing/
 │   └── GeospatialConfig.java                   # Configuração GIS/GPS (NOVO)
 ├── web/                                         # Web Layer (Controllers)
 │   ├── controller/
-│   │   ├── LicenseController.java
-│   │   ├── HolderController.java
-│   │   ├── IssuerController.java
-│   │   ├── EstablishmentController.java         # NOVO
-│   │   ├── EstablishmentRegistrationController.java # NOVO
-│   │   └── EstablishmentDocumentController.java # NOVO
+│   │   ├── LicensingProcessController.java
+│   │   ├── IssuedLicenseController.java
+│   │   ├── LicenseHolderController.java
+│   │   ├── LicenseIssuerController.java
+│   │   ├── LicenseTypeController.java
+│   │   ├── ParametrizationController.java
+│   │   └── EstablishmentController.java
 │   ├── dto/                                     # Data Transfer Objects
 │   │   ├── request/
 │   │   └── response/
@@ -226,48 +215,56 @@ src/main/java/cv/gov/licensing/
 │       └── JwtAuthenticationFilter.java
 ├── application/                                 # Application Layer
 │   ├── service/
-│   │   ├── LicenseApplicationService.java
-│   │   ├── HolderApplicationService.java
+│   │   ├── LicensingProcessApplicationService.java
+│   │   ├── IssuedLicenseApplicationService.java
+│   │   ├── LicenseHolderApplicationService.java
+│   │   ├── LicenseIssuerApplicationService.java
+│   │   ├── LicenseTypeApplicationService.java
 │   │   ├── AuthenticationService.java
-│   │   ├── EstablishmentApplicationService.java # NOVO
-│   │   ├── EstablishmentRegistrationService.java # NOVO
-│   │   └── EstablishmentQueryService.java       # NOVO
+│   │   └── EstablishmentApplicationService.java
 │   ├── command/                                 # CQRS Commands
 │   └── query/                                   # CQRS Queries
 ├── domain/                                      # Domain Layer
 │   ├── model/                                   # Aggregates e Entities
+│   │   ├── process/                            # Processos de Licenciamento
+│   │   │   ├── LicensingProcess.java           # Aggregate Root
+│   │   │   ├── ProcessNumber.java              # Value Object
+│   │   │   ├── ProcessStatus.java              # Enum
+│   │   │   ├── ProcessDocument.java            # Entity
+│   │   │   ├── ProcessAnalysis.java            # Entity
+│   │   │   ├── ProcessComment.java             # Entity
+│   │   │   └── ProcessStatusHistory.java       # Entity
 │   │   ├── license/
-│   │   │   ├── IssuedLicense.java
+│   │   │   ├── IssuedLicense.java              # Aggregate Root
 │   │   │   ├── LicenseNumber.java              # Value Object
-│   │   │   └── LicenseStatus.java              # Enum
+│   │   │   ├── LicenseStatus.java              # Enum
+│   │   │   └── LicenseType.java                # Aggregate Root
 │   │   ├── holder/
-│   │   │   ├── LicenseHolder.java
-│   │   │   ├── IndividualHolder.java
-│   │   │   └── CorporateHolder.java
+│   │   │   ├── LicenseHolder.java              # Aggregate Root
+│   │   │   └── Identification.java             # Value Object
 │   │   ├── issuer/
-│   │   │   └── LicenseIssuer.java
-│   │   └── establishment/                       # NOVO - Módulo Estabelecimentos
-│   │       ├── Establishment.java              # Aggregate Root
-│   │       ├── EstablishmentId.java            # Value Object
+│   │   │   └── LicenseIssuer.java              # Aggregate Root
+│   │   └── establishment/
+│   │       ├── Establishment.java              # Entity
 │   │       ├── MatricialNumber.java            # Value Object
-│   │       ├── GeoLocation.java                # Value Object GPS
-│   │       ├── EstablishmentClassification.java # Entity
-│   │       ├── EstablishmentDocument.java      # Entity
-│   │       ├── EstablishmentRegistration.java  # Aggregate
-│   │       └── EstablishmentSegment.java       # Enum
+│   │       └── GeoLocation.java                # Value Object
 │   ├── service/                                 # Domain Services
+│   │   ├── ProcessWorkflowService.java
+│   │   ├── DocumentValidationService.java
+│   │   ├── AnalysisAssignmentService.java
+│   │   ├── ProcessNotificationService.java
+│   │   ├── PaymentTrackingService.java
 │   │   ├── LicenseValidationService.java
 │   │   ├── HolderValidationService.java
-│   │   ├── EstablishmentValidationService.java # NOVO
-│   │   ├── GeoreferencingService.java          # NOVO
-│   │   ├── DocumentValidationService.java      # NOVO
-│   │   └── ComplianceService.java              # NOVO
+│   │   ├── AuditService.java
+│   │   └── LicenseLifecycleService.java
 │   ├── repository/                              # Repository Interfaces
-│   │   ├── LicenseRepository.java
-│   │   ├── HolderRepository.java
-│   │   ├── EstablishmentRepository.java        # NOVO
-│   │   ├── EstablishmentClassificationRepository.java # NOVO
-│   │   └── EstablishmentRegistrationRepository.java # NOVO
+│   │   ├── LicensingProcessRepository.java
+│   │   ├── IssuedLicenseRepository.java
+│   │   ├── LicenseHolderRepository.java
+│   │   ├── LicenseIssuerRepository.java
+│   │   ├── LicenseTypeRepository.java
+│   │   └── EstablishmentRepository.java
 │   └── event/                                   # Domain Events
 │       ├── LicenseIssuedEvent.java
 │       └── LicenseExpiredEvent.java
@@ -576,38 +573,189 @@ public class LicenseApplicationService {
 
 ## 4. Rotas Frontend (Presentation Layer)
 
-| Rota                       | Propósito                                   | Aggregate/Domain Service |
-| -------------------------- | ------------------------------------------- | ------------------------ |
-| `/licencas`                | Lista principal com filtros RLS             | IssuedLicense            |
-| `/licencas/:id`            | Detalhes completos via Aggregate Root       | IssuedLicense            |
-| `/licencas/:id/renovar`    | Workflow de renovação integrado             | LicenseRenewal           |
-| `/licencas/:id/alterar`    | Alterações via Domain Services              | LicenseAmendment         |
-| `/licencas/:id/transferir` | Transferência de titularidade               | LicenseTransfer          |
-| `/licencas/:id/suspender`  | Suspensão com auditoria completa            | IssuedLicense            |
-| `/licencas/:id/historico`  | Histórico via Event Sourcing                | AuditService             |
-| `/dashboard`               | Métricas de negócio em tempo real           | DashboardService         |
-| `/alertas`                 | Central de alertas baseada em Domain Events | NotificationService      |
-| `/relatorios`              | Relatórios com dados normalizados           | ReportingService         |
-| `/auditoria`               | Logs estruturados com rastreabilidade       | AuditService             |
+| Rota                         | Propósito                                   | Aggregate/Domain Service   |
+| ---------------------------- | ------------------------------------------- | -------------------------- |
+| `/processos`                 | Lista de processos de licenciamento         | LicensingProcess           |
+| `/processos/:id`             | Detalhes completos do processo              | LicensingProcess           |
+| `/processos/:id/documentos`  | Gestão de documentos do processo            | ProcessDocument            |
+| `/processos/:id/analises`    | Análises técnicas do processo               | ProcessAnalysis            |
+| `/processos/:id/comentarios` | Comentários e comunicações                  | ProcessComment             |
+| `/licencas`                  | Lista principal de licenças emitidas        | IssuedLicense              |
+| `/licencas/:id`              | Detalhes completos da licença               | IssuedLicense              |
+| `/licencas/:id/renovar`      | Processo de renovação via LicensingProcess  | LicensingProcess           |
+| `/licencas/:id/suspender`    | Suspensão com auditoria completa            | IssuedLicense              |
+| `/licencas/:id/historico`    | Histórico via Event Sourcing                | AuditService               |
+| `/titulares`                 | Gestão de titulares de licenças             | LicenseHolder              |
+| `/emissores`                 | Gestão de órgãos emissores                  | LicenseIssuer              |
+| `/dashboard`                 | Métricas de negócio em tempo real           | DashboardService           |
+| `/alertas`                   | Central de alertas baseada em Domain Events | ProcessNotificationService |
+| `/relatorios`                | Relatórios com dados normalizados           | ReportingService           |
+| `/auditoria`                 | Logs estruturados com rastreabilidade       | AuditService               |
 
-## 4. APIs DDD (Application Layer)
+## 5. APIs REST Consolidadas (Application Layer)
 
-### 4.1 LicenseIssuer Aggregate APIs
+### 5.1 Parametrização
 
-#### Query: Consulta de Emissores
+#### Opções Base do Sistema
 
+```http
+GET    /api/v1/base-options
+POST   /api/v1/base-options
+PUT    /api/v1/base-options/{id}
+DELETE /api/v1/base-options/{id}
 ```
-GET /api/v1/license-issuers
+
+#### Setores de Licenciamento
+
+```http
+GET    /api/v1/licensing-sectors
+POST   /api/v1/licensing-sectors
+PUT    /api/v1/licensing-sectors/{id}
+```
+
+#### Categorias de Licenças
+
+```http
+GET    /api/v1/license-categories
+POST   /api/v1/license-categories
+PUT    /api/v1/license-categories/{id}
+```
+
+#### Tipos de Licenças
+
+```http
+GET    /api/v1/license-types
+POST   /api/v1/license-types
+PUT    /api/v1/license-types/{id}
+```
+
+### 5.2 Gestão de Titulares
+
+```http
+GET    /api/v1/license-holders
+POST   /api/v1/license-holders/individual
+POST   /api/v1/license-holders/company
+GET    /api/v1/license-holders/{id}
+PUT    /api/v1/license-holders/{id}
+PUT    /api/v1/license-holders/{id}/suspend
+PUT    /api/v1/license-holders/{id}/reactivate
+```
+
+### 5.3 Gestão de Emissores
+
+```http
+GET    /api/v1/license-issuers
+POST   /api/v1/license-issuers
+GET    /api/v1/license-issuers/{id}
+PUT    /api/v1/license-issuers/{id}
+POST   /api/v1/license-issuers/{id}/competences
+POST   /api/v1/license-issuers/{id}/jurisdictions
+```
+
+### 5.4 Gestão de Processos de Licenciamento
+
+#### Operações Básicas de Processos
+
+```http
+GET    /api/v1/licensing-processes
+POST   /api/v1/licensing-processes
+GET    /api/v1/licensing-processes/{id}
+PUT    /api/v1/licensing-processes/{id}
+DELETE /api/v1/licensing-processes/{id}
+```
+
+#### Gestão de Fluxo e Atribuições
+
+```http
+PUT    /api/v1/licensing-processes/{id}/assign-analyst
+PUT    /api/v1/licensing-processes/{id}/change-status
+PUT    /api/v1/licensing-processes/{id}/set-priority
+PUT    /api/v1/licensing-processes/{id}/approve
+PUT    /api/v1/licensing-processes/{id}/reject
+PUT    /api/v1/licensing-processes/{id}/cancel
+PUT    /api/v1/licensing-processes/{id}/hold
+PUT    /api/v1/licensing-processes/{id}/resume
+```
+
+#### Gestão de Documentos do Processo
+
+```http
+GET    /api/v1/licensing-processes/{id}/documents
+POST   /api/v1/licensing-processes/{id}/documents
+GET    /api/v1/licensing-processes/{id}/documents/{docId}
+PUT    /api/v1/licensing-processes/{id}/documents/{docId}
+DELETE /api/v1/licensing-processes/{id}/documents/{docId}
+PUT    /api/v1/licensing-processes/{id}/documents/{docId}/validate
+PUT    /api/v1/licensing-processes/{id}/documents/{docId}/reject
+```
+
+#### Análises Técnicas
+
+```http
+GET    /api/v1/licensing-processes/{id}/analyses
+POST   /api/v1/licensing-processes/{id}/analyses
+GET    /api/v1/licensing-processes/{id}/analyses/{analysisId}
+PUT    /api/v1/licensing-processes/{id}/analyses/{analysisId}
+PUT    /api/v1/licensing-processes/{id}/analyses/{analysisId}/complete
+PUT    /api/v1/licensing-processes/{id}/analyses/{analysisId}/schedule-site-visit
+```
+
+#### Comentários e Comunicações
+
+```http
+GET    /api/v1/licensing-processes/{id}/comments
+POST   /api/v1/licensing-processes/{id}/comments
+GET    /api/v1/licensing-processes/{id}/comments/{commentId}
+PUT    /api/v1/licensing-processes/{id}/comments/{commentId}
+DELETE /api/v1/licensing-processes/{id}/comments/{commentId}
+POST   /api/v1/licensing-processes/{id}/comments/{commentId}/reply
+```
+
+#### Histórico e Auditoria
+
+```http
+GET    /api/v1/licensing-processes/{id}/status-history
+GET    /api/v1/licensing-processes/{id}/audit-trail
+```
+
+#### Pagamentos
+
+```http
+PUT    /api/v1/licensing-processes/{id}/record-payment
+GET    /api/v1/licensing-processes/{id}/payment-status
+```
+
+#### Relatórios e Estatísticas
+
+```http
+GET    /api/v1/licensing-processes/statistics
+GET    /api/v1/licensing-processes/dashboard
+GET    /api/v1/licensing-processes/overdue
+GET    /api/v1/licensing-processes/pending-documents
+GET    /api/v1/licensing-processes/by-analyst/{analystId}
+```
+
+### 5.5 Gestão de Licenças Emitidas
+
+```http
+GET    /api/v1/issued-licenses
+POST   /api/v1/issued-licenses/definitive
+POST   /api/v1/issued-licenses/provisional
+GET    /api/v1/issued-licenses/{id}
+PUT    /api/v1/issued-licenses/{id}/suspend
+PUT    /api/v1/issued-licenses/{id}/reactivate
+PUT    /api/v1/issued-licenses/{id}/cancel
+POST   /api/v1/issued-licenses/{id}/renew
 ```
 
 **Query Parameters:**
 
-| Parâmetro | Tipo    | Obrigatório | Descrição                     | Validação Domain |
-| --------- | ------- | ----------- | ----------------------------- | ---------------- |
-| page      | number  | false       | Página atual (padrão: 1)      | PaginationVO     |
-| limit     | number  | false       | Itens por página (padrão: 25) | PaginationVO     |
-| search    | string  | false       | Busca por nome ou código      | SearchVO         |
-| is_active | boolean | false       | Filtro por status ativo       | StatusVO         |
+| Parâmetro  | Tipo    | Obrigatório | Descrição                     | Validação Domain |
+| ---------- | ------- | ----------- | ----------------------------- | ---------------- |
+| page       | number  | false       | Página atual (padrão: 1)      | PaginationVO     |
+| limit      | number  | false       | Itens por página (padrão: 25) | PaginationVO     |
+| search     | string  | false       | Busca por nome ou código      | SearchVO         |
+| is\_active | boolean | false       | Filtro por status ativo       | StatusVO         |
 
 **Response:**
 
@@ -663,19 +811,19 @@ POST /api/v1/license-issuers
 
 #### Query: Consulta de Titulares
 
-```
+```http
 GET /api/v1/license-holders
 ```
 
 **Query Parameters:**
 
-| Parâmetro       | Tipo   | Obrigatório | Descrição                      | Validação Domain |
-| --------------- | ------ | ----------- | ------------------------------ | ---------------- |
-| page            | number | false       | Página atual (padrão: 1)       | PaginationVO     |
-| limit           | number | false       | Itens por página (padrão: 25)  | PaginationVO     |
-| holder_type     | string | false       | 'individual' ou 'corporate'    | HolderTypeVO     |
-| search          | string | false       | Busca por nome ou documento    | SearchVO         |
-| document_number | string | false       | Filtro por número de documento | DocumentVO       |
+| Parâmetro        | Tipo   | Obrigatório | Descrição                      | Validação Domain |
+| ---------------- | ------ | ----------- | ------------------------------ | ---------------- |
+| page             | number | false       | Página atual (padrão: 1)       | PaginationVO     |
+| limit            | number | false       | Itens por página (padrão: 25)  | PaginationVO     |
+| holder\_type     | string | false       | 'individual' ou 'corporate'    | HolderTypeVO     |
+| search           | string | false       | Busca por nome ou documento    | SearchVO         |
+| document\_number | string | false       | Filtro por número de documento | DocumentVO       |
 
 **Response:**
 
@@ -837,27 +985,27 @@ POST /api/v1/license-holders/corporate
 
 #### Query: Consulta de Licenças com RLS
 
-```
+```http
 GET /api/v1/issued-licenses
 ```
 
 **Query Parameters (com validação via Domain Services):**
 
-| Parâmetro        | Tipo   | Obrigatório | Descrição                                    | Validação Domain |
-| ---------------- | ------ | ----------- | -------------------------------------------- | ---------------- |
-| page             | number | false       | Página atual (padrão: 1)                     | PaginationVO     |
-| limit            | number | false       | Itens por página (padrão: 25, max: 100)      | PaginationVO     |
-| search           | string | false       | Busca por número, titular (T_LICENSE_HOLDER) | SearchVO         |
-| status           | string | false       | Filtro por status via T_OPTIONS              | StatusVO         |
-| license_type_id  | uuid   | false       | Filtro por T_LICENSE_TYPE                    | LicenseTypeVO    |
-| issuer_id        | uuid   | false       | Filtro por T_LICENSE_ISSUER                  | IssuerVO         |
-| holder_id        | uuid   | false       | Filtro por T_LICENSE_HOLDER                  | HolderVO         |
-| holder_type      | string | false       | Filtro por tipo: 'individual' ou 'corporate' | HolderTypeVO     |
-| sector_id        | uuid   | false       | Filtro por T_SECTOR                          | SectorVO         |
-| issue_date_from  | date   | false       | Data inicial de emissão                      | DateRangeVO      |
-| issue_date_to    | date   | false       | Data final de emissão                        | DateRangeVO      |
-| expiry_date_from | date   | false       | Data inicial de vencimento                   | DateRangeVO      |
-| expiry_date_to   | date   | false       | Data final de vencimento                     | DateRangeVO      |
+| Parâmetro          | Tipo   | Obrigatório | Descrição                                      | Validação Domain |
+| ------------------ | ------ | ----------- | ---------------------------------------------- | ---------------- |
+| page               | number | false       | Página atual (padrão: 1)                       | PaginationVO     |
+| limit              | number | false       | Itens por página (padrão: 25, max: 100)        | PaginationVO     |
+| search             | string | false       | Busca por número, titular (T\_LICENSE\_HOLDER) | SearchVO         |
+| status             | string | false       | Filtro por status via T\_OPTIONS               | StatusVO         |
+| license\_type\_id  | uuid   | false       | Filtro por T\_LICENSE\_TYPE                    | LicenseTypeVO    |
+| issuer\_id         | uuid   | false       | Filtro por T\_LICENSE\_ISSUER                  | IssuerVO         |
+| holder\_id         | uuid   | false       | Filtro por T\_LICENSE\_HOLDER                  | HolderVO         |
+| holder\_type       | string | false       | Filtro por tipo: 'individual' ou 'corporate'   | HolderTypeVO     |
+| sector\_id         | uuid   | false       | Filtro por T\_SECTOR                           | SectorVO         |
+| issue\_date\_from  | date   | false       | Data inicial de emissão                        | DateRangeVO      |
+| issue\_date\_to    | date   | false       | Data final de emissão                          | DateRangeVO      |
+| expiry\_date\_from | date   | false       | Data inicial de vencimento                     | DateRangeVO      |
+| expiry\_date\_to   | date   | false       | Data final de vencimento                       | DateRangeVO      |
 
 **Response (DTO via Application Service):**
 
@@ -920,17 +1068,16 @@ GET /api/v1/issued-licenses
 
 #### Query: Detalhes da Licença (Aggregate Root)
 
-```
-
+```http
 GET /api/v1/issued-licenses/{id}
 
 ```
 
 **Headers:**
 
-- `Authorization: Bearer {jwt_token}`
+* `Authorization: Bearer {jwt_token}`
 
-- `Content-Type: application/json`
+* `Content-Type: application/json`
 
 **RLS Validation:** Acesso filtrado por perfil de usuário via Supabase RLS
 
@@ -1074,6 +1221,9 @@ GET /api/v1/issued-licenses/{id}
       "due_date": "2024-12-15T00:00:00Z"
     }
   },
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T10:30:00Z"
+  }
   "amendments": [
     {
       "id": "uuid",
@@ -1202,31 +1352,31 @@ POST /api/v1/establishments/register
 
 #### Consulta de Estabelecimentos
 
-```
+```http
 GET /api/v1/establishments
 ```
 
 **Query Parameters:**
 
-| Parâmetro          | Tipo    | Obrigatório | Descrição                                              |
-| ------------------ | ------- | ----------- | ------------------------------------------------------ |
-| holder_id          | uuid    | false       | Filtro por titular                                     |
-| segment            | string  | false       | Filtro por segmento (COMERCIAL, TURISTICO, INDUSTRIAL) |
-| category           | string  | false       | Filtro por categoria específica                        |
-| operational_status | string  | false       | Status operacional (ACTIVE, INACTIVE, SUSPENDED)       |
-| compliance_status  | boolean | false       | Status de conformidade                                 |
-| municipality       | string  | false       | Filtro por município                                   |
-| parish             | string  | false       | Filtro por freguesia                                   |
-| latitude_min       | decimal | false       | Coordenada mínima de latitude                          |
-| latitude_max       | decimal | false       | Coordenada máxima de latitude                          |
-| longitude_min      | decimal | false       | Coordenada mínima de longitude                         |
-| longitude_max      | decimal | false       | Coordenada máxima de longitude                         |
-| page               | number  | false       | Página (padrão: 0)                                     |
-| size               | number  | false       | Tamanho da página (padrão: 20, max: 100)               |
+| Parâmetro           | Tipo    | Obrigatório | Descrição                                              |
+| ------------------- | ------- | ----------- | ------------------------------------------------------ |
+| holder\_id          | uuid    | false       | Filtro por titular                                     |
+| segment             | string  | false       | Filtro por segmento (COMERCIAL, TURISTICO, INDUSTRIAL) |
+| category            | string  | false       | Filtro por categoria específica                        |
+| operational\_status | string  | false       | Status operacional (ACTIVE, INACTIVE, SUSPENDED)       |
+| compliance\_status  | boolean | false       | Status de conformidade                                 |
+| municipality        | string  | false       | Filtro por município                                   |
+| parish              | string  | false       | Filtro por freguesia                                   |
+| latitude\_min       | decimal | false       | Coordenada mínima de latitude                          |
+| latitude\_max       | decimal | false       | Coordenada máxima de latitude                          |
+| longitude\_min      | decimal | false       | Coordenada mínima de longitude                         |
+| longitude\_max      | decimal | false       | Coordenada máxima de longitude                         |
+| page                | number  | false       | Página (padrão: 0)                                     |
+| size                | number  | false       | Tamanho da página (padrão: 20, max: 100)               |
 
 #### Validação de Georreferenciamento
 
-```
+```http
 POST /api/v1/establishments/{id}/validate-location
 ```
 
@@ -1244,7 +1394,7 @@ POST /api/v1/establishments/{id}/validate-location
 
 #### Upload de Documentos
 
-```
+```http
 POST /api/v1/establishments/{id}/documents
 ```
 
@@ -1263,7 +1413,7 @@ issuing_authority: Bombeiros de Cabo Verde
 
 #### Verificação de Conformidade
 
-```
+```http
 POST /api/v1/establishments/{id}/compliance-check
 ```
 
@@ -1305,7 +1455,7 @@ POST /api/v1/establishments/{id}/compliance-check
 
 #### Command: Criar Alteração de Licença
 
-```
+```http
 POST /api/v1/issued-licenses/{id}/amendments
 ```
 
@@ -1345,7 +1495,7 @@ POST /api/v1/issued-licenses/{id}/amendments
 
 #### Command: Criar Transferência de Licença
 
-```
+```http
 POST /api/v1/issued-licenses/{id}/transfers
 ```
 
@@ -1391,7 +1541,7 @@ POST /api/v1/issued-licenses/{id}/transfers
 
 #### Command: Renovar Licença
 
-```
+```http
 POST /api/v1/issued-licenses/{id}/renewals
 ```
 
@@ -1438,9 +1588,9 @@ POST /api/v1/issued-licenses/{id}/renewals
 
 **Headers:**
 
-- Authorization: Bearer {supabase_jwt_token}
+* Authorization: Bearer {supabase\_jwt\_token}
 
-- Content-Type: application/json
+* Content-Type: application/json
 
 **Domain Service:** `LicenseRenewalService`\
 **Aggregate:** `IssuedLicense` + `LicenseRenewal`\
@@ -1511,7 +1661,7 @@ POST /api/v1/issued-licenses/{id}/renewals
 
 **Headers:**
 
-- Authorization: Bearer {supabase_jwt_token}
+* Authorization: Bearer {supabase\_jwt\_token}
 
 **Domain Service:** `AlertMonitoringService`\
 **Read Model:** `LicenseAlertView`\
@@ -1519,17 +1669,17 @@ POST /api/v1/issued-licenses/{id}/renewals
 
 **Query Parameters:**
 
-- `alert_type`: expiry, renewal, suspension (opcional)
+* `alert_type`: expiry, renewal, suspension (opcional)
 
-- `priority`: high, medium, low (opcional)
+* `priority`: high, medium, low (opcional)
 
-- `days_ahead`: número de dias para alertas de vencimento (padrão: 30)
+* `days_ahead`: número de dias para alertas de vencimento (padrão: 30)
 
-- `status`: pending, acknowledged, resolved (opcional)
+* `status`: pending, acknowledged, resolved (opcional)
 
-- `page`: número da página (padrão: 1)
+* `page`: número da página (padrão: 1)
 
-- `limit`: itens por página (padrão: 20)
+* `limit`: itens por página (padrão: 20)
 
 **Response (via RLS + Cache Redis):**
 
@@ -1595,9 +1745,9 @@ POST /api/v1/issued-licenses/{id}/renewals
 
 **Headers:**
 
-- Authorization: Bearer {supabase_jwt_token}
+* Authorization: Bearer {supabase\_jwt\_token}
 
-- Content-Type: application/json
+* Content-Type: application/json
 
 **Domain Service:** `ReportGenerationService`\
 **Command Handler:** `GenerateReportCommandHandler`\
@@ -1644,7 +1794,7 @@ POST /api/v1/issued-licenses/{id}/renewals
 
 **Headers:**
 
-- Authorization: Bearer {supabase_jwt_token}
+* Authorization: Bearer {supabase\_jwt\_token}
 
 **Read Model:** `ReportStatusView`\
 **Tables:** `T_REPORT_GENERATION`, `T_REPORT_AUDIT`
@@ -1688,9 +1838,679 @@ POST /api/v1/issued-licenses/{id}/renewals
 }
 ```
 
-## 5. Arquitetura DDD do Servidor
+**Request:**
 
-### 5.1 Camadas DDD e Bounded Context
+```json
+{
+  "renewal_type": "automatic",
+  "observations": "Renovação automática - documentação em dia",
+  "provisional_validity": "2024-03-15T00:00:00Z",
+  "requested_by": "uuid",
+  "supporting_documents": [
+    {
+      "document_type": "financial_statement",
+      "file_id": "uuid"
+    }
+  ]
+}
+```
+
+## 5. Exemplos de Implementação
+
+### 5.1 Exemplo: Criar Processo de Licenciamento
+
+```http
+POST /api/v1/licensing-processes
+Content-Type: application/json
+Authorization: Bearer {jwt_token}
+```
+
+**Request Body:**
+
+```json
+{
+  "licenseTypeId": "550e8400-e29b-41d4-a716-446655440004",
+  "licenseHolderId": "550e8400-e29b-41d4-a716-446655440001",
+  "establishmentId": "550e8400-e29b-41d4-a716-446655440006",
+  "issuerId": "550e8400-e29b-41d4-a716-446655440000",
+  "priorityLevel": "NORMAL",
+  "applicantNotes": "Solicitação de licença comercial para loja de roupas",
+  "targetDecisionDate": "2024-03-15"
+}
+```
+
+**Response (201 Created):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440010",
+    "processNumber": "PROC-2024-001234",
+    "processStatus": "SUBMITTED",
+    "priorityLevel": "NORMAL",
+    "submissionDate": "2024-01-15",
+    "targetDecisionDate": "2024-03-15",
+    "licenseType": {
+      "id": "550e8400-e29b-41d4-a716-446655440004",
+      "typeName": "Licença Comercial - Retalho"
+    },
+    "licenseHolder": {
+      "id": "550e8400-e29b-41d4-a716-446655440001",
+      "name": "João Silva Santos"
+    },
+    "establishment": {
+      "id": "550e8400-e29b-41d4-a716-446655440006",
+      "name": "Loja do João"
+    },
+    "issuer": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "issuerName": "Direção Geral do Comércio e Indústria"
+    }
+  },
+  "message": "Processo de licenciamento criado com sucesso",
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+### 5.2 Exemplo: Atribuir Analista ao Processo
+
+```http
+PUT /api/v1/licensing-processes/{id}/assign-analyst
+Content-Type: application/json
+Authorization: Bearer {jwt_token}
+```
+
+**Request Body:**
+
+```json
+{
+  "analystId": "550e8400-e29b-41d4-a716-446655440020",
+  "assignmentReason": "Especialista em licenças comerciais",
+  "expectedCompletionDate": "2024-02-15"
+}
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440010",
+    "processNumber": "PROC-2024-001234",
+    "processStatus": "UNDER_REVIEW",
+    "assignedAnalystId": "550e8400-e29b-41d4-a716-446655440020",
+    "assignmentDate": "2024-01-16",
+    "expectedCompletionDate": "2024-02-15"
+  },
+  "message": "Analista atribuído com sucesso",
+  "timestamp": "2024-01-16T09:15:00Z"
+}
+```
+
+### 5.3 Exemplo: Emitir Licença Definitiva
+
+```http
+POST /api/v1/issued-licenses/definitive
+Content-Type: application/json
+Authorization: Bearer {jwt_token}
+```
+
+**Request Body:**
+
+```json
+{
+  "licenseTypeId": "550e8400-e29b-41d4-a716-446655440004",
+  "holderId": "550e8400-e29b-41d4-a716-446655440001",
+  "issuerId": "550e8400-e29b-41d4-a716-446655440000",
+  "establishmentId": "550e8400-e29b-41d4-a716-446655440006",
+  "validityPeriod": "12_MONTHS",
+  "feeAmount": 5000.00,
+  "conditions": "Válida apenas para atividade comercial de retalho",
+  "isRenewable": true
+}
+```
+
+**Response (201 Created):**
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440003",
+    "licenseNumber": "LIC-2024-001234",
+    "licenseType": {
+      "id": "550e8400-e29b-41d4-a716-446655440004",
+      "typeCode": "COM-RET",
+      "typeName": "Licença Comercial - Retalho"
+    },
+    "holder": {
+      "id": "550e8400-e29b-41d4-a716-446655440001",
+      "name": "João Silva Santos",
+      "holderType": "INDIVIDUAL"
+    },
+    "issuer": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "issuerName": "Direção Geral do Comércio e Indústria"
+    },
+    "establishment": {
+      "id": "550e8400-e29b-41d4-a716-446655440006",
+      "matricialNumber": "EST-2024-001",
+      "name": "Loja do João"
+    },
+    "issueDate": "2024-01-15",
+    "expiryDate": "2025-01-15",
+    "licenseStatus": "ACTIVE",
+    "feeAmount": 5000.00,
+    "validityPeriod": "12_MONTHS",
+    "conditions": "Válida apenas para atividade comercial de retalho",
+    "isRenewable": true
+  },
+  "message": "Licença emitida com sucesso",
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+### 5.4 Padrões de Response
+
+#### Success Response
+
+```json
+{
+  "success": true,
+  "data": {
+    // Dados específicos da operação
+  },
+  "message": "Operação realizada com sucesso",
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+#### Error Response
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Dados inválidos fornecidos",
+    "details": [
+      {
+        "field": "email",
+        "message": "Formato de email inválido"
+      }
+    ]
+  },
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+### 5.5 Padrões de Validação
+
+#### Validation Response
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Dados inválidos fornecidos",
+    "details": [
+      {
+        "field": "email",
+        "message": "Formato de email inválido"
+      },
+      {
+        "field": "document_number",
+        "message": "Número de documento já existe"
+      }
+    ]
+  },
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+## 6. Implementação Spring Boot
+
+### 6.1 Exemplo de Controller
+
+```java
+@RestController
+@RequestMapping("/api/v1/licensing-processes")
+@Validated
+public class LicensingProcessController {
+
+    private final LicensingProcessService licensingProcessService;
+    private final LicensingProcessQueryService queryService;
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<LicensingProcessDto>> createProcess(
+            @Valid @RequestBody CreateLicensingProcessCommand command) {
+        
+        LicensingProcessDto result = licensingProcessService.createProcess(command);
+        
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(ApiResponse.success(result, "Processo criado com sucesso"));
+    }
+
+    @GetMapping
+    public ResponseEntity<PagedResponse<LicensingProcessDto>> listProcesses(
+            @Valid LicensingProcessQuery query) {
+        
+        Page<LicensingProcessDto> processes = queryService.findProcesses(query);
+        
+        return ResponseEntity.ok(
+            PagedResponse.of(processes, "Processos listados com sucesso")
+        );
+    }
+}
+```
+
+### 6.2 Exemplo de Service
+
+```java
+@Service
+@Transactional
+public class LicensingProcessService {
+
+    private final LicensingProcessRepository repository;
+    private final ProcessWorkflowService workflowService;
+    private final DomainEventPublisher eventPublisher;
+
+    public LicensingProcessDto createProcess(CreateLicensingProcessCommand command) {
+        // Validação de domínio
+        LicenseType licenseType = validateLicenseType(command.getLicenseTypeId());
+        LicenseHolder holder = validateLicenseHolder(command.getLicenseHolderId());
+        
+        // Criação do aggregate
+        LicensingProcess process = LicensingProcess.create(
+            ProcessId.generate(),
+            licenseType,
+            holder,
+            command.getPriorityLevel(),
+            command.getApplicantNotes()
+        );
+        
+        // Persistência
+        repository.save(process);
+        
+        // Publicação de evento
+        eventPublisher.publish(new ProcessCreatedEvent(process.getId()));
+        
+        return LicensingProcessMapper.toDto(process);
+    }
+}
+```
+
+## 7. Configurações de Segurança
+
+### 7.1 JWT Configuration
+
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> 
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/public/**").permitAll()
+                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+            )
+            .oauth2ResourceServer(oauth2 -> oauth2
+                .jwt(jwt -> jwt.jwtDecoder(jwtDecoder()))
+            );
+        
+        return http.build();
+    }
+}
+```
+
+### 6. Exemplo Completo de Implementação
+
+```java
+@Entity
+@Table(name = "T_LICENSING_PROCESS")
+public class LicensingProcess {
+    
+    @Id
+    @Column(name = "ID")
+    private UUID id;
+    
+    @Column(name = "PROCESS_NUMBER", unique = true)
+    private String processNumber;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "PROCESS_STATUS")
+    private ProcessStatus processStatus;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "LICENSE_TYPE_ID")
+    private LicenseType licenseType;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "LICENSE_HOLDER_ID")
+    private LicenseHolder licenseHolder;
+    
+    // Métodos de domínio
+    public void assignAnalyst(UUID analystId, String reason) {
+        if (this.processStatus != ProcessStatus.SUBMITTED) {
+            throw new IllegalStateException("Processo deve estar em estado SUBMITTED");
+        }
+        
+        this.assignedAnalystId = analystId;
+        this.processStatus = ProcessStatus.UNDER_REVIEW;
+        this.assignmentDate = LocalDateTime.now();
+        
+        // Publicar evento de domínio
+        DomainEvents.publish(new AnalystAssignedEvent(this.id, analystId));
+    }
+}
+```
+
+## 8. Testes
+
+### 8.1 Teste de Unidade
+
+```java
+@ExtendWith(MockitoExtension.class)
+class LicensingProcessServiceTest {
+
+    @Mock
+    private LicensingProcessRepository repository;
+    
+    @Mock
+    private ProcessWorkflowService workflowService;
+    
+    @InjectMocks
+    private LicensingProcessService service;
+
+    @Test
+    void shouldCreateProcessSuccessfully() {
+        // Given
+        CreateLicensingProcessCommand command = CreateLicensingProcessCommand.builder()
+            .licenseTypeId(UUID.randomUUID())
+            .licenseHolderId(UUID.randomUUID())
+            .priorityLevel(PriorityLevel.NORMAL)
+            .build();
+
+        // When
+        LicensingProcessDto result = service.createProcess(command);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getProcessStatus()).isEqualTo(ProcessStatus.SUBMITTED);
+        verify(repository).save(any(LicensingProcess.class));
+    }
+}
+```
+
+### 8.2 Teste de Integração
+
+```java
+@SpringBootTest
+@Testcontainers
+class LicensingProcessIntegrationTest {
+
+    @Container
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
+            .withDatabaseName("testdb")
+            .withUsername("test")
+            .withPassword("test");
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    @Test
+    void shouldCreateProcessViaApi() {
+        // Given
+        CreateLicensingProcessRequest request = new CreateLicensingProcessRequest();
+        request.setLicenseTypeId(UUID.randomUUID());
+        request.setLicenseHolderId(UUID.randomUUID());
+
+        // When
+        ResponseEntity<ApiResponse> response = restTemplate.postForEntity(
+            "/api/v1/licensing-processes", 
+            request, 
+            ApiResponse.class
+        );
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody().isSuccess()).isTrue();
+    }
+}
+```
+
+## 9. Monitoramento e Observabilidade
+
+### 9.1 Métricas Customizadas
+
+```java
+@Component
+public class LicensingMetrics {
+
+    private final Counter processesCreated;
+    private final Timer processCompletionTime;
+    private final Gauge activeProcesses;
+
+    public LicensingMetrics(MeterRegistry meterRegistry) {
+        this.processesCreated = Counter.builder("licensing.processes.created")
+            .description("Total number of licensing processes created")
+            .register(meterRegistry);
+            
+        this.processCompletionTime = Timer.builder("licensing.process.completion.time")
+            .description("Time taken to complete a licensing process")
+            .register(meterRegistry);
+    }
+
+    public void incrementProcessesCreated() {
+        processesCreated.increment();
+    }
+
+    public void recordProcessCompletionTime(Duration duration) {
+        processCompletionTime.record(duration);
+    }
+}
+```
+
+### 9.2 Health Checks
+
+```java
+@Component
+public class LicensingHealthIndicator implements HealthIndicator {
+
+    private final LicensingProcessRepository repository;
+
+    @Override
+    public Health health() {
+        try {
+            long pendingProcesses = repository.countByStatus(ProcessStatus.SUBMITTED);
+            
+            if (pendingProcesses > 1000) {
+                return Health.down()
+                    .withDetail("pending_processes", pendingProcesses)
+                    .withDetail("message", "Too many pending processes")
+                    .build();
+            }
+            
+            return Health.up()
+                .withDetail("pending_processes", pendingProcesses)
+                .build();
+                
+        } catch (Exception e) {
+            return Health.down(e).build();
+        }
+    }
+}
+```
+
+## 10. Deployment e DevOps
+
+### 10.1 Dockerfile
+
+```dockerfile
+FROM openjdk:17-jre-slim
+
+WORKDIR /app
+
+COPY target/licensing-management-*.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+
+### 10.2 Docker Compose
+
+```yaml
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - DATABASE_URL=jdbc:postgresql://db:5432/licensing
+      - DATABASE_USERNAME=licensing_user
+      - DATABASE_PASSWORD=licensing_pass
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=licensing
+      - POSTGRES_USER=licensing_user
+      - POSTGRES_PASSWORD=licensing_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:
+```
+
+## 11. Conclusão
+
+Esta arquitetura técnica fornece uma base sólida para o sistema de gestão de licenças emitidas, implementando:
+
+* **Domain-Driven Design (DDD)** com agregados bem definidos
+
+* **CQRS** para separação de comandos e consultas
+
+* **Event Sourcing** para auditoria completa
+
+* **Microserviços** com Spring Boot
+
+* **Segurança** com JWT e OAuth2
+
+* **Observabilidade** com métricas e health checks
+
+* **Testes** automatizados em múltiplas camadas
+
+* **DevOps** com containerização e orquestração
+
+A implementação segue as melhores práticas de desenvolvimento de software empresarial, garantindo escalabilidade, manutenibilidade e robustez do sistema.
+
+***
+
+**Documento Técnico - Versão 2.0**\
+**Data:** Janeiro 2024\
+**Autor:** Equipe de Arquitetura de Software
+
+## 6. Padrões de Response da API
+
+### 6.1 Success Response
+
+```json
+{
+  "success": true,
+  "data": {
+    // Dados específicos da operação
+  },
+  "message": "Operação realizada com sucesso",
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+### 6.2 Validation Error Response
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Dados de entrada inválidos",
+    "details": [
+      {
+        "field": "licenseTypeId",
+        "message": "Tipo de licença é obrigatório"
+      },
+      {
+        "field": "holderId",
+        "message": "Titular deve ser informado"
+      }
+    ]
+  },
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+#### Business Error Response
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "BUSINESS_RULE_VIOLATION",
+    "message": "Emissor não tem competência para este tipo de licença",
+    "businessRule": "ISSUER_COMPETENCE_REQUIRED",
+    "details": {
+      "issuerId": "550e8400-e29b-41d4-a716-446655440000",
+      "licenseTypeId": "550e8400-e29b-41d4-a716-446655440004",
+      "requiredCompetence": "COMMERCIAL_INDUSTRIAL",
+      "issuerCompetence": "TOURISM"
+    }
+  },
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+#### Not Found Response
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "RESOURCE_NOT_FOUND",
+    "message": "Processo de licenciamento não encontrado",
+    "resourceType": "LicensingProcess",
+    "resourceId": "550e8400-e29b-41d4-a716-446655440010"
+  },
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+```
+
+## 7. Arquitetura DDD do Servidor
+
+### 7.1 Camadas DDD e Bounded Context
 
 ```mermaid
 graph TD
@@ -1745,9 +2565,9 @@ graph TD
   E2 --> L
 ```
 
-## 6. Modelo de Dados Normalizado (Padrão T\_)
+## 8. Modelo de Dados Normalizado (Padrão T\_)
 
-### 6.1 Diagrama Entidade-Relacionamento DDD
+### 8.1 Diagrama Entidade-Relacionamento DDD
 
 ```mermaid
 erDiagram
@@ -2048,9 +2868,9 @@ erDiagram
     }
 ```
 
-### 6.2 Data Definition Language (DDL)
+### 7.2 Data Definition Language (DDL)
 
-#### Tabela de Emissores: T_LICENSE_ISSUER
+#### Tabela de Emissores: T\_LICENSE\_ISSUER
 
 ```sql
 -- Tabela de Órgãos Emissores de Licenças
@@ -2074,7 +2894,7 @@ CREATE INDEX idx_license_issuer_code ON T_LICENSE_ISSUER(issuer_code);
 CREATE INDEX idx_license_issuer_status ON T_LICENSE_ISSUER(status);
 ```
 
-#### Tabela Base de Titulares: T_LICENSE_HOLDER
+#### Tabela Base de Titulares: T\_LICENSE\_HOLDER
 
 ```sql
 -- Tabela Base de Titulares (Herança)
@@ -2094,7 +2914,7 @@ CREATE INDEX idx_license_holder_type ON T_LICENSE_HOLDER(holder_type);
 CREATE INDEX idx_license_holder_status ON T_LICENSE_HOLDER(status);
 ```
 
-#### Tabela de Pessoas Físicas: T_INDIVIDUAL_HOLDER
+#### Tabela de Pessoas Físicas: T\_INDIVIDUAL\_HOLDER
 
 ```sql
 -- Tabela de Titulares Pessoas Físicas
@@ -2123,7 +2943,7 @@ CREATE INDEX idx_individual_holder_name ON T_INDIVIDUAL_HOLDER(full_name);
 CREATE INDEX idx_individual_holder_birth_date ON T_INDIVIDUAL_HOLDER(birth_date);
 ```
 
-#### Tabela de Pessoas Jurídicas: T_CORPORATE_HOLDER
+#### Tabela de Pessoas Jurídicas: T\_CORPORATE\_HOLDER
 
 ```sql
 -- Tabela de Titulares Pessoas Jurídicas
@@ -2150,7 +2970,7 @@ CREATE INDEX idx_corporate_holder_corporate_name ON T_CORPORATE_HOLDER(corporate
 CREATE INDEX idx_corporate_holder_registration ON T_CORPORATE_HOLDER(registration_number);
 ```
 
-#### Tabela de Representantes Legais: T_LEGAL_REPRESENTATIVE
+#### Tabela de Representantes Legais: T\_LEGAL\_REPRESENTATIVE
 
 ```sql
 -- Tabela de Representantes Legais
@@ -2177,7 +2997,7 @@ CREATE INDEX idx_legal_representative_document ON T_LEGAL_REPRESENTATIVE(documen
 CREATE INDEX idx_legal_representative_validity ON T_LEGAL_REPRESENTATIVE(valid_from, valid_until);
 ```
 
-#### Tabela de Contatos: T_HOLDER_CONTACT
+#### Tabela de Contatos: T\_HOLDER\_CONTACT
 
 ```sql
 -- Tabela de Contatos dos Titulares
@@ -2204,7 +3024,7 @@ CREATE INDEX idx_holder_contact_type ON T_HOLDER_CONTACT(contact_type);
 CREATE INDEX idx_holder_contact_primary ON T_HOLDER_CONTACT(is_primary) WHERE is_primary = true;
 ```
 
-#### Tabela Principal: T_ISSUED_LICENSE
+#### Tabela Principal: T\_ISSUED\_LICENSE
 
 ```sql
 -- Tabela de Licenças Emitidas (Atualizada)
@@ -2243,7 +3063,7 @@ CREATE INDEX idx_issued_license_issue_date ON T_ISSUED_LICENSE(issue_date DESC);
 CREATE INDEX idx_issued_license_number ON T_ISSUED_LICENSE(license_number);
 ```
 
-#### Tabela de Alterações: T_LICENSE_AMENDMENT
+#### Tabela de Alterações: T\_LICENSE\_AMENDMENT
 
 ```sql
 -- Tabela de Alterações de Licenças
@@ -2271,7 +3091,7 @@ CREATE INDEX idx_license_amendment_status ON T_LICENSE_AMENDMENT(status);
 CREATE INDEX idx_license_amendment_type ON T_LICENSE_AMENDMENT(amendment_type);
 ```
 
-#### Tabela de Transferências: T_LICENSE_TRANSFER
+#### Tabela de Transferências: T\_LICENSE\_TRANSFER
 
 ```sql
 -- Tabela de Transferências de Licenças
@@ -2302,7 +3122,7 @@ CREATE INDEX idx_license_transfer_new_holder ON T_LICENSE_TRANSFER(new_holder_id
 CREATE INDEX idx_license_transfer_status ON T_LICENSE_TRANSFER(status);
 ```
 
-#### Tabela de Documentos: T_LICENSE_DOCUMENT
+#### Tabela de Documentos: T\_LICENSE\_DOCUMENT
 
 ```sql
 -- Tabela de Documentos das Licenças
@@ -2329,7 +3149,7 @@ CREATE INDEX idx_license_document_type ON T_LICENSE_DOCUMENT(document_type);
 CREATE INDEX idx_license_document_status ON T_LICENSE_DOCUMENT(status);
 ```
 
-#### Tabela de Taxas: T_LICENSE_FEE
+#### Tabela de Taxas: T\_LICENSE\_FEE
 
 ```sql
 -- Tabela de Taxas das Licenças
@@ -2453,7 +3273,7 @@ CREATE POLICY "Managers can manage fees" ON T_LICENSE_FEE
     FOR ALL USING (auth.role() = 'authenticated' AND auth.jwt() ->> 'user_role' IN ('gestor_licencas', 'admin_sistema'));
 ```
 
-#### Tabela de Titulares: T_LICENSE_HOLDER
+#### Tabela de Titulares: T\_LICENSE\_HOLDER
 
 ```sql
 -- Tabela de Titulares de Licenças
@@ -2495,7 +3315,7 @@ CREATE POLICY "Managers can manage holders" ON T_LICENSE_HOLDER
     );
 ```
 
-#### Tabela de Renovações: T_LICENSE_RENEWAL
+#### Tabela de Renovações: T\_LICENSE\_RENEWAL
 
 ```sql
 -- Tabela de Renovações de Licenças
@@ -2534,7 +3354,7 @@ CREATE POLICY "Managers can manage renewals" ON T_LICENSE_RENEWAL
     );
 ```
 
-#### Tabela de Auditoria: T_LICENSE_AUDIT
+#### Tabela de Auditoria: T\_LICENSE\_AUDIT
 
 ```sql
 -- Tabela de Auditoria de Licenças
@@ -2573,7 +3393,7 @@ CREATE POLICY "System can insert audit logs" ON T_LICENSE_AUDIT
     FOR INSERT WITH CHECK (auth.role() = 'service_role');
 ```
 
-#### Tabela de Alertas: T_LICENSE_ALERT
+#### Tabela de Alertas: T\_LICENSE\_ALERT
 
 ```sql
 -- Tabela de Alertas de Licenças
@@ -3415,7 +4235,7 @@ CREATE TABLE users (
 );
 ```
 
-#### Tabela: license_holders
+#### Tabela: license\_holders
 
 ```sql
 CREATE TABLE license_holders (
@@ -3437,7 +4257,7 @@ CREATE TABLE license_holders (
 );
 ```
 
-#### Tabela: corporate_holders
+#### Tabela: corporate\_holders
 
 ```sql
 CREATE TABLE corporate_holders (
@@ -3456,7 +4276,7 @@ CREATE TABLE corporate_holders (
 );
 ```
 
-#### Tabela: license_types
+#### Tabela: license\_types
 
 ```sql
 CREATE TABLE license_types (
@@ -3474,7 +4294,7 @@ CREATE TABLE license_types (
 );
 ```
 
-#### Tabela: license_issuers
+#### Tabela: license\_issuers
 
 ```sql
 CREATE TABLE license_issuers (
@@ -3491,7 +4311,7 @@ CREATE TABLE license_issuers (
 );
 ```
 
-#### Tabela: issued_licenses
+#### Tabela: issued\_licenses
 
 ```sql
 CREATE TABLE issued_licenses (
@@ -3579,7 +4399,7 @@ CREATE INDEX idx_audit_logs_action ON audit_logs(action);
 
 ### 5.4 Scripts SQL de Criação do Banco
 
-#### V1\_\_Create_Initial_Schema.sql
+#### V1\_\_Create\_Initial\_Schema.sql
 
 ```sql
 -- Extensões necessárias
@@ -3615,13 +4435,13 @@ CREATE TRIGGER update_issued_licenses_updated_at BEFORE UPDATE ON issued_license
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 ```
 
-#### V2\_\_Create_Indexes.sql
+#### V2\_\_Create\_Indexes.sql
 
 ```sql
 -- Todos os índices definidos na seção 5.3
 ```
 
-#### V3\_\_Insert_Initial_Data.sql
+#### V3\_\_Insert\_Initial\_Data.sql
 
 ```sql
 -- Dados iniciais para license_types
@@ -4424,39 +5244,39 @@ graph TB
 
 **Aplicação (Spring Boot)**
 
-- **CPU**: 2-4 vCPUs por instância
+* **CPU**: 2-4 vCPUs por instância
 
-- **RAM**: 4-8 GB por instância
+* **RAM**: 4-8 GB por instância
 
-- **Storage**: 50 GB SSD
+* **Storage**: 50 GB SSD
 
-- **JVM**: OpenJDK 17+ com G1GC
+* **JVM**: OpenJDK 17+ com G1GC
 
-- **Heap**: -Xms2g -Xmx6g
+* **Heap**: -Xms2g -Xmx6g
 
 **Banco de Dados (PostgreSQL)**
 
-- **CPU**: 4-8 vCPUs
+* **CPU**: 4-8 vCPUs
 
-- **RAM**: 16-32 GB
+* **RAM**: 16-32 GB
 
-- **Storage**: 500 GB SSD com IOPS provisionado
+* **Storage**: 500 GB SSD com IOPS provisionado
 
-- **Connections**: max_connections = 200
+* **Connections**: max\_connections = 200
 
-- **Shared Buffers**: 25% da RAM
+* **Shared Buffers**: 25% da RAM
 
 **Cache (Redis)**
 
-- **CPU**: 2 vCPUs
+* **CPU**: 2 vCPUs
 
-- **RAM**: 8-16 GB
+* **RAM**: 8-16 GB
 
-- **Storage**: 100 GB SSD
+* **Storage**: 100 GB SSD
 
-- **Persistence**: RDB + AOF
+* **Persistence**: RDB + AOF
 
-- **Max Memory Policy**: allkeys-lru
+* **Max Memory Policy**: allkeys-lru
 
 ## 9. Configurações de Deploy
 
@@ -4634,53 +5454,53 @@ spec:
 
 #### Marcos Legais de Referência
 
-- **Lei nº 103/VIII/2016** - Lei de Bases do Licenciamento Industrial
+* **Lei nº 103/VIII/2016** - Lei de Bases do Licenciamento Industrial
 
-- **Decreto-Lei nº 54/2018** - Regulamento do Licenciamento de Estabelecimentos Turísticos
+* **Decreto-Lei nº 54/2018** - Regulamento do Licenciamento de Estabelecimentos Turísticos
 
-- **Lei nº 85/VII/2010** - Código do Ordenamento do Território e Urbanismo
+* **Lei nº 85/VII/2010** - Código do Ordenamento do Território e Urbanismo
 
-- **Decreto-Lei nº 43/2010** - Regulamento Nacional de Edificações Urbanas
+* **Decreto-Lei nº 43/2010** - Regulamento Nacional de Edificações Urbanas
 
-- **Lei nº 41/VIII/2014** - Lei de Bases do Ambiente
+* **Lei nº 41/VIII/2014** - Lei de Bases do Ambiente
 
 #### Requisitos de Conformidade por Segmento
 
 **Estabelecimentos Comerciais:**
 
-- Licença de funcionamento municipal
+* Licença de funcionamento municipal
 
-- Certificado de segurança contra incêndios
+* Certificado de segurança contra incêndios
 
-- Alvará sanitário (quando aplicável)
+* Alvará sanitário (quando aplicável)
 
-- Certificado de conformidade urbanística
+* Certificado de conformidade urbanística
 
-- Declaração de impacto ambiental (estabelecimentos específicos)
+* Declaração de impacto ambiental (estabelecimentos específicos)
 
 **Estabelecimentos Turísticos:**
 
-- Licença de estabelecimento turístico (Ministério do Turismo)
+* Licença de estabelecimento turístico (Ministério do Turismo)
 
-- Certificado de classificação turística
+* Certificado de classificação turística
 
-- Licença de exploração de atividades turísticas
+* Licença de exploração de atividades turísticas
 
-- Certificado de segurança e higiene
+* Certificado de segurança e higiene
 
-- Licença ambiental (quando aplicável)
+* Licença ambiental (quando aplicável)
 
 **Estabelecimentos Industriais:**
 
-- Licença industrial
+* Licença industrial
 
-- Estudo de impacto ambiental
+* Estudo de impacto ambiental
 
-- Licença de instalação
+* Licença de instalação
 
-- Certificado de conformidade técnica
+* Certificado de conformidade técnica
 
-- Licença de exploração
+* Licença de exploração
 
 ### 10.2 Sistema de Validação Automática
 

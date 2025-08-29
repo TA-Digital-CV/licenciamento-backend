@@ -1,129 +1,170 @@
-# Documento de Aprovação - Implementação Frontend
+# IMPL-LIC-Plano-Implementacao-Frontend
 
-# Sistema de Gestão de Licenças Emitidas de Cabo Verde
+# Sistema de Gestão de Licenciamento - Plano de Implementação Frontend
 
 ## 1. Visão Geral do Projeto
 
 ### 1.1 Objetivo
 
-Implementar a interface visual das páginas do Sistema de Gestão de Licenças Emitidas de Cabo Verde, focando exclusivamente na experiência do usuário e componentes visuais. A framework IGRP será responsável por layout, cache, deployment, performance, monitoramento e autenticação.
+Implementar a interface frontend completa do Sistema de Gestão de Licenciamento de Cabo Verde, integrando com as APIs REST do backend e utilizando o IGRP Design System para criar uma experiência de usuário moderna, responsiva e acessível.
 
 ### 1.2 Escopo da Implementação
 
 - **Diretório Base**: `c:\projects\ta-digital\projects\licenciamento-gestao-frontend`
+- **Framework**: Next.js 14+ com App Router + React 18 + TypeScript
+- **Design System**: `@igrp/igrp-framework-react-design-system`
+- **Arquitetura**: Domain-Driven Design (DDD) no frontend
+- **Integração**: APIs REST do backend Spring Boot
 
-- **Framework**: React 18 + TypeScript integrado ao IGRP Framework
+### 1.3 Módulos do Sistema Frontend
 
-- **Bibliotecas IGRP**: `@igrp/igrp-framework-react-design-system`
+O frontend implementará interfaces para os seguintes módulos:
 
-- **Foco**: Interface visual, componentes de negócio, formulários e navegação
+1. **Parametrização de Licenciamento**
+   - Gestão de opções base, setores, categorias e tipos de licenças
+   - Configuração de dossiers de tipos de licença
 
-### 1.3 Responsabilidades
+2. **Gestão de Processos de Licenciamento**
+   - Controle completo do fluxo de processos
+   - Gestão de documentos, análises e comentários
+   - Atribuição de analistas e workflow
 
-**Framework IGRP (Gerenciado automaticamente):**
+3. **Gestão de Licenças Emitidas**
+   - Emissão, renovação, suspensão e cancelamento
+   - Controle de status e histórico
 
-- Layout e estrutura base
-- Sistema de cache
-- Deployment e configurações
-- Performance e otimizações
-- Monitoramento e logs
-- Autenticação e autorização
+4. **Gestão de Titulares de Licença**
+   - Cadastro de pessoas físicas e jurídicas
+   - Verificação de capacidade legal
 
-**Desenvolvimento Frontend (Nosso foco):**
+5. **Gestão de Emissores de Licenças**
+   - Cadastro de órgãos emissores
+   - Controle de competências e jurisdições
 
-- Componentes visuais das páginas
-- Formulários e validações de interface
-- Interações do usuário
-- Navegação entre páginas
-- Experiência do usuário (UX/UI)
+6. **Gestão de Estabelecimentos**
+   - Cadastro com georreferenciamento
+   - Gestão de documentos
 
-## 2. Análise dos Componentes Visuais
+7. **Dashboard e Relatórios**
+   - Métricas em tempo real
+   - Central de alertas
+   - Relatórios e auditoria
 
-### 2.1 Páginas e Componentes Principais
+### 1.4 Responsabilidades Técnicas
 
-#### PG001 - Página de Consulta de Licenças
+**Framework IGRP (Infraestrutura):**
+- Autenticação JWT e autorização baseada em roles
+- Sistema de cache e performance
+- Deployment e configurações de produção
+- Monitoramento e logs estruturados
+- Layout base e temas governamentais
 
-- **Componentes Visuais**:
-  - Formulário de busca avançada
-  - Grid de resultados com paginação
-  - Filtros laterais por categoria
-  - Cards de licenças com status visual
+**Desenvolvimento Frontend (Nossa responsabilidade):**
+- Componentes de interface específicos do domínio
+- Integração com APIs REST do backend
+- Roteamento dinâmico e navegação
+- Formulários complexos com validação
+- Estados de aplicação e gerenciamento de dados
+- Experiência do usuário (UX/UI) otimizada
 
-- **Interações**: Busca em tempo real, ordenação, filtros dinâmicos
+## 2. Arquitetura Frontend
 
-- **Estimativa**: 32 horas
+### 2.1 Diagrama de Arquitetura
 
-#### PG002 - Página de Detalhes da Licença
+```mermaid
+graph TB
+    subgraph "Frontend Layer"
+        A[Next.js App Router]
+        B[React Components]
+        C[IGRP Design System]
+        D[TypeScript Types]
+    end
+    
+    subgraph "State Management"
+        E[React Query/TanStack]
+        F[Zustand Store]
+        G[Form State]
+    end
+    
+    subgraph "API Integration"
+        H[Axios Client]
+        I[API Services]
+        J[Response Types]
+    end
+    
+    subgraph "Backend APIs"
+        K[Spring Boot REST APIs]
+        L[Authentication Service]
+        M[File Upload Service]
+    end
+    
+    A --> B
+    B --> C
+    B --> E
+    E --> F
+    B --> G
+    E --> H
+    H --> I
+    I --> J
+    H --> K
+    H --> L
+    H --> M
+```
 
-- **Componentes Visuais**:
-  - Cabeçalho com informações principais
-  - Abas para diferentes seções de dados
-  - Visualizador de documentos
-  - Botões de ação contextuais
+### 2.2 Estrutura de Rotas (App Router)
 
-- **Interações**: Navegação por abas, download de documentos, ações rápidas
+Baseado na especificação técnica, implementaremos as seguintes rotas:
 
-- **Estimativa**: 24 horas
+| Rota Frontend | Propósito | Backend API | Componente Principal |
+|---------------|-----------|-------------|---------------------|
+| `/dashboard` | Métricas e alertas em tempo real | `/api/v1/licensing-processes/dashboard` | DashboardPage |
+| `/processos` | Lista de processos de licenciamento | `/api/v1/licensing-processes` | ProcessListPage |
+| `/processos/[id]` | Detalhes do processo | `/api/v1/licensing-processes/{id}` | ProcessDetailPage |
+| `/processos/[id]/documentos` | Gestão de documentos | `/api/v1/licensing-processes/{id}/documents` | ProcessDocumentsPage |
+| `/processos/[id]/analises` | Análises técnicas | `/api/v1/licensing-processes/{id}/analyses` | ProcessAnalysisPage |
+| `/processos/[id]/comentarios` | Comentários e comunicações | `/api/v1/licensing-processes/{id}/comments` | ProcessCommentsPage |
+| `/licencas` | Lista de licenças emitidas | `/api/v1/issued-licenses` | LicenseListPage |
+| `/licencas/[id]` | Detalhes da licença | `/api/v1/issued-licenses/{id}` | LicenseDetailPage |
+| `/licencas/[id]/renovar` | Processo de renovação | `/api/v1/issued-licenses/{id}/renew` | LicenseRenewalPage |
+| `/licencas/[id]/suspender` | Suspensão de licença | `/api/v1/issued-licenses/{id}/suspend` | LicenseSuspensionPage |
+| `/licencas/[id]/historico` | Histórico da licença | `/api/v1/licensing-processes/{id}/audit-trail` | LicenseHistoryPage |
+| `/titulares` | Gestão de titulares | `/api/v1/license-holders` | HolderListPage |
+| `/titulares/[id]` | Detalhes do titular | `/api/v1/license-holders/{id}` | HolderDetailPage |
+| `/emissores` | Gestão de órgãos emissores | `/api/v1/license-issuers` | IssuerListPage |
+| `/emissores/[id]` | Detalhes do emissor | `/api/v1/license-issuers/{id}` | IssuerDetailPage |
+| `/estabelecimentos` | Gestão de estabelecimentos | `/api/v1/establishments` | EstablishmentListPage |
+| `/estabelecimentos/[id]` | Detalhes do estabelecimento | `/api/v1/establishments/{id}` | EstablishmentDetailPage |
+| `/alertas` | Central de alertas | `/api/v1/notifications` | AlertsPage |
+| `/relatorios` | Relatórios do sistema | `/api/v1/reports` | ReportsPage |
+| `/auditoria` | Logs de auditoria | `/api/v1/audit-logs` | AuditPage |
+| `/parametrizacao` | Configurações do sistema | `/api/v1/base-options` | ParametrizationPage |
 
-#### PG003 - Dashboard de Monitoramento
+### 2.3 Padrões Arquiteturais Frontend
 
-- **Componentes Visuais**:
-  - Cards de métricas com ícones
-  - Gráficos de status e tendências
-  - Lista de alertas prioritários
-  - Calendário de vencimentos
+#### 2.3.1 Domain-Driven Design (DDD) no Frontend
 
-- **Interações**: Filtros de período, drill-down em métricas
+- **Entities**: Modelos de domínio (License, Process, Holder, etc.)
+- **Value Objects**: Objetos de valor (Status, ContactInfo, etc.)
+- **Services**: Serviços de domínio (ValidationService, FormatterService)
+- **Repositories**: Camada de acesso a dados (API clients)
 
-- **Estimativa**: 28 horas
+#### 2.3.2 Component-Based Architecture
 
-#### PG004 - Wizard de Renovação
+- **Pages**: Componentes de página (rotas)
+- **Layouts**: Layouts reutilizáveis
+- **Components**: Componentes de negócio
+- **UI Components**: Componentes base do design system
 
-- **Componentes Visuais**:
-  - Stepper com progresso visual
-  - Formulários por etapa
-  - Upload de documentos com preview
-  - Resumo final com confirmação
+#### 2.3.3 State Management Strategy
 
-- **Interações**: Navegação entre etapas, validação em tempo real
+- **Server State**: React Query/TanStack Query para dados do servidor
+- **Client State**: Zustand para estado local da aplicação
+- **Form State**: React Hook Form para formulários
+- **URL State**: Next.js router para estado da URL
 
-- **Estimativa**: 36 horas
+## 3. Estrutura de Pastas e Componentes
 
-#### PG005 - Gestão de Estabelecimentos
-
-- **Componentes Visuais**:
-  - Formulário com seções colapsáveis
-  - Seletor de coordenadas GPS
-  - Upload múltiplo de documentos
-  - Preview de localização no mapa
-
-- **Interações**: Geolocalização, validação de coordenadas
-
-- **Estimativa**: 40 horas
-
-### 2.2 Requisitos de Interface
-
-#### Experiência do Usuário
-
-- **Responsividade**: Adaptação para mobile, tablet e desktop
-
-- **Acessibilidade**: Navegação por teclado, leitores de tela
-
-- **Feedback Visual**: Estados de loading, sucesso e erro
-
-- **Consistência**: Padrões visuais uniformes em todas as páginas
-
-#### Design System
-
-- **Componentes IGRP**: Utilização da biblioteca de design system
-
-- **Customização**: Adaptação dos componentes para o contexto de licenciamento
-
-- **Temas**: Aplicação da identidade visual governamental
-
-## 3. Estrutura de Componentes Visuais
-
-### 3.1 Organização dos Componentes de Interface
+### 3.1 Estrutura Completa do Projeto
 
 ```
 c:\projects\ta-digital\projects\licenciamento-gestao-frontend\
@@ -407,6 +448,1738 @@ export const LicenseSearchForm: React.FC<SearchFormProps> = ({
           placeholder="Selecione o status..."
           options={statusOptions}
           className="license-search-select"
+        />
+      </div>
+
+      <div className="flex justify-end space-x-2">
+        <Button variant="secondary" onClick={onClear}>
+          Limpar
+        </Button>
+        <Button variant="primary" onClick={onSearch}>
+          Pesquisar
+        </Button>
+      </div>
+    </div>
+  );
+};
+```
+
+#### Componentes de Negócio Visual
+
+```typescript
+// components/business/LicenseCard/LicenseCard.tsx
+import { Card } from '@igrp/igrp-framework-react-design-system';
+import { StatusBadge } from '@/components/ui/StatusBadge';
+import { Button } from '@/components/ui/Button';
+
+interface LicenseCardProps {
+  license: License;
+  onView: (id: string) => void;
+  onRenew: (id: string) => void;
+}
+
+export const LicenseCard: React.FC<LicenseCardProps> = ({
+  license,
+  onView,
+  onRenew
+}) => {
+  return (
+    <Card className="license-card hover:shadow-md transition-shadow">
+      <div className="flex justify-between items-start mb-3">
+        <div>
+          <h4 className="font-semibold text-gray-900">{license.number}</h4>
+          <p className="text-sm text-gray-600">{license.type}</p>
+        </div>
+        <StatusBadge status={license.status} />
+      </div>
+
+      <div className="space-y-2 mb-4">
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-600">Titular:</span>
+          <span className="font-medium">{license.holderName}</span>
+        </div>
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-600">Validade:</span>
+          <span>{formatDate(license.expiryDate)}</span>
+        </div>
+      </div>
+
+      <div className="flex space-x-2">
+        <Button size="sm" variant="secondary" onClick={() => onView(license.id)}>
+          Ver Detalhes
+        </Button>
+        <Button size="sm" variant="primary" onClick={() => onRenew(license.id)}>
+          Renovar
+        </Button>
+      </div>
+    </Card>
+  );
+};
+```
+
+## 4. Integração com APIs REST
+
+### 4.1 Configuração do Cliente HTTP
+
+```typescript
+// src/services/api/client.ts
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { useAuthStore } from '../store/auth';
+
+class ApiClient {
+  private client: AxiosInstance;
+
+  constructor() {
+    this.client = axios.create({
+      baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api/v1',
+      timeout: 30000,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
+
+    this.setupInterceptors();
+  }
+
+  private setupInterceptors() {
+    // Request interceptor para adicionar token JWT
+    this.client.interceptors.request.use(
+      (config) => {
+        const token = useAuthStore.getState().token;
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    // Response interceptor para tratamento de erros
+    this.client.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          useAuthStore.getState().logout();
+          window.location.href = '/login';
+        }
+        return Promise.reject(error);
+      }
+    );
+  }
+
+  async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.client.get<T>(url, config);
+    return response.data;
+  }
+
+  async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.client.post<T>(url, data, config);
+    return response.data;
+  }
+
+  async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.client.put<T>(url, data, config);
+    return response.data;
+  }
+
+  async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.client.delete<T>(url, config);
+    return response.data;
+  }
+}
+
+export const apiClient = new ApiClient();
+```
+
+### 4.2 Serviços de API por Módulo
+
+#### Serviço de Licenças
+
+```typescript
+// src/services/api/licenses.ts
+import { apiClient } from './client';
+import { License, LicenseSearchParams, PaginatedResponse } from '../../types/api';
+
+export class LicenseService {
+  private basePath = '/issued-licenses';
+
+  async searchLicenses(params: LicenseSearchParams): Promise<PaginatedResponse<License>> {
+    const queryParams = new URLSearchParams();
+    
+    if (params.licenseNumber) queryParams.append('licenseNumber', params.licenseNumber);
+    if (params.holderName) queryParams.append('holderName', params.holderName);
+    if (params.categoryId) queryParams.append('categoryId', params.categoryId);
+    if (params.typeId) queryParams.append('typeId', params.typeId);
+    if (params.status) queryParams.append('status', params.status);
+    if (params.page) queryParams.append('page', params.page.toString());
+    if (params.size) queryParams.append('size', params.size.toString());
+    if (params.sort) queryParams.append('sort', params.sort);
+
+    return apiClient.get(`${this.basePath}?${queryParams.toString()}`);
+  }
+
+  async getLicenseById(id: string): Promise<License> {
+    return apiClient.get(`${this.basePath}/${id}`);
+  }
+
+  async renewLicense(id: string, renewalData: any): Promise<License> {
+    return apiClient.post(`${this.basePath}/${id}/renew`, renewalData);
+  }
+
+  async suspendLicense(id: string, suspensionData: any): Promise<License> {
+    return apiClient.post(`${this.basePath}/${id}/suspend`, suspensionData);
+  }
+
+  async reactivateLicense(id: string): Promise<License> {
+    return apiClient.post(`${this.basePath}/${id}/reactivate`);
+  }
+
+  async cancelLicense(id: string, cancellationData: any): Promise<License> {
+    return apiClient.post(`${this.basePath}/${id}/cancel`, cancellationData);
+  }
+
+  async getLicenseHistory(id: string): Promise<any[]> {
+    return apiClient.get(`/licensing-processes/${id}/audit-trail`);
+  }
+}
+
+export const licenseService = new LicenseService();
+```
+
+#### Serviço de Processos
+
+```typescript
+// src/services/api/processes.ts
+import { apiClient } from './client';
+import { LicensingProcess, ProcessSearchParams, PaginatedResponse } from '../../types/api';
+
+export class ProcessService {
+  private basePath = '/licensing-processes';
+
+  async searchProcesses(params: ProcessSearchParams): Promise<PaginatedResponse<LicensingProcess>> {
+    const queryParams = new URLSearchParams();
+    
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryParams.append(key, value.toString());
+      }
+    });
+
+    return apiClient.get(`${this.basePath}?${queryParams.toString()}`);
+  }
+
+  async getProcessById(id: string): Promise<LicensingProcess> {
+    return apiClient.get(`${this.basePath}/${id}`);
+  }
+
+  async createProcess(processData: any): Promise<LicensingProcess> {
+    return apiClient.post(this.basePath, processData);
+  }
+
+  async updateProcess(id: string, processData: any): Promise<LicensingProcess> {
+    return apiClient.put(`${this.basePath}/${id}`, processData);
+  }
+
+  async assignAnalyst(id: string, analystId: string): Promise<void> {
+    return apiClient.post(`${this.basePath}/${id}/assign-analyst`, { analystId });
+  }
+
+  async getProcessDocuments(id: string): Promise<any[]> {
+    return apiClient.get(`${this.basePath}/${id}/documents`);
+  }
+
+  async uploadDocument(id: string, file: File, documentType: string): Promise<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('documentType', documentType);
+
+    return apiClient.post(`${this.basePath}/${id}/documents`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  }
+
+  async getProcessAnalyses(id: string): Promise<any[]> {
+    return apiClient.get(`${this.basePath}/${id}/analyses`);
+  }
+
+  async createAnalysis(id: string, analysisData: any): Promise<any> {
+    return apiClient.post(`${this.basePath}/${id}/analyses`, analysisData);
+  }
+
+  async getProcessComments(id: string): Promise<any[]> {
+    return apiClient.get(`${this.basePath}/${id}/comments`);
+  }
+
+  async addComment(id: string, commentData: any): Promise<any> {
+    return apiClient.post(`${this.basePath}/${id}/comments`, commentData);
+  }
+
+  async getDashboardMetrics(): Promise<any> {
+    return apiClient.get(`${this.basePath}/dashboard`);
+  }
+}
+
+export const processService = new ProcessService();
+```
+
+### 4.3 Hooks de API com React Query
+
+```typescript
+// src/hooks/api/useLicenses.ts
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { licenseService } from '../../services/api/licenses';
+import { LicenseSearchParams } from '../../types/api';
+import { useNotifications } from '../business/useNotifications';
+
+export const useLicenses = (params: LicenseSearchParams) => {
+  return useQuery({
+    queryKey: ['licenses', params],
+    queryFn: () => licenseService.searchLicenses(params),
+    keepPreviousData: true,
+    staleTime: 5 * 60 * 1000, // 5 minutos
+  });
+};
+
+export const useLicense = (id: string) => {
+  return useQuery({
+    queryKey: ['license', id],
+    queryFn: () => licenseService.getLicenseById(id),
+    enabled: !!id,
+  });
+};
+
+export const useRenewLicense = () => {
+  const queryClient = useQueryClient();
+  const { showSuccess, showError } = useNotifications();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: any }) => 
+      licenseService.renewLicense(id, data),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(['license', variables.id]);
+      queryClient.invalidateQueries(['licenses']);
+      showSuccess('Licença renovada com sucesso!');
+    },
+    onError: (error) => {
+      showError('Erro ao renovar licença. Tente novamente.');
+    },
+  });
+};
+
+export const useSuspendLicense = () => {
+  const queryClient = useQueryClient();
+  const { showSuccess, showError } = useNotifications();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: any }) => 
+      licenseService.suspendLicense(id, data),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries(['license', variables.id]);
+      queryClient.invalidateQueries(['licenses']);
+      showSuccess('Licença suspensa com sucesso!');
+    },
+    onError: (error) => {
+      showError('Erro ao suspender licença. Tente novamente.');
+    },
+  });
+};
+
+export const useLicenseHistory = (id: string) => {
+  return useQuery({
+    queryKey: ['license-history', id],
+    queryFn: () => licenseService.getLicenseHistory(id),
+    enabled: !!id,
+  });
+};
+```
+
+## 5. Autenticação e Autorização
+
+### 5.1 Integração com IGRP Auth
+
+```typescript
+// src/store/auth.ts
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { User, AuthTokens } from '../types/api';
+
+interface AuthState {
+  user: User | null;
+  token: string | null;
+  refreshToken: string | null;
+  isAuthenticated: boolean;
+  permissions: string[];
+  roles: string[];
+  login: (tokens: AuthTokens, user: User) => void;
+  logout: () => void;
+  updateUser: (user: User) => void;
+  hasPermission: (permission: string) => boolean;
+  hasRole: (role: string) => boolean;
+}
+
+export const useAuthStore = create<AuthState>()()
+  persist(
+    (set, get) => ({
+      user: null,
+      token: null,
+      refreshToken: null,
+      isAuthenticated: false,
+      permissions: [],
+      roles: [],
+
+      login: (tokens, user) => {
+        set({
+          user,
+          token: tokens.accessToken,
+          refreshToken: tokens.refreshToken,
+          isAuthenticated: true,
+          permissions: user.permissions || [],
+          roles: user.roles || [],
+        });
+      },
+
+      logout: () => {
+        set({
+          user: null,
+          token: null,
+          refreshToken: null,
+          isAuthenticated: false,
+          permissions: [],
+          roles: [],
+        });
+      },
+
+      updateUser: (user) => {
+        set({
+          user,
+          permissions: user.permissions || [],
+          roles: user.roles || [],
+        });
+      },
+
+      hasPermission: (permission) => {
+        const { permissions } = get();
+        return permissions.includes(permission) || permissions.includes('ADMIN');
+      },
+
+      hasRole: (role) => {
+        const { roles } = get();
+        return roles.includes(role) || roles.includes('ADMIN');
+      },
+    }),
+    {
+      name: 'auth-storage',
+      partialize: (state) => ({
+        user: state.user,
+        token: state.token,
+        refreshToken: state.refreshToken,
+        isAuthenticated: state.isAuthenticated,
+        permissions: state.permissions,
+        roles: state.roles,
+      }),
+    }
+  )
+);
+```
+
+### 5.2 Middleware de Autorização
+
+```typescript
+// src/middleware.ts
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { jwtVerify } from 'jose';
+
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback-secret');
+
+const protectedRoutes = [
+  '/dashboard',
+  '/processos',
+  '/licencas',
+  '/titulares',
+  '/emissores',
+  '/estabelecimentos',
+  '/alertas',
+  '/relatorios',
+  '/auditoria',
+  '/parametrizacao'
+];
+
+const roleBasedRoutes = {
+  '/auditoria': ['ADMIN', 'AUDITOR'],
+  '/parametrizacao': ['ADMIN'],
+  '/relatorios': ['ADMIN', 'MANAGER', 'ANALYST']
+};
+
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  
+  // Verificar se a rota precisa de autenticação
+  const isProtectedRoute = protectedRoutes.some(route => 
+    pathname.startsWith(route)
+  );
+  
+  if (!isProtectedRoute) {
+    return NextResponse.next();
+  }
+  
+  // Verificar token JWT
+  const token = request.cookies.get('auth-token')?.value;
+  
+  if (!token) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+  
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const userRoles = payload.roles as string[] || [];
+    
+    // Verificar permissões baseadas em roles
+    const requiredRoles = roleBasedRoutes[pathname as keyof typeof roleBasedRoutes];
+    
+    if (requiredRoles && !requiredRoles.some(role => userRoles.includes(role))) {
+      return NextResponse.redirect(new URL('/unauthorized', request.url));
+    }
+    
+    return NextResponse.next();
+  } catch (error) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+}
+
+export const config = {
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|login|unauthorized).*)',
+  ],
+};
+```
+
+### 5.3 Componente de Proteção de Rotas
+
+```typescript
+// src/components/auth/ProtectedRoute.tsx
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '../../store/auth';
+import { LoadingSpinner } from '../ui/LoadingSpinner';
+
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  requiredPermissions?: string[];
+  requiredRoles?: string[];
+  fallbackUrl?: string;
+}
+
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  requiredPermissions = [],
+  requiredRoles = [],
+  fallbackUrl = '/login'
+}) => {
+  const router = useRouter();
+  const { isAuthenticated, hasPermission, hasRole, user } = useAuthStore();
+  
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push(fallbackUrl);
+      return;
+    }
+    
+    // Verificar permissões
+    if (requiredPermissions.length > 0) {
+      const hasRequiredPermissions = requiredPermissions.every(permission => 
+        hasPermission(permission)
+      );
+      
+      if (!hasRequiredPermissions) {
+        router.push('/unauthorized');
+        return;
+      }
+    }
+    
+    // Verificar roles
+    if (requiredRoles.length > 0) {
+      const hasRequiredRoles = requiredRoles.some(role => hasRole(role));
+      
+      if (!hasRequiredRoles) {
+        router.push('/unauthorized');
+        return;
+      }
+    }
+  }, [isAuthenticated, requiredPermissions, requiredRoles, router, hasPermission, hasRole]);
+  
+  if (!isAuthenticated || !user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
+  
+  return <>{children}</>;
+};
+```
+
+## 6. Roteamento Dinâmico Next.js 14+
+
+### 6.1 Configuração de Rotas
+
+```typescript
+// src/config/routes.ts
+export const routes = {
+  // Rotas públicas
+  login: '/login',
+  
+  // Dashboard
+  dashboard: '/dashboard',
+  
+  // Processos de Licenciamento
+  processes: {
+    list: '/processos',
+    detail: (id: string) => `/processos/${id}`,
+    documents: (id: string) => `/processos/${id}/documentos`,
+    analyses: (id: string) => `/processos/${id}/analises`,
+    comments: (id: string) => `/processos/${id}/comentarios`,
+    create: '/processos/novo'
+  },
+  
+  // Licenças Emitidas
+  licenses: {
+    list: '/licencas',
+    detail: (id: string) => `/licencas/${id}`,
+    renew: (id: string) => `/licencas/${id}/renovar`,
+    suspend: (id: string) => `/licencas/${id}/suspender`,
+    history: (id: string) => `/licencas/${id}/historico`,
+    issue: '/licencas/emitir'
+  },
+  
+  // Titulares
+  holders: {
+    list: '/titulares',
+    detail: (id: string) => `/titulares/${id}`,
+    create: '/titulares/novo'
+  },
+  
+  // Emissores
+  issuers: {
+    list: '/emissores',
+    detail: (id: string) => `/emissores/${id}`,
+    create: '/emissores/novo'
+  },
+  
+  // Estabelecimentos
+  establishments: {
+    list: '/estabelecimentos',
+    detail: (id: string) => `/estabelecimentos/${id}`,
+    create: '/estabelecimentos/novo'
+  },
+  
+  // Outros
+  alerts: '/alertas',
+  reports: '/relatorios',
+  audit: '/auditoria',
+  settings: '/parametrizacao'
+} as const;
+```
+
+### 6.2 Configuração de Navegação
+
+```typescript
+// src/config/navigation.ts
+import { routes } from './routes';
+
+export interface NavigationItem {
+  id: string;
+  label: string;
+  href: string;
+  icon: string;
+  children?: NavigationItem[];
+  requiredPermissions?: string[];
+  requiredRoles?: string[];
+}
+
+export const navigationItems: NavigationItem[] = [
+  {
+    id: 'dashboard',
+    label: 'Dashboard',
+    href: routes.dashboard,
+    icon: 'dashboard',
+  },
+  {
+    id: 'processes',
+    label: 'Processos',
+    href: routes.processes.list,
+    icon: 'process',
+    children: [
+      {
+        id: 'processes-list',
+        label: 'Lista de Processos',
+        href: routes.processes.list,
+        icon: 'list'
+      },
+      {
+        id: 'processes-create',
+        label: 'Novo Processo',
+        href: routes.processes.create,
+        icon: 'add',
+        requiredPermissions: ['PROCESS_CREATE']
+      }
+    ]
+  },
+  {
+    id: 'licenses',
+    label: 'Licenças',
+    href: routes.licenses.list,
+    icon: 'license',
+    children: [
+      {
+        id: 'licenses-list',
+        label: 'Lista de Licenças',
+        href: routes.licenses.list,
+        icon: 'list'
+      },
+      {
+        id: 'licenses-issue',
+        label: 'Emitir Licença',
+        href: routes.licenses.issue,
+        icon: 'add',
+        requiredPermissions: ['LICENSE_ISSUE']
+      }
+    ]
+  },
+  {
+    id: 'holders',
+    label: 'Titulares',
+    href: routes.holders.list,
+    icon: 'person',
+  },
+  {
+    id: 'establishments',
+    label: 'Estabelecimentos',
+    href: routes.establishments.list,
+    icon: 'business',
+  },
+  {
+    id: 'reports',
+    label: 'Relatórios',
+    href: routes.reports,
+    icon: 'report',
+    requiredRoles: ['ADMIN', 'MANAGER', 'ANALYST']
+  },
+  {
+    id: 'audit',
+    label: 'Auditoria',
+    href: routes.audit,
+    icon: 'audit',
+    requiredRoles: ['ADMIN', 'AUDITOR']
+  },
+  {
+    id: 'settings',
+    label: 'Configurações',
+    href: routes.settings,
+    icon: 'settings',
+    requiredRoles: ['ADMIN']
+  }
+];
+```
+
+## 7. Gerenciamento de Estado
+
+### 7.1 Store de UI
+
+```typescript
+// src/store/ui.ts
+import { create } from 'zustand';
+
+interface UIState {
+  // Sidebar
+  sidebarOpen: boolean;
+  sidebarCollapsed: boolean;
+  
+  // Modals
+  modals: Record<string, boolean>;
+  
+  // Loading states
+  loading: Record<string, boolean>;
+  
+  // Theme
+  theme: 'light' | 'dark';
+  
+  // Actions
+  toggleSidebar: () => void;
+  setSidebarOpen: (open: boolean) => void;
+  toggleSidebarCollapsed: () => void;
+  
+  openModal: (modalId: string) => void;
+  closeModal: (modalId: string) => void;
+  toggleModal: (modalId: string) => void;
+  
+  setLoading: (key: string, loading: boolean) => void;
+  
+  setTheme: (theme: 'light' | 'dark') => void;
+}
+
+export const useUIStore = create<UIState>((set, get) => ({
+  sidebarOpen: true,
+  sidebarCollapsed: false,
+  modals: {},
+  loading: {},
+  theme: 'light',
+  
+  toggleSidebar: () => {
+    set((state) => ({ sidebarOpen: !state.sidebarOpen }));
+  },
+  
+  setSidebarOpen: (open) => {
+    set({ sidebarOpen: open });
+  },
+  
+  toggleSidebarCollapsed: () => {
+    set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed }));
+  },
+  
+  openModal: (modalId) => {
+    set((state) => ({
+      modals: { ...state.modals, [modalId]: true }
+    }));
+  },
+  
+  closeModal: (modalId) => {
+    set((state) => ({
+      modals: { ...state.modals, [modalId]: false }
+    }));
+  },
+  
+  toggleModal: (modalId) => {
+    const { modals } = get();
+    const isOpen = modals[modalId] || false;
+    set((state) => ({
+      modals: { ...state.modals, [modalId]: !isOpen }
+    }));
+  },
+  
+  setLoading: (key, loading) => {
+    set((state) => ({
+      loading: { ...state.loading, [key]: loading }
+    }));
+  },
+  
+  setTheme: (theme) => {
+    set({ theme });
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+}));
+```
+
+### 7.2 Store de Filtros
+
+```typescript
+// src/store/filters.ts
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+
+interface FilterState {
+  // Filtros de licenças
+  licenseFilters: {
+    licenseNumber?: string;
+    holderName?: string;
+    categoryId?: string;
+    typeId?: string;
+    status?: string;
+    issueDateFrom?: string;
+    issueDateTo?: string;
+    expiryDateFrom?: string;
+    expiryDateTo?: string;
+  };
+  
+  // Filtros de processos
+  processFilters: {
+    processNumber?: string;
+    applicantName?: string;
+    status?: string;
+    analystId?: string;
+    createdDateFrom?: string;
+    createdDateTo?: string;
+  };
+  
+  // Paginação
+  pagination: {
+    licenses: { page: number; size: number; sort?: string };
+    processes: { page: number; size: number; sort?: string };
+    holders: { page: number; size: number; sort?: string };
+    establishments: { page: number; size: number; sort?: string };
+  };
+  
+  // Actions
+  setLicenseFilters: (filters: Partial<FilterState['licenseFilters']>) => void;
+  clearLicenseFilters: () => void;
+  
+  setProcessFilters: (filters: Partial<FilterState['processFilters']>) => void;
+  clearProcessFilters: () => void;
+  
+  setPagination: (entity: keyof FilterState['pagination'], pagination: Partial<FilterState['pagination'][keyof FilterState['pagination']]>) => void;
+}
+
+export const useFilterStore = create<FilterState>()()
+  persist(
+    (set, get) => ({
+      licenseFilters: {},
+      processFilters: {},
+      pagination: {
+        licenses: { page: 0, size: 20 },
+        processes: { page: 0, size: 20 },
+        holders: { page: 0, size: 20 },
+        establishments: { page: 0, size: 20 }
+      },
+      
+      setLicenseFilters: (filters) => {
+        set((state) => ({
+          licenseFilters: { ...state.licenseFilters, ...filters }
+        }));
+      },
+      
+      clearLicenseFilters: () => {
+        set({ licenseFilters: {} });
+      },
+      
+      setProcessFilters: (filters) => {
+        set((state) => ({
+          processFilters: { ...state.processFilters, ...filters }
+        }));
+      },
+      
+      clearProcessFilters: () => {
+        set({ processFilters: {} });
+      },
+      
+      setPagination: (entity, pagination) => {
+        set((state) => ({
+          pagination: {
+            ...state.pagination,
+            [entity]: { ...state.pagination[entity], ...pagination }
+          }
+        }));
+      }
+    }),
+    {
+      name: 'filters-storage',
+      partialize: (state) => ({
+        licenseFilters: state.licenseFilters,
+        processFilters: state.processFilters,
+        pagination: state.pagination
+      })
+    }
+  )
+);
+```
+
+## 8. Configurações e Variáveis de Ambiente
+
+### 8.1 Variáveis de Ambiente
+
+```bash
+# .env.local
+# API Configuration
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api/v1
+NEXT_PUBLIC_API_TIMEOUT=30000
+
+# Authentication
+JWT_SECRET=your-jwt-secret-key
+NEXT_PUBLIC_AUTH_PROVIDER=igrp
+
+# IGRP Configuration
+NEXT_PUBLIC_IGRP_THEME=government
+NEXT_PUBLIC_IGRP_LOCALE=pt-CV
+
+# File Upload
+NEXT_PUBLIC_MAX_FILE_SIZE=10485760
+NEXT_PUBLIC_ALLOWED_FILE_TYPES=pdf,doc,docx,jpg,jpeg,png
+
+# Maps and Geolocation
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your-google-maps-api-key
+NEXT_PUBLIC_DEFAULT_COORDINATES=-15.120142,-23.605721
+
+# Cache Configuration
+NEXT_PUBLIC_CACHE_TTL=300000
+NEXT_PUBLIC_STALE_TIME=60000
+
+# Monitoring
+NEXT_PUBLIC_SENTRY_DSN=your-sentry-dsn
+NEXT_PUBLIC_ANALYTICS_ID=your-analytics-id
+
+# Development
+NEXT_PUBLIC_DEBUG_MODE=true
+NEXT_PUBLIC_MOCK_API=false
+```
+
+### 8.2 Configuração Next.js
+
+```javascript
+// next.config.js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Configurações de roteamento
+  trailingSlash: false,
+  
+  // Configurações de imagem
+  images: {
+    domains: [
+      'localhost',
+      'api.licenciamento.gov.cv',
+      'storage.googleapis.com'
+    ],
+    formats: ['image/webp', 'image/avif'],
+  },
+  
+  // Headers de segurança
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+        ],
+      },
+    ];
+  },
+  
+  // Redirects
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/dashboard',
+        permanent: false,
+      },
+    ];
+  },
+  
+  // Configurações experimentais
+  experimental: {
+    appDir: true,
+    serverComponentsExternalPackages: ['@igrp/igrp-framework-react-design-system'],
+  },
+  
+  // Webpack customization
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // Configurações customizadas do webpack
+    return config;
+  },
+};
+
+module.exports = nextConfig;
+```
+
+## 9. Métricas de Sucesso e KPIs
+
+### 9.1 Métricas Técnicas
+
+- **Performance**:
+  - Tempo de carregamento inicial < 3 segundos
+  - First Contentful Paint < 1.5 segundos
+  - Largest Contentful Paint < 2.5 segundos
+  - Cumulative Layout Shift < 0.1
+
+- **Disponibilidade**:
+  - Uptime > 99.5%
+  - Tempo de resposta da API < 500ms
+  - Taxa de erro < 1%
+
+- **Usabilidade**:
+  - Compatibilidade com navegadores modernos
+  - Responsividade em dispositivos móveis
+  - Acessibilidade WCAG 2.1 AA
+
+### 9.2 Métricas de Negócio
+
+- **Eficiência Operacional**:
+  - Redução de 40% no tempo de processamento
+  - Diminuição de 60% em erros de entrada de dados
+  - Aumento de 50% na produtividade dos analistas
+
+- **Experiência do Usuário**:
+  - Taxa de satisfação > 85%
+  - Tempo médio de conclusão de tarefas < 5 minutos
+  - Taxa de abandono < 10%
+
+### 9.3 Métricas de Conformidade
+
+- **Auditoria e Compliance**:
+  - 100% das ações auditadas
+  - Conformidade com LGPD
+  - Rastreabilidade completa de processos
+
+## 10. Riscos e Mitigações
+
+### 10.1 Riscos Técnicos
+
+| Risco | Probabilidade | Impacto | Mitigação |
+|-------|---------------|---------|----------|
+| Incompatibilidade com IGRP Design System | Média | Alto | Testes de integração contínuos, documentação detalhada |
+| Performance em dispositivos móveis | Baixa | Médio | Otimização de bundle, lazy loading, testes em dispositivos reais |
+| Problemas de conectividade com APIs | Média | Alto | Implementação de retry logic, cache offline, fallbacks |
+| Segurança de autenticação | Baixa | Alto | Implementação de JWT seguro, HTTPS obrigatório, auditoria |
+
+### 10.2 Riscos de Negócio
+
+| Risco | Probabilidade | Impacto | Mitigação |
+|-------|---------------|---------|----------|
+| Mudanças nos requisitos | Alta | Médio | Arquitetura flexível, desenvolvimento iterativo |
+| Resistência dos usuários | Média | Alto | Treinamento, documentação, suporte dedicado |
+| Prazo de entrega | Média | Alto | Planejamento detalhado, marcos intermediários |
+
+## 11. Resumo Executivo
+
+### 11.1 Objetivos do Projeto
+
+O plano de implementação frontend visa criar uma interface moderna, intuitiva e eficiente para o Sistema de Gestão de Licenciamento de Cabo Verde, focando na experiência do usuário e na integração seamless com o backend Spring Boot.
+
+### 11.2 Escopo e Entregáveis
+
+**Entregáveis Principais**:
+- Interface completa para todos os módulos do sistema
+- Integração com APIs REST do backend
+- Sistema de autenticação e autorização
+- Componentes reutilizáveis baseados no IGRP Design System
+- Documentação técnica e de usuário
+
+### 11.3 Cronograma Estimado
+
+- **Fase 1 - Infraestrutura (2 semanas)**: Configuração do projeto, autenticação, componentes base
+- **Fase 2 - Módulos Core (6 semanas)**: Dashboard, processos, licenças
+- **Fase 3 - Módulos Secundários (4 semanas)**: Titulares, estabelecimentos, emissores
+- **Fase 4 - Funcionalidades Avançadas (3 semanas)**: Relatórios, auditoria, configurações
+- **Fase 5 - Testes e Refinamentos (2 semanas)**: Testes integrados, otimizações, documentação
+
+**Total**: 17 semanas
+
+### 11.4 Tecnologias e Ferramentas
+
+**Frontend Stack**:
+- Next.js 14+ com App Router
+- React 18 + TypeScript
+- IGRP Design System
+- TanStack Query para gerenciamento de estado servidor
+- Zustand para estado local
+- Tailwind CSS para estilização
+
+**Integração**:
+- APIs REST do backend Spring Boot
+- Autenticação JWT via IGRP
+- Upload de arquivos com validação
+- Geolocalização para estabelecimentos
+
+### 11.5 Critérios de Sucesso
+
+- **Funcionalidade**: 100% dos requisitos implementados
+- **Performance**: Carregamento < 3s, responsividade mobile
+- **Usabilidade**: Interface intuitiva, acessibilidade WCAG 2.1
+- **Integração**: Comunicação seamless com backend
+- **Manutenibilidade**: Código bem documentado, componentes reutilizáveis
+
+---
+
+## 12. Diagramas de Arquitetura Frontend
+
+### 12.1 Arquitetura Geral do Sistema
+
+```mermaid
+graph TB
+    subgraph "Camada de Apresentação"
+        A[Next.js 14+ App Router]
+        B[React 18 Components]
+        C[IGRP Design System]
+    end
+    
+    subgraph "Camada de Estado"
+        D[Zustand Stores]
+        E[TanStack Query]
+        F[React Context]
+    end
+    
+    subgraph "Camada de Serviços"
+        G[API Services]
+        H[Auth Service]
+        I[File Upload Service]
+    end
+    
+    subgraph "Camada de Dados"
+        J[REST APIs]
+        K[Local Storage]
+        L[Session Storage]
+    end
+    
+    A --> B
+    B --> C
+    B --> D
+    B --> E
+    D --> G
+    E --> G
+    G --> J
+    H --> J
+    I --> J
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style C fill:#e8f5e8
+    style D fill:#fff3e0
+    style E fill:#fce4ec
+```
+
+### 12.2 Fluxo de Autenticação
+
+```mermaid
+sequenceDiagram
+    participant U as Usuário
+    participant F as Frontend
+    participant I as IGRP Auth
+    participant B as Backend API
+    
+    U->>F: Acessa aplicação
+    F->>F: Verifica token local
+    alt Token válido
+        F->>B: Requisição com token
+        B->>F: Resposta autorizada
+        F->>U: Exibe conteúdo
+    else Token inválido/ausente
+        F->>I: Redireciona para login
+        I->>U: Exibe tela de login
+        U->>I: Credenciais
+        I->>B: Valida credenciais
+        B->>I: Token JWT + dados usuário
+        I->>F: Retorna com token
+        F->>F: Armazena token e dados
+        F->>U: Exibe dashboard
+    end
+```
+
+### 12.3 Fluxo de Gerenciamento de Estado
+
+```mermaid
+graph LR
+    subgraph "Componentes React"
+        A[Page Component]
+        B[Business Component]
+        C[UI Component]
+    end
+    
+    subgraph "Estado Global"
+        D[Auth Store]
+        E[UI Store]
+        F[Filter Store]
+    end
+    
+    subgraph "Estado Servidor"
+        G[TanStack Query]
+        H[API Cache]
+    end
+    
+    subgraph "Serviços"
+        I[API Services]
+        J[Backend APIs]
+    end
+    
+    A --> B
+    B --> C
+    A --> D
+    A --> E
+    A --> F
+    A --> G
+    G --> H
+    G --> I
+    I --> J
+    
+    style D fill:#ffebee
+    style E fill:#e3f2fd
+    style F fill:#f1f8e9
+    style G fill:#fce4ec
+```
+
+### 12.4 Arquitetura de Componentes
+
+```mermaid
+graph TD
+    subgraph "Layout Components"
+        A[AppLayout]
+        B[Sidebar]
+        C[Header]
+        D[Footer]
+    end
+    
+    subgraph "Page Components"
+        E[Dashboard]
+        F[ProcessList]
+        G[LicenseList]
+        H[ProcessDetail]
+    end
+    
+    subgraph "Business Components"
+        I[ProcessCard]
+        J[LicenseCard]
+        K[StatusBadge]
+        L[ActionButtons]
+    end
+    
+    subgraph "Form Components"
+        M[SearchForm]
+        N[ProcessForm]
+        O[LicenseForm]
+        P[FileUpload]
+    end
+    
+    subgraph "UI Components (IGRP)"
+        Q[Button]
+        R[Input]
+        S[Select]
+        T[Modal]
+        U[DataGrid]
+        V[Card]
+    end
+    
+    A --> B
+    A --> C
+    A --> D
+    A --> E
+    E --> I
+    F --> I
+    G --> J
+    H --> I
+    I --> K
+    I --> L
+    M --> Q
+    M --> R
+    M --> S
+    N --> Q
+    N --> R
+    O --> P
+    P --> T
+    
+    style A fill:#e1f5fe
+    style E fill:#f3e5f5
+    style I fill:#e8f5e8
+    style M fill:#fff3e0
+    style Q fill:#fce4ec
+```
+
+### 12.5 Fluxo de Integração com APIs
+
+```mermaid
+sequenceDiagram
+    participant C as Component
+    participant H as Custom Hook
+    participant Q as TanStack Query
+    participant S as API Service
+    participant A as Backend API
+    
+    C->>H: useProcesses(params)
+    H->>Q: useQuery(key, fn)
+    Q->>S: processService.search(params)
+    S->>A: GET /api/v1/licensing-processes
+    A->>S: Response data
+    S->>Q: Processed data
+    Q->>H: Query result
+    H->>C: { data, loading, error }
+    
+    Note over Q: Cache management
+    Note over S: Error handling
+    Note over A: Authentication
+```
+
+### 12.6 Estrutura de Roteamento
+
+```mermaid
+graph TD
+    A[Root Layout] --> B[Dashboard]
+    A --> C[Processos]
+    A --> D[Licenças]
+    A --> E[Titulares]
+    A --> F[Estabelecimentos]
+    A --> G[Relatórios]
+    A --> H[Auditoria]
+    A --> I[Configurações]
+    
+    C --> C1[Lista]
+    C --> C2[Detalhes]
+    C --> C3[Novo]
+    C2 --> C4[Documentos]
+    C2 --> C5[Análises]
+    C2 --> C6[Comentários]
+    
+    D --> D1[Lista]
+    D --> D2[Detalhes]
+    D --> D3[Emitir]
+    D2 --> D4[Renovar]
+    D2 --> D5[Suspender]
+    D2 --> D6[Histórico]
+    
+    style A fill:#e1f5fe
+    style C fill:#f3e5f5
+    style D fill:#e8f5e8
+    style C2 fill:#fff3e0
+    style D2 fill:#fce4ec
+```
+
+## 13. Padrões de Desenvolvimento
+
+### 13.1 Convenções de Nomenclatura
+
+```typescript
+// Componentes: PascalCase
+export const LicenseCard: React.FC<LicenseCardProps> = () => {};
+
+// Hooks: camelCase com prefixo 'use'
+export const useLicenses = () => {};
+
+// Tipos: PascalCase
+export interface License {
+  id: string;
+  number: string;
+}
+
+// Constantes: UPPER_SNAKE_CASE
+export const API_BASE_URL = 'http://localhost:8080/api/v1';
+
+// Arquivos: kebab-case
+// license-card.tsx
+// use-licenses.ts
+// api-client.ts
+```
+
+### 13.2 Estrutura de Componentes
+
+```typescript
+// Padrão de estrutura para componentes
+import React from 'react';
+import { ComponentProps } from './types';
+import { useComponentLogic } from './hooks';
+import styles from './Component.module.css';
+
+interface Props {
+  // Props tipadas
+}
+
+export const Component: React.FC<Props> = ({
+  // Destructuring de props
+}) => {
+  // Hooks no topo
+  const { state, actions } = useComponentLogic();
+  
+  // Event handlers
+  const handleAction = () => {
+    // Lógica do handler
+  };
+  
+  // Early returns para condições
+  if (loading) return <LoadingSpinner />;
+  
+  // JSX principal
+  return (
+    <div className={styles.container}>
+      {/* Conteúdo do componente */}
+    </div>
+  );
+};
+
+// Export default no final
+export default Component;
+```
+
+### 13.3 Padrões de Hooks Customizados
+
+```typescript
+// Hook para lógica de negócio
+export const useProcessManagement = (processId?: string) => {
+  // Estado local
+  const [localState, setLocalState] = useState();
+  
+  // Queries
+  const { data: process, isLoading } = useProcess(processId);
+  
+  // Mutations
+  const updateProcess = useUpdateProcess();
+  
+  // Efeitos
+  useEffect(() => {
+    // Side effects
+  }, [processId]);
+  
+  // Handlers
+  const handleUpdate = useCallback((data: any) => {
+    updateProcess.mutate({ id: processId, data });
+  }, [processId, updateProcess]);
+  
+  // Return objeto com estado e ações
+  return {
+    process,
+    isLoading,
+    handleUpdate,
+    // Outras propriedades
+  };
+};
+```
+
+### 13.4 Tratamento de Erros
+
+```typescript
+// Error Boundary para captura de erros
+export class ErrorBoundary extends React.Component {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+  
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Error caught by boundary:', error, errorInfo);
+    // Enviar erro para serviço de monitoramento
+  }
+  
+  render() {
+    if (this.state.hasError) {
+      return <ErrorFallback error={this.state.error} />;
+    }
+    
+    return this.props.children;
+  }
+}
+
+// Hook para tratamento de erros em hooks
+export const useErrorHandler = () => {
+  const { showError } = useNotifications();
+  
+  return useCallback((error: Error, context?: string) => {
+    console.error(`Error in ${context}:`, error);
+    showError(error.message || 'Ocorreu um erro inesperado');
+  }, [showError]);
+};
+```
+
+## 14. Testes e Qualidade
+
+### 14.1 Estratégia de Testes
+
+```typescript
+// Teste de componente com React Testing Library
+import { render, screen, fireEvent } from '@testing-library/react';
+import { LicenseCard } from './LicenseCard';
+
+describe('LicenseCard', () => {
+  const mockLicense = {
+    id: '1',
+    number: 'LIC-001',
+    type: 'Comercial',
+    status: 'ACTIVE',
+    holderName: 'João Silva',
+    expiryDate: '2024-12-31'
+  };
+  
+  it('should render license information correctly', () => {
+    const onView = jest.fn();
+    const onRenew = jest.fn();
+    
+    render(
+      <LicenseCard 
+        license={mockLicense} 
+        onView={onView} 
+        onRenew={onRenew} 
+      />
+    );
+    
+    expect(screen.getByText('LIC-001')).toBeInTheDocument();
+    expect(screen.getByText('João Silva')).toBeInTheDocument();
+  });
+  
+  it('should call onView when view button is clicked', () => {
+    const onView = jest.fn();
+    const onRenew = jest.fn();
+    
+    render(
+      <LicenseCard 
+        license={mockLicense} 
+        onView={onView} 
+        onRenew={onRenew} 
+      />
+    );
+    
+    fireEvent.click(screen.getByText('Ver Detalhes'));
+    expect(onView).toHaveBeenCalledWith('1');
+  });
+});
+```
+
+### 14.2 Configuração de Testes
+
+```javascript
+// jest.config.js
+const nextJest = require('next/jest');
+
+const createJestConfig = nextJest({
+  dir: './'
+});
+
+const customJestConfig = {
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  moduleNameMapping: {
+    '^@/(.*)$': '<rootDir>/src/$1'
+  },
+  testEnvironment: 'jest-environment-jsdom',
+  collectCoverageFrom: [
+    'src/**/*.{js,jsx,ts,tsx}',
+    '!src/**/*.d.ts',
+    '!src/**/*.stories.{js,jsx,ts,tsx}'
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
+    }
+  }
+};
+
+module.exports = createJestConfig(customJestConfig);
+```
+
+### 14.3 Linting e Formatação
+
+```json
+// .eslintrc.json
+{
+  "extends": [
+    "next/core-web-vitals",
+    "@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/explicit-function-return-type": "warn",
+    "react-hooks/exhaustive-deps": "warn",
+    "prefer-const": "error",
+    "no-console": "warn"
+  }
+}
+```
+
+```json
+// prettier.config.js
+module.exports = {
+  semi: true,
+  trailingComma: 'es5',
+  singleQuote: true,
+  printWidth: 80,
+  tabWidth: 2,
+  useTabs: false
+};
+```
+
+## 15. Performance e Otimização
+
+### 15.1 Estratégias de Otimização
+
+```typescript
+// Lazy loading de componentes
+const ProcessDetail = lazy(() => import('./ProcessDetail'));
+const LicenseDetail = lazy(() => import('./LicenseDetail'));
+
+// Memoização de componentes
+const LicenseCard = React.memo<LicenseCardProps>(({ license, onView, onRenew }) => {
+  return (
+    // Componente memoizado
+  );
+});
+
+// Otimização de re-renders
+const ProcessList = () => {
+  const { data: processes } = useProcesses();
+  
+  const memoizedProcesses = useMemo(() => {
+    return processes?.map(process => ({
+      ...process,
+      formattedDate: formatDate(process.createdAt)
+    }));
+  }, [processes]);
+  
+  return (
+    <div>
+      {memoizedProcesses?.map(process => (
+        <ProcessCard key={process.id} process={process} />
+      ))}
+    </div>
+  );
+};
+```
+
+### 15.2 Bundle Optimization
+
+```javascript
+// next.config.js - Otimizações de bundle
+const nextConfig = {
+  // Análise de bundle
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        fs: false,
+        net: false,
+        tls: false
+      };
+    }
+    
+    // Tree shaking
+    config.optimization.usedExports = true;
+    
+    return config;
+  },
+  
+  // Compressão
+  compress: true,
+  
+  // Otimização de imagens
+  images: {
+    formats: ['image/webp', 'image/avif'],
+    minimumCacheTTL: 60
+  },
+  
+  // Headers de cache
+  async headers() {
+    return [
+      {
+        source: '/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
+        ]
+      }
+    ];
+  }
+};
+```
+
+---
+
+**Documento preparado por**: Equipe de Desenvolvimento Frontend  
+**Data**: 2024  
+**Versão**: 1.0  
+**Status**: Aprovado para implementação
         />
       </div>
 

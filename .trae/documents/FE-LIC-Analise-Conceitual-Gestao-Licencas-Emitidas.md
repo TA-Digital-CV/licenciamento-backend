@@ -4,665 +4,639 @@
 
 ## 1. Visão Geral do Módulo
 
-O módulo de **Gestão de Licenças Emitidas** é responsável pela gestão completa do ciclo de vida das licenças após sua emissão, incluindo monitoramento de validade, processos de renovação, alterações, suspensão e controle de conformidade. Este módulo integra-se com o sistema de parametrização existente e utiliza arquitetura DDD para garantir robustez e manutenibilidade.
+O módulo de **Gestão de Licenças Emitidas** é responsável pela gestão completa do ciclo de vida das licenças após sua emissão, incluindo monitoramento de validade, processos de licenciamento, renovações, alterações, suspensão e controle de conformidade. Este módulo integra-se com o sistema de parametrização existente e utiliza arquitetura DDD para garantir robustez e manutenibilidade.
 
 ### 1.1 Objetivos
 
 - Implementar gestão completa do ciclo de vida de licenças emitidas
 
-- **Estabelecer obrigatoriedade de registro de estabelecimentos como pré-requisito para licenciamento**
+- **Controlar processos de licenciamento desde a parametrização até a emissão**
 
-- **Implementar sistema de registro matricial com identificação única para estabelecimentos**
+- **Implementar arquitetura DDD com Domain-Driven Design para clareza e manutenibilidade**
 
-- **Integrar sistema de georreferenciamento com coordenadas GPS para localização precisa**
+- **Fornecer APIs REST padronizadas para integração com frontend e sistemas externos**
+
+- **Garantir validações de negócio e integridade dos dados através de regras de domínio**
+
+- **Implementar auditoria completa para rastrear todas as operações e mudanças**
+
+- **Suportar performance e escalabilidade para alto volume de transações**
 
 - Fornecer monitoramento automatizado de validade e alertas
 
-- Processar renovações, alterações e transferências de titularidade
+- Processar renovações, alterações e transferências de titularidade através de processos de licenciamento
 
 - Garantir rastreabilidade completa através de auditoria
 
-- Integrar com sistemas externos (Activity, Financeiro, Notificações)
+- Integrar com sistemas externos através de eventos de domínio
 
-- Suportar diferentes modelos de licenciamento (simples, complexo, automático)
-
-- **Validar documentação específica por segmento (comercial, turístico, industrial)**
-
-- **Implementar controles de conformidade com legislação vigente de Cabo Verde**
-
-- Implementar controles de acesso baseados em perfis de usuário
+- Implementar controles de acesso baseados em perfis de usuário com Row Level Security
 
 ### 1.2 Entidades Principais
 
-#### 1.2.1 Entidades de Emissão
+#### 1.2.1 Entidades de Parametrização Base
+
+- **T_BASE_OPTION**: Opções base do sistema
+  - Tipos de opções configuráveis
+  - Códigos e nomes padronizados
+  - Status de ativação
+
+- **T_LICENSING_SECTOR**: Setores de licenciamento
+  - Códigos e nomes de setores
+  - Descrições e status
+
+- **T_LICENSE_CATEGORY**: Categorias de licenças
+  - Vinculação a setores
+  - Códigos e nomes de categorias
+
+- **T_LICENSE_TYPE**: Tipos de licenças
+  - Vinculação a categorias
+  - Períodos de validade e taxas base
+  - Configurações de renovação
+
+#### 1.2.2 Entidades de Emissão
 
 - **T_LICENSE_ISSUER**: Órgãos emissores de licenças
-  - Identificação única do emissor
-
-  - Competências e jurisdições
-
+  - Tipo e nível organizacional do emissor
+  - Códigos únicos e jurisdições
+  - Áreas de competência
   - Dados de contato institucional
-
   - Status operacional
 
 - **T_ISSUED_LICENSE**: Licenças emitidas com controle de ciclo de vida
-  - Vinculação ao emissor e titular
-
+  - Vinculação ao tipo, titular, emissor e estabelecimento
+  - Números únicos de licença
   - Controle de validade e status
+  - Valores de taxas e condições
+  - Configurações de renovação
 
-  - Metadados específicos do tipo de licença
+#### 1.2.3 Entidades de Titularidade
 
-#### 1.2.2 Entidades de Titularidade
-
-- **T_LICENSE_HOLDER**: Entidade base para titulares de licenças
-  - Tipo de titular (pessoa física/jurídica)
-
-  - Dados comuns (identificação, contatos)
-
-  - Status e classificação
-
-- **T_INDIVIDUAL_HOLDER**: Pessoas físicas titulares de licenças
-  - Nome completo e dados pessoais
-
-  - Filiação (pai e mãe)
-
-  - Estado civil e naturalidade
-
-  - Documentos de identificação específicos
-
-- **T_CORPORATE_HOLDER**: Pessoas jurídicas titulares de licenças
-  - Razão social e nome fantasia
-
-  - NIF e inscrições
-
-  - Atividade econômica principal
-
-  - Dados societários
-
-- **T_LEGAL_REPRESENTATIVE**: Representantes legais de pessoas jurídicas
-  - Vinculação à pessoa jurídica
-
-  - Dados pessoais do representante
-
-  - Tipo e poderes de representação
-
-  - Período de validade da representação
-
-#### 1.2.3 Entidades de Contato
-
-- **T_HOLDER_CONTACT**: Contatos dos titulares
-  - Tipo de contato (telefone, email, endereço)
-
-  - Classificação (principal, secundário, comercial)
-
-  - Status de verificação
-
-  - Preferências de comunicação
+- **T_LICENSE_HOLDER**: Titulares de licenças (pessoas físicas e jurídicas)
+  - Tipo de titular (individual/corporate)
+  - Tipo e número de identificação
+  - Nome, email, telefone e endereço
+  - Status de capacidade legal
+  - Status do titular
 
 #### 1.2.4 Entidades de Estabelecimento
 
 - **T_ESTABLISHMENT**: Estabelecimentos registrados no sistema
-  - Registro matricial único
-  - Dados de localização e georreferenciamento
-  - Classificação por segmento (comercial, turístico, industrial)
-  - Status operacional e conformidade
+  - Número matricial único
+  - Nome e nome comercial
+  - Tipo e segmento do estabelecimento
+  - Coordenadas de georreferenciamento (latitude/longitude)
+  - Endereço, município e ilha
+  - Status operacional
 
-- **T_ESTABLISHMENT_LOCATION**: Dados de georreferenciamento
-  - Coordenadas GPS (latitude/longitude)
-  - Endereço completo normalizado
-  - Área de influência e zoneamento
-  - Validação cartográfica
+#### 1.2.5 Entidades de Processo de Licenciamento
 
-- **T_ESTABLISHMENT_DOCUMENT**: Documentação específica por segmento
-  - Documentos obrigatórios por tipo de estabelecimento
-  - Status de validação e conformidade
-  - Datas de validade e renovação
-  - Histórico de alterações
+- **T_LICENSING_PROCESS**: Processos de licenciamento
+  - Número único do processo
+  - Vinculação ao tipo de licença, titular, estabelecimento e emissor
+  - Status e nível de prioridade
+  - Datas de submissão, decisão alvo e decisão real
+  - Tipo e justificativa da decisão
+  - Analista atribuído e supervisor revisor
+  - Informações de taxas e pagamentos
+  - Notas do requerente, internas e públicas
+  - Dados adicionais em JSON
+  - Controle de versão e auditoria
 
-- **T_ESTABLISHMENT_CLASSIFICATION**: Classificação de estabelecimentos
-  - Segmento de atividade (comercial, turístico, industrial, serviços)
-  - Categoria específica dentro do segmento
-  - Porte do estabelecimento (micro, pequeno, médio, grande)
-  - Critérios de classificação aplicáveis
+- **T_PROCESS_STATUS_HISTORY**: Histórico de status dos processos
+  - Vinculação ao processo
+  - Status anterior e novo
+  - Razão da mudança e responsável
+  - Metadados adicionais
 
-#### 1.2.5 Entidades de Processo
+- **T_PROCESS_DOCUMENT**: Documentos dos processos
+  - Vinculação ao processo
+  - Tipo, categoria e nome do documento
+  - Informações do arquivo (caminho, nome, tipo MIME, tamanho)
+  - Status de validação e obrigatoriedade
+  - Datas de submissão e validação
+  - Notas de validação e responsável
 
-- **T_LICENSE_RENEWAL**: Processos de renovação de licenças
+- **T_PROCESS_ANALYSIS**: Análises técnicas dos processos
+  - Vinculação ao processo
+  - Tipo, categoria e analista responsável
+  - Status e datas da análise
+  - Resultado e descobertas da análise
+  - Recomendações e avaliação técnica
+  - Notas de conformidade
+  - Informações de visita ao local
 
-- **T_LICENSE_AMENDMENT**: Alterações e aditivos às licenças
+- **T_PROCESS_COMMENT**: Comentários e comunicações dos processos
+  - Vinculação ao processo
+  - Tipo e nível de visibilidade
+  - Texto do comentário
+  - Comentário pai (para respostas)
+  - Autor e papel do autor
+  - Indicador de comentário oficial
 
-- **T_LICENSE_TRANSFER**: Transferências de titularidade
+## 2. Modelo de Dados Consolidado
 
-- **T_ESTABLISHMENT_REGISTRATION**: Processos de registro de estabelecimentos
-
-- **T_LICENSE_AUDIT**: Histórico completo de auditoria
-
-## 2. Modelo de Dados Normalizado
-
-### 2.1 Diagrama ER Normalizado
+### 2.1 Diagrama ER Consolidado
 
 ```mermaid
 erDiagram
-    %% Entidades de Emissão
-    T_LICENSE_ISSUER ||--o{ T_ISSUED_LICENSE : "issues"
-    T_ISSUED_LICENSE ||--|| T_LICENSE_TYPE : "is of type"
-
-    %% Entidades de Titularidade
-    T_LICENSE_HOLDER ||--o{ T_ISSUED_LICENSE : "owns"
-    T_LICENSE_HOLDER ||--o| T_INDIVIDUAL_HOLDER : "extends"
-    T_LICENSE_HOLDER ||--o| T_CORPORATE_HOLDER : "extends"
-    T_CORPORATE_HOLDER ||--o{ T_LEGAL_REPRESENTATIVE : "has representatives"
-    T_LICENSE_HOLDER ||--o{ T_HOLDER_CONTACT : "has contacts"
-
-    %% Entidades de Estabelecimento
-    T_ISSUED_LICENSE }o--|| T_ESTABLISHMENT : "licensed_establishment"
-    T_ESTABLISHMENT }o--|| T_LICENSE_HOLDER : "owned_by"
-    T_ESTABLISHMENT }o--|| T_ESTABLISHMENT_CLASSIFICATION : "classified_as"
-    T_ESTABLISHMENT ||--|| T_ESTABLISHMENT_LOCATION : "located_at"
-    T_ESTABLISHMENT ||--o{ T_ESTABLISHMENT_DOCUMENT : "has_documents"
-    T_ESTABLISHMENT ||--o{ T_ESTABLISHMENT_REGISTRATION : "registration_process"
-
-    %% Entidades de Processo
-    T_ISSUED_LICENSE ||--o{ T_LICENSE_RENEWAL : "has renewals"
-    T_ISSUED_LICENSE ||--o{ T_LICENSE_AMENDMENT : "has amendments"
-    T_ISSUED_LICENSE ||--o{ T_LICENSE_TRANSFER : "has transfers"
-    T_ISSUED_LICENSE ||--o{ T_LICENSE_AUDIT : "has audit trail"
-    T_ISSUED_LICENSE ||--o{ T_LICENSE_DOCUMENT : "has documents"
-    T_ISSUED_LICENSE ||--o{ T_LICENSE_FEE : "has fees"
-    T_ISSUED_LICENSE ||--o{ T_LICENSE_ALERT : "generates alerts"
-
-    %% Definições das Entidades
-    T_LICENSE_ISSUER {
-        uuid id PK
-        varchar issuer_code UK
-        varchar name
-        varchar jurisdiction
-        varchar competence_area
-        varchar contact_email
-        varchar contact_phone
-        varchar status
-        timestamp created_at
-        timestamp updated_at
-        uuid created_by FK
-        uuid updated_by FK
+    %% Parametrização Base
+    T_BASE_OPTION {
+        UUID id PK
+        VARCHAR option_type
+        VARCHAR option_code
+        VARCHAR option_name
+        TEXT description
+        BOOLEAN is_active
+        INTEGER display_order
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
-
+    
+    %% Licenciamento
+    T_LICENSING_SECTOR {
+        UUID id PK
+        VARCHAR sector_code
+        VARCHAR sector_name
+        TEXT description
+        BOOLEAN is_active
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    T_LICENSE_CATEGORY {
+        UUID id PK
+        UUID sector_id FK
+        VARCHAR category_code
+        VARCHAR category_name
+        TEXT description
+        BOOLEAN is_active
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    T_LICENSE_TYPE {
+        UUID id PK
+        UUID category_id FK
+        VARCHAR type_code
+        VARCHAR type_name
+        TEXT description
+        VARCHAR validity_period
+        DECIMAL base_fee
+        BOOLEAN requires_renewal
+        BOOLEAN is_active
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    %% Titulares
     T_LICENSE_HOLDER {
-        uuid id PK
-        varchar holder_type
-        varchar status
-        varchar classification
-        timestamp created_at
-        timestamp updated_at
-        uuid created_by FK
-        uuid updated_by FK
+        UUID id PK
+        VARCHAR holder_type
+        VARCHAR identification_type
+        VARCHAR identification_number
+        VARCHAR name
+        VARCHAR email
+        VARCHAR phone
+        TEXT address
+        VARCHAR legal_capacity_status
+        VARCHAR holder_status
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
-
-    T_INDIVIDUAL_HOLDER {
-        uuid id PK
-        uuid holder_id FK
-        varchar full_name
-        varchar father_name
-        varchar mother_name
-        varchar marital_status
-        varchar nationality
-        varchar birthplace
-        date birth_date
-        varchar document_type
-        varchar document_number UK
-        varchar gender
-        timestamp created_at
-        timestamp updated_at
+    
+    %% Emissores
+    T_LICENSE_ISSUER {
+        UUID id PK
+        VARCHAR issuer_type
+        VARCHAR organization_level
+        VARCHAR issuer_code
+        VARCHAR issuer_name
+        VARCHAR jurisdiction
+        VARCHAR competence_area
+        VARCHAR contact_email
+        VARCHAR contact_phone
+        VARCHAR status
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
-
-    T_CORPORATE_HOLDER {
-        uuid id PK
-        uuid holder_id FK
-        varchar corporate_name
-        varchar trade_name
-        varchar tax_id UK
-        varchar registration_number
-        varchar economic_activity
-        varchar corporate_type
-        date incorporation_date
-        varchar share_capital
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    T_LEGAL_REPRESENTATIVE {
-        uuid id PK
-        uuid corporate_holder_id FK
-        varchar full_name
-        varchar document_type
-        varchar document_number UK
-        varchar representation_type
-        varchar powers_description
-        date valid_from
-        date valid_until
-        varchar status
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    T_HOLDER_CONTACT {
-        uuid id PK
-        uuid holder_id FK
-        varchar contact_type
-        varchar contact_value
-        varchar classification
-        boolean is_primary
-        boolean is_verified
-        varchar verification_method
-        timestamp verified_at
-        varchar communication_preference
-        timestamp created_at
-        timestamp updated_at
-    }
-
+    
+    %% Licenças Emitidas
     T_ISSUED_LICENSE {
-        uuid id PK
-        varchar license_number UK
-        uuid issuer_id FK
-        uuid license_type_id FK
-        uuid holder_id FK
-        uuid establishment_id FK
-        varchar status
-        date issue_date
-        date expiry_date
-        date provisional_expiry_date
-        varchar licensing_model
-        boolean renewable
-        integer renewal_count
-        text observations
-        jsonb metadata
-        timestamp created_at
-        timestamp updated_at
-        uuid created_by FK
-        uuid updated_by FK
+        UUID id PK
+        UUID license_type_id FK
+        UUID holder_id FK
+        UUID issuer_id FK
+        UUID establishment_id FK
+        VARCHAR license_number
+        DATE issue_date
+        DATE expiry_date
+        VARCHAR license_status
+        DECIMAL fee_amount
+        VARCHAR validity_period
+        TEXT conditions
+        BOOLEAN is_renewable
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
-
+    
+    %% Estabelecimentos
     T_ESTABLISHMENT {
-        uuid id PK
-        varchar matricial_number UK
-        varchar name
-        uuid holder_id FK
-        uuid classification_id FK
-        varchar segment
-        varchar category
-        varchar size_classification
-        varchar operational_status
-        date registration_date
-        date last_inspection_date
-        boolean compliance_status
-        text compliance_notes
-        timestamp created_at
-        timestamp updated_at
-        uuid created_by FK
+        UUID id PK
+        VARCHAR matricial_number
+        VARCHAR name
+        VARCHAR trade_name
+        VARCHAR establishment_type
+        VARCHAR segment
+        DECIMAL latitude
+        DECIMAL longitude
+        TEXT address
+        VARCHAR municipality
+        VARCHAR island
+        VARCHAR status
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
+    
+    %% Processos
+    T_LICENSING_PROCESS {
+        UUID id PK
+        VARCHAR process_number UK
+        UUID license_type_id FK
+        UUID license_holder_id FK
+        UUID establishment_id FK
+        UUID issuer_id FK
+        VARCHAR process_status
+        VARCHAR priority_level
+        DATE submission_date
+        DATE target_decision_date
+        DATE actual_decision_date
+        VARCHAR decision_type
+        TEXT decision_rationale
+        UUID assigned_analyst_id
+        UUID reviewing_supervisor_id
+        DECIMAL application_fee_amount
+        VARCHAR fee_payment_status
+        VARCHAR fee_payment_reference
+        DATE fee_payment_date
+        TEXT applicant_notes
+        TEXT internal_notes
+        TEXT public_notes
+        JSON additional_data
+        VARCHAR created_by
+        TIMESTAMP created_at
+        VARCHAR updated_by
+        TIMESTAMP updated_at
+        INTEGER version
+    }
+    
+    T_PROCESS_STATUS_HISTORY {
+        UUID id PK
+        UUID process_id FK
+        VARCHAR previous_status
+        VARCHAR new_status
+        TEXT status_change_reason
+        VARCHAR changed_by
+        TIMESTAMP changed_at
+        JSON additional_metadata
+    }
+    
+    T_PROCESS_DOCUMENT {
+        UUID id PK
+        UUID process_id FK
+        VARCHAR document_type
+        VARCHAR document_category
+        VARCHAR document_name
+        VARCHAR file_path
+        VARCHAR file_name
+        VARCHAR mime_type
+        BIGINT file_size
+        VARCHAR document_status
+        BOOLEAN is_required
+        DATE submission_date
+        DATE validation_date
+        VARCHAR validated_by
+        TEXT validation_notes
+        VARCHAR uploaded_by
+        TIMESTAMP uploaded_at
+        INTEGER version
+    }
+    
+    T_PROCESS_ANALYSIS {
+        UUID id PK
+        UUID process_id FK
+        VARCHAR analysis_type
+        VARCHAR analysis_category
+        VARCHAR analyst_id
+        VARCHAR analysis_status
+        DATE analysis_start_date
+        DATE analysis_completion_date
+        VARCHAR analysis_result
+        TEXT analysis_findings
+        TEXT recommendations
+        JSON technical_assessment
+        TEXT compliance_notes
+        BOOLEAN requires_site_visit
+        DATE site_visit_date
+        TEXT site_visit_notes
+        VARCHAR created_by
+        TIMESTAMP created_at
+        VARCHAR updated_by
+        TIMESTAMP updated_at
+    }
+    
+    T_PROCESS_COMMENT {
+        UUID id PK
+        UUID process_id FK
+        VARCHAR comment_type
+        VARCHAR visibility_level
+        TEXT comment_text
+        UUID parent_comment_id FK
+        VARCHAR author_id
+        VARCHAR author_role
+        BOOLEAN is_official
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    
+    %% Relacionamentos
+    T_LICENSING_SECTOR ||--o{ T_LICENSE_CATEGORY : "contains"
+    T_LICENSE_CATEGORY ||--o{ T_LICENSE_TYPE : "contains"
+    T_LICENSE_TYPE ||--o{ T_LICENSING_PROCESS : "used in"
+    T_LICENSE_HOLDER ||--o{ T_LICENSING_PROCESS : "applies for"
+    T_LICENSE_ISSUER ||--o{ T_LICENSING_PROCESS : "processes"
+    T_LICENSING_PROCESS ||--o| T_ISSUED_LICENSE : "results in"
+    T_LICENSE_TYPE ||--o{ T_ISSUED_LICENSE : "type of"
+    T_LICENSE_HOLDER ||--o{ T_ISSUED_LICENSE : "holds"
+    T_LICENSE_ISSUER ||--o{ T_ISSUED_LICENSE : "issues"
+    T_ESTABLISHMENT ||--o{ T_ISSUED_LICENSE : "licensed for"
+    T_LICENSING_PROCESS ||--o{ T_PROCESS_STATUS_HISTORY : "has history"
+    T_LICENSING_PROCESS ||--o{ T_PROCESS_DOCUMENT : "contains documents"
+    T_LICENSING_PROCESS ||--o{ T_PROCESS_ANALYSIS : "has analysis"
+    T_LICENSING_PROCESS ||--o{ T_PROCESS_COMMENT : "has comments"
+    T_PROCESS_COMMENT ||--o{ T_PROCESS_COMMENT : "has replies"
 
-    T_ESTABLISHMENT_LOCATION {
-        uuid id PK
-        uuid establishment_id FK
-        decimal latitude
-        decimal longitude
-        varchar address_line1
-        varchar address_line2
-        varchar city
-        varchar parish
-        varchar municipality
-        varchar postal_code
-        varchar zone_classification
-        varchar land_use_type
-        boolean cartographic_validated
-        timestamp validation_date
-        uuid validated_by FK
-    }
-
-    T_ESTABLISHMENT_DOCUMENT {
-        uuid id PK
-        uuid establishment_id FK
-        varchar document_type
-        varchar document_name
-        varchar file_path
-        varchar mime_type
-        bigint file_size
-        varchar validation_status
-        date issue_date
-        date expiry_date
-        varchar issuing_authority
-        text validation_notes
-        timestamp uploaded_at
-        uuid uploaded_by FK
-    }
-
-    T_ESTABLISHMENT_CLASSIFICATION {
-        uuid id PK
-        varchar code UK
-        varchar name
-        varchar segment
-        varchar category
-        text description
-        json required_documents
-        json validation_criteria
-        boolean is_active
-        timestamp created_at
-        timestamp updated_at
-    }
-
-    T_ESTABLISHMENT_REGISTRATION {
-        uuid id PK
-        uuid establishment_id FK
-        varchar registration_type
-        varchar status
-        date application_date
-        date approval_date
-        uuid approved_by FK
-        text approval_notes
-        json submitted_documents
-        json validation_results
-        timestamp created_at
-        uuid created_by FK
-    }
 ```
 
-### 2.2 Descrição das Entidades Normalizadas
-
-#### Entidades de Emissão
-
-##### T_LICENSE_ISSUER (Emissores de Licenças)
-
-Entidade que representa os órgãos ou entidades responsáveis pela emissão de licenças.
-
-**Campos principais:**
-
-- `issuer_code`: Código único do emissor
-
-- `name`: Nome oficial do órgão emissor
-
-- `jurisdiction`: Jurisdição de competência
-
-- `competence_area`: Área de competência específica
-
-- `contact_email`: Email oficial de contato
-
-- `contact_phone`: Telefone oficial de contato
-
-- `status`: Status do emissor (ativo, inativo)
-
-##### T_ISSUED_LICENSE (Licenças Emitidas)
-
-Entidade principal que representa uma licença emitida pelo sistema.
-
-**Campos principais:**
-
-- `license_number`: Número único da licença
-
-- `issuer_id`: Referência ao emissor da licença
-
-- `license_type_id`: Referência ao tipo de licença
-
-- `holder_id`: Referência ao titular da licença
-
-- `status`: Estado atual da licença (ativa, suspensa, cancelada, expirada)
-
-- `issue_date`: Data de emissão
-
-- `expiry_date`: Data de expiração
-
-- `renewable`: Indica se a licença é renovável
-
-- `renewal_count`: Contador de renovações realizadas
-
-#### Entidades de Titularidade
-
-##### T_LICENSE_HOLDER (Titular Base)
-
-Entidade base que representa os titulares das licenças, servindo como superclasse para pessoas físicas e jurídicas.
-
-**Campos principais:**
-
-- `holder_type`: Tipo de titular (individual, corporate)
-
-- `status`: Status do titular (ativo, inativo, suspenso)
-
-- `classification`: Classificação adicional do titular
-
-##### T_INDIVIDUAL_HOLDER (Pessoa Física)
-
-Entidade específica para titulares pessoas físicas, contendo atributos específicos.
-
-**Campos principais:**
-
-- `holder_id`: Referência ao titular base
-
-- `full_name`: Nome completo da pessoa
-
-- `father_name`: Nome do pai (filiação paterna)
-
-- `mother_name`: Nome da mãe (filiação materna)
-
-- `marital_status`: Estado civil
-
-- `nationality`: Nacionalidade
-
-- `birthplace`: Local de nascimento
-
-- `birth_date`: Data de nascimento
-
-- `document_type`: Tipo de documento de identificação
-
-- `document_number`: Número do documento (único)
-
-- `gender`: Gênero
-
-##### T_CORPORATE_HOLDER (Pessoa Jurídica)
-
-Entidade específica para titulares pessoas jurídicas, contendo atributos corporativos.
-
-**Campos principais:**
-
-- `holder_id`: Referência ao titular base
-
-- `corporate_name`: Razão social
-
-- `trade_name`: Nome fantasia
-
-- `tax_id`: Número de identificação fiscal (único)
-
-- `registration_number`: Número de registro comercial
-
-- `economic_activity`: Atividade econômica principal
-
-- `corporate_type`: Tipo societário
-
-- `incorporation_date`: Data de constituição
-
-- `share_capital`: Capital social
-
-##### T_LEGAL_REPRESENTATIVE (Representante Legal)
-
-Entidade que representa os representantes legais de pessoas jurídicas.
-
-**Campos principais:**
-
-- `corporate_holder_id`: Referência à pessoa jurídica
-
-- `full_name`: Nome completo do representante
-
-- `document_type`: Tipo de documento de identificação
-
-- `document_number`: Número do documento (único)
-
-- `representation_type`: Tipo de representação (administrador, procurador, etc.)
-
-- `powers_description`: Descrição dos poderes de representação
-
-- `valid_from`: Data de início da representação
-
-- `valid_until`: Data de fim da representação
-
-- `status`: Status da representação (ativa, inativa)
-
-#### Entidades de Contato
-
-##### T_HOLDER_CONTACT (Contatos do Titular)
-
-Entidade que armazena os diferentes tipos de contato dos titulares.
-
-**Campos principais:**
-
-- `holder_id`: Referência ao titular
-
-- `contact_type`: Tipo de contato (email, phone, address, etc.)
-
-- `contact_value`: Valor do contato
-
-- `classification`: Classificação do contato (pessoal, comercial, etc.)
-
-- `is_primary`: Indica se é o contato principal
-
-- `is_verified`: Indica se o contato foi verificado
-
-- `verification_method`: Método de verificação utilizado
-
-- `verified_at`: Data/hora da verificação
-
-- `communication_preference`: Preferência de comunicação
-
-#### Entidades de Processo
-
-As entidades de processo mantêm a estrutura original, mas agora se relacionam com a nova estrutura normalizada de titulares:
-
-- **T_LICENSE_RENEWAL**: Processos de renovação de licenças
-
-- **T_LICENSE_AMENDMENT**: Alterações em licenças existentes
-
-- **T_LICENSE_TRANSFER**: Transferências de titularidade
-
-- **T_LICENSE_AUDIT**: Trilha de auditoria completa
-
-- **T_LICENSE_DOCUMENT**: Documentos anexos às licenças
-
-- **T_LICENSE_FEE**: Taxas associadas às licenças
-
-- **T_LICENSE_ALERT**: Alertas e notificações do sistema
+### 2.2 Principais Entidades de Domínio
+
+#### 2.2.1 Aggregate Roots
+
+- **LicensingProcess**: Controla todo o fluxo de um processo de licenciamento
+- **IssuedLicense**: Representa uma licença emitida e seu ciclo de vida
+- **LicenseHolder**: Gerencia titulares de licença (pessoas físicas/jurídicas)
+- **LicenseIssuer**: Controla órgãos emissores e suas competências
+- **LicenseType**: Define tipos de licença e suas características
+
+#### 2.2.2 Value Objects Principais
+
+- **LicenseNumber**: Número único da licença
+- **ProcessNumber**: Número único do processo
+- **Identification**: Dados de identificação (CPF/CNPJ)
+- **ContactInfo**: Informações de contato
+- **FeeInfo**: Informações de taxas e pagamentos
+- **AuditInfo**: Informações de auditoria
+
+#### 2.2.3 Gestão de Processos - Detalhamento
+
+**Aggregate Root**: `LicensingProcess`
+
+**Entidades**:
+- `ProcessDocument` - Documentos anexados ao processo
+- `ProcessAnalysis` - Análises técnicas realizadas
+- `ProcessComment` - Comentários e comunicações
+- `ProcessStatusHistory` - Histórico de mudanças de status
+
+**Value Objects**:
+- `ProcessNumber` - Número único do processo
+- `ProcessStatus` - Status atual do processo (SUBMITTED, UNDER_REVIEW, PENDING_DOCUMENTS, TECHNICAL_ANALYSIS, APPROVED, REJECTED, CANCELLED, ON_HOLD)
+- `ProcessPriority` - Prioridade do processo (LOW, NORMAL, HIGH, URGENT)
+- `DocumentType` - Tipo de documento (APPLICATION_FORM, TECHNICAL_SPECS, FINANCIAL_PROOF, LEGAL_DOCS, SITE_PLAN, ENVIRONMENTAL_IMPACT)
+- `AnalysisType` - Tipo de análise (TECHNICAL, LEGAL, ENVIRONMENTAL, FINANCIAL, COMPLIANCE)
+- `CommentVisibility` - Visibilidade do comentário (PUBLIC, INTERNAL, APPLICANT_ONLY)
+- `PaymentStatus` - Status do pagamento (PENDING, PAID, OVERDUE, WAIVED)
+
+**Domain Services**:
+- `ProcessWorkflowService` - Gerencia transições de status
+- `DocumentValidationService` - Valida documentos submetidos
+- `AnalysisAssignmentService` - Atribui análises a especialistas
+- `ProcessNotificationService` - Gerencia notificações
+- `PaymentTrackingService` - Rastreia pagamentos de taxas
 
 ### 2.3 Relacionamentos e Regras de Negócio
 
 #### Relacionamentos Principais
 
-**Emissão de Licenças:**
+**Processos de Licenciamento:**
+- Um `T_LICENSING_PROCESS` resulta em uma `T_ISSUED_LICENSE` quando aprovado
+- Um `T_LICENSE_TYPE` pode ser usado em múltiplos `T_LICENSING_PROCESS`
+- Um `T_LICENSE_HOLDER` pode aplicar para múltiplos `T_LICENSING_PROCESS`
+- Um `T_LICENSE_ISSUER` pode processar múltiplos `T_LICENSING_PROCESS`
+- Um `T_ESTABLISHMENT` pode estar associado a múltiplos `T_LICENSING_PROCESS`
 
-- Um `T_LICENSE_ISSUER` pode emitir múltiplas `T_ISSUED_LICENSE`
-
-- Uma `T_ISSUED_LICENSE` pertence a exatamente um `T_LICENSE_ISSUER`
-
-- Uma `T_ISSUED_LICENSE` é de exatamente um `T_LICENSE_TYPE`
-
+**Licenças Emitidas:**
+- Uma `T_ISSUED_LICENSE` pertence a exatamente um `T_LICENSE_TYPE`
 - Uma `T_ISSUED_LICENSE` pertence a exatamente um `T_LICENSE_HOLDER`
+- Uma `T_ISSUED_LICENSE` é emitida por exatamente um `T_LICENSE_ISSUER`
+- Uma `T_ISSUED_LICENSE` está associada a exatamente um `T_ESTABLISHMENT`
 
-**Titularidade:**
-
-- Um `T_LICENSE_HOLDER` pode possuir múltiplas `T_ISSUED_LICENSE`
-
-- Um `T_LICENSE_HOLDER` pode ser estendido por um `T_INDIVIDUAL_HOLDER` OU um `T_CORPORATE_HOLDER` (herança)
-
-- Um `T_CORPORATE_HOLDER` pode ter múltiplos `T_LEGAL_REPRESENTATIVE`
-
-- Um `T_LICENSE_HOLDER` pode ter múltiplos `T_HOLDER_CONTACT`
-
-**Processos:**
-
-- Uma `T_ISSUED_LICENSE` pode ter múltiplos processos de cada tipo (renovação, alteração, transferência)
-
-- Todos os processos mantêm trilha de auditoria através de `T_LICENSE_AUDIT`
+**Histórico e Documentação:**
+- Um `T_LICENSING_PROCESS` tem múltiplos `T_PROCESS_STATUS_HISTORY`
+- Um `T_LICENSING_PROCESS` contém múltiplos `T_PROCESS_DOCUMENT`
+- Um `T_LICENSING_PROCESS` tem múltiplas `T_PROCESS_ANALYSIS`
+- Um `T_LICENSING_PROCESS` tem múltiplos `T_PROCESS_COMMENT`
+- Um `T_PROCESS_COMMENT` pode ter múltiplas respostas (self-reference)
 
 #### Regras de Integridade
 
-**Titulares Pessoas Físicas:**
+**Processos de Licenciamento:**
+- `process_number` deve ser único no sistema
+- `submission_date` deve ser anterior ou igual a `target_decision_date`
+- `actual_decision_date` só pode ser preenchida quando o processo for decidido
+- Status deve seguir transições válidas do workflow
 
-- `document_number` deve ser único no sistema
+**Titulares:**
+- `identification_number` deve ser único no sistema
+- `holder_type` deve ser 'individual' ou 'corporate'
+- `legal_capacity_status` deve ser validado antes da emissão de licenças
 
-- `full_name`, `father_name`, `mother_name` são obrigatórios
+**Estabelecimentos:**
+- `matricial_number` deve ser único no sistema
+- Coordenadas de latitude e longitude devem ser válidas para Cabo Verde
+- `municipality` e `island` devem corresponder à geografia de Cabo Verde
 
-- `birth_date` deve ser anterior à data atual
-
-- `marital_status` deve seguir valores pré-definidos
-
-**Titulares Pessoas Jurídicas:**
-
-- `tax_id` deve ser único no sistema
-
-- `corporate_name` é obrigatório
-
-- `incorporation_date` deve ser anterior à data atual
-
-- Deve ter pelo menos um representante legal ativo
-
-**Representantes Legais:**
-
-- `document_number` deve ser único por pessoa jurídica
-
-- `valid_from` deve ser anterior ou igual a `valid_until`
-
-- Não pode haver sobreposição de períodos para o mesmo tipo de representação
-
-**Contatos:**
-
-- Apenas um contato pode ser marcado como `is_primary` por tipo
-
-- `contact_value` deve seguir formato específico por tipo (email, telefone, etc.)
-
-- Contatos verificados não podem ser alterados sem nova verificação
-
-**Licenças:**
-
-- `license_number` deve ser único no sistema
-
-- `issue_date` deve ser anterior ou igual a `expiry_date`
-
-- Status deve seguir transições válidas (ativa → suspensa → ativa, etc.)
-
-- Licenças expiradas não podem ser renovadas após período de carência
+**Documentos de Processo:**
+- Documentos obrigatórios (`is_required = true`) devem estar presentes para aprovação
+- `document_status` deve ser 'VALIDATED' para documentos críticos
+- Versioning deve ser mantido para rastreabilidade
 
 #### Validações de Negócio
 
-**Emissão de Licenças:**
-
+**Criação de Processos:**
 - Verificar se o emissor tem competência para o tipo de licença
+- Validar se o titular tem capacidade legal
+- Verificar se o estabelecimento está registrado e ativo
+- Confirmar que não existem processos duplicados em andamento
 
-- Validar se o titular atende aos requisitos do tipo de licença
+**Fluxo de Aprovação:**
+- Analista deve ser atribuído antes do início da análise
+- Documentos obrigatórios devem estar validados
+- Análises técnicas devem estar completas
+- Taxas devem estar pagas antes da emissão
 
-- Verificar se não existem impedimentos legais
+**Emissão de Licenças:**
+- Processo deve estar no status 'APPROVED'
+- Todas as condições do tipo de licença devem ser atendidas
+- Número da licença deve seguir padrão estabelecido
+- Data de expiração deve ser calculada conforme período de validade
 
-**Transferência de Titularidade:**
+## 3. APIs REST Consolidadas
 
-- Novo titular deve atender aos mesmos requisitos do titular original
+### 3.1 Endpoints Principais
 
-- Licenças suspensas não podem ser transferidas
+#### 3.1.1 Parametrização
 
-- Transferência deve ser aprovada pelo emissor competente
+```http
+GET    /api/v1/base-options
+POST   /api/v1/base-options
+PUT    /api/v1/base-options/{id}
+DELETE /api/v1/base-options/{id}
 
-**Renovação:**
+GET    /api/v1/licensing-sectors
+POST   /api/v1/licensing-sectors
+PUT    /api/v1/licensing-sectors/{id}
 
-- Licença deve estar dentro do período de renovação
+GET    /api/v1/license-categories
+POST   /api/v1/license-categories
+PUT    /api/v1/license-categories/{id}
 
-- Titular deve manter os requisitos originais
+GET    /api/v1/license-types
+POST   /api/v1/license-types
+PUT    /api/v1/license-types/{id}
+```
 
-- Taxas devem estar quitadas
+#### 3.1.2 Gestão de Titulares
 
-**Alterações:**
+```http
+GET    /api/v1/license-holders
+POST   /api/v1/license-holders/individual
+POST   /api/v1/license-holders/company
+GET    /api/v1/license-holders/{id}
+PUT    /api/v1/license-holders/{id}
+PUT    /api/v1/license-holders/{id}/suspend
+PUT    /api/v1/license-holders/{id}/reactivate
+```
 
-- Apenas campos não críticos podem ser alterados sem novo processo
+#### 3.1.3 Gestão de Emissores
 
-- Alterações críticas requerem aprovação do emissor
+```http
+GET    /api/v1/license-issuers
+POST   /api/v1/license-issuers
+GET    /api/v1/license-issuers/{id}
+PUT    /api/v1/license-issuers/{id}
+POST   /api/v1/license-issuers/{id}/competences
+POST   /api/v1/license-issuers/{id}/jurisdictions
+```
 
-- Histórico completo deve ser mantido
+#### 3.1.4 Gestão de Processos
 
-## 3. Requisitos Funcionais
+**Operações básicas de processos:**
 
-### 3.1 Gestão do Ciclo de Vida das Licenças
+```http
+GET    /api/v1/licensing-processes
+POST   /api/v1/licensing-processes
+GET    /api/v1/licensing-processes/{id}
+PUT    /api/v1/licensing-processes/{id}
+DELETE /api/v1/licensing-processes/{id}
+```
+
+**Gestão de fluxo e atribuições:**
+
+```http
+PUT    /api/v1/licensing-processes/{id}/assign-analyst
+PUT    /api/v1/licensing-processes/{id}/change-status
+PUT    /api/v1/licensing-processes/{id}/set-priority
+PUT    /api/v1/licensing-processes/{id}/approve
+PUT    /api/v1/licensing-processes/{id}/reject
+PUT    /api/v1/licensing-processes/{id}/cancel
+PUT    /api/v1/licensing-processes/{id}/hold
+PUT    /api/v1/licensing-processes/{id}/resume
+```
+
+**Gestão de documentos do processo:**
+
+```http
+GET    /api/v1/licensing-processes/{id}/documents
+POST   /api/v1/licensing-processes/{id}/documents
+GET    /api/v1/licensing-processes/{id}/documents/{docId}
+PUT    /api/v1/licensing-processes/{id}/documents/{docId}
+DELETE /api/v1/licensing-processes/{id}/documents/{docId}
+PUT    /api/v1/licensing-processes/{id}/documents/{docId}/validate
+PUT    /api/v1/licensing-processes/{id}/documents/{docId}/reject
+```
+
+**Análises técnicas:**
+
+```http
+GET    /api/v1/licensing-processes/{id}/analyses
+POST   /api/v1/licensing-processes/{id}/analyses
+GET    /api/v1/licensing-processes/{id}/analyses/{analysisId}
+PUT    /api/v1/licensing-processes/{id}/analyses/{analysisId}
+PUT    /api/v1/licensing-processes/{id}/analyses/{analysisId}/complete
+PUT    /api/v1/licensing-processes/{id}/analyses/{analysisId}/schedule-site-visit
+```
+
+**Comentários e comunicações:**
+
+```http
+GET    /api/v1/licensing-processes/{id}/comments
+POST   /api/v1/licensing-processes/{id}/comments
+GET    /api/v1/licensing-processes/{id}/comments/{commentId}
+PUT    /api/v1/licensing-processes/{id}/comments/{commentId}
+DELETE /api/v1/licensing-processes/{id}/comments/{commentId}
+POST   /api/v1/licensing-processes/{id}/comments/{commentId}/reply
+```
+
+**Histórico e auditoria:**
+
+```http
+GET    /api/v1/licensing-processes/{id}/status-history
+GET    /api/v1/licensing-processes/{id}/audit-trail
+```
+
+**Pagamentos:**
+
+```http
+PUT    /api/v1/licensing-processes/{id}/record-payment
+GET    /api/v1/licensing-processes/{id}/payment-status
+```
+
+**Relatórios e estatísticas:**
+
+```http
+GET    /api/v1/licensing-processes/statistics
+GET    /api/v1/licensing-processes/dashboard
+GET    /api/v1/licensing-processes/overdue
+GET    /api/v1/licensing-processes/pending-documents
+GET    /api/v1/licensing-processes/by-analyst/{analystId}
+```
+
+#### 3.1.5 Gestão de Licenças
+
+```http
+GET    /api/v1/issued-licenses
+POST   /api/v1/issued-licenses/definitive
+POST   /api/v1/issued-licenses/provisional
+GET    /api/v1/issued-licenses/{id}
+PUT    /api/v1/issued-licenses/{id}/suspend
+PUT    /api/v1/issued-licenses/{id}/reactivate
+PUT    /api/v1/issued-licenses/{id}/cancel
+POST   /api/v1/issued-licenses/{id}/renew
+```
+
+## 4. Requisitos Funcionais
+
+### 4.1 Gestão do Ciclo de Vida das Licenças
 
 #### RF001 - Consulta de Licenças Emitidas
 
@@ -670,15 +644,10 @@ As entidades de processo mantêm a estrutura original, mas agora se relacionam c
 
 - **Critérios de Aceitação:**
   - Busca por número da licença, titular, tipo, setor ou categoria
-
-  - Filtros por status (ACTIVE, EXPIRED, SUSPENDED, CANCELLED)
-
+  - Filtros por status (license_status: ACTIVE, EXPIRED, SUSPENDED, CANCELLED)
   - Filtros por período de emissão e validade
-
   - Visualização em lista paginada com ordenação
-
   - Exportação de resultados em CSV/Excel
-
   - Integração com sistema de cache para performance
 
 #### RF002 - Detalhamento de Licença
@@ -686,53 +655,37 @@ As entidades de processo mantêm a estrutura original, mas agora se relacionam c
 - **Descrição:** Exibir informações completas de uma licença específica com histórico de auditoria
 
 - **Critérios de Aceitação:**
-  - Dados do titular (T_LICENSE_HOLDER) e representante legal
-
+  - Dados do titular (T_LICENSE_HOLDER)
   - Informações técnicas da licença vinculadas ao T_LICENSE_TYPE
-
-  - Histórico completo de alterações (T_LICENSE_AUDIT)
-
-  - Documentos anexos (T_LICENSE_DOCUMENT) e legislação aplicável
-
+  - Histórico completo através do processo de licenciamento (T_LICENSING_PROCESS)
+  - Documentos anexos através de T_PROCESS_DOCUMENT
   - Status atual e datas relevantes com validações de negócio
-
-  - Taxas pagas e pendentes (T_LICENSE_FEE)
-
+  - Informações de taxas e pagamentos
   - Integração com sistema de parametrização para dados dinâmicos
 
 #### RF003 - Monitoramento de Validade
 
-- **Descrição:** Controlar e alertar sobre vencimentos de licenças através do T_LICENSE_ALERT
+- **Descrição:** Controlar e alertar sobre vencimentos de licenças através de eventos de domínio
 
 - **Critérios de Aceitação:**
   - Dashboard com licenças próximas ao vencimento
-
   - Alertas automáticos configuráveis (90, 60, 30, 15 dias)
-
   - Notificações por email integradas com sistema de notificações
-
   - Relatórios de licenças vencidas com filtros avançados
-
-  - Configuração de períodos de alerta por tipo de licença via T_OPTIONS
-
-  - Processamento assíncrono de alertas com queue system
+  - Configuração de períodos de alerta por tipo de licença
+  - Processamento assíncrono de alertas com eventos
 
 #### RF004 - Processo de Renovação
 
-- **Descrição:** Gerenciar solicitações de renovação através da tabela T_LICENSE_RENEWAL
+- **Descrição:** Gerenciar solicitações de renovação através de novos processos de licenciamento (T_LICENSING_PROCESS)
 
 - **Critérios de Aceitação:**
-  - Iniciação automática baseada em configurações do T_LICENSE_PARAMETER
-
+  - Criação de novo processo de licenciamento para renovação
   - Validação de documentos e requisitos via Domain Services
-
-  - Cálculo automático de taxas através de T_PROCESS_TYPE_FEE
-
-  - Workflow de aprovação integrado com Activity Server
-
+  - Cálculo automático de taxas através de configurações do tipo de licença
+  - Workflow de aprovação integrado com fluxo de processos
   - Geração de nova licença com numeração sequencial
-
-  - Versionamento de licenças renovadas
+  - Versionamento e auditoria completanamento de licenças renovadas
 
   - Integração com sistema de pagamentos
 
