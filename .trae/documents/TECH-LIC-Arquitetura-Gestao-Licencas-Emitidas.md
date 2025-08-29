@@ -608,17 +608,17 @@ DELETE /api/v1/options/{id}
 #### Setores de Licenciamento
 
 ```http
-GET    /api/v1/licensing-sectors
-POST   /api/v1/licensing-sectors
-PUT    /api/v1/licensing-sectors/{id}
+GET    /api/v1/sectors
+POST   /api/v1/sectors
+PUT    /api/v1/sectors/{id}
 ```
 
 #### Categorias de Licenças
 
 ```http
-GET    /api/v1/license-categories
-POST   /api/v1/license-categories
-PUT    /api/v1/license-categories/{id}
+GET    /api/v1/categories
+POST   /api/v1/categories
+PUT    /api/v1/categories/{id}
 ```
 
 #### Tipos de Licenças

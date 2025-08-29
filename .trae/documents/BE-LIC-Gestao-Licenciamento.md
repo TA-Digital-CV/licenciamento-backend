@@ -446,13 +446,13 @@ POST   /api/v1/options
 PUT    /api/v1/options/{id}
 DELETE /api/v1/options/{id}
 
-GET    /api/v1/licensing-sectors
-POST   /api/v1/licensing-sectors
-PUT    /api/v1/licensing-sectors/{id}
+GET    /api/v1/sectors
+POST   /api/v1/sectors
+PUT    /api/v1/sectors/{id}
 
-GET    /api/v1/license-categories
-POST   /api/v1/license-categories
-PUT    /api/v1/license-categories/{id}
+GET    /api/v1/categories
+POST   /api/v1/categories
+PUT    /api/v1/categories/{id}
 
 GET    /api/v1/license-types
 POST   /api/v1/license-types
