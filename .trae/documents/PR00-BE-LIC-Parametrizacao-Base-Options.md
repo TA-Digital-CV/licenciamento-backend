@@ -1,4 +1,5 @@
 # Especificação Técnica e Funcional - Parametrização Base
+
 ## Sistema de Configuração de Licenciamento de Cabo Verde
 
 ## 1. Visão Geral do Módulo
@@ -6,6 +7,7 @@
 O módulo de **Parametrização Base** é um componente fundamental do sistema que permite a gestão dinâmica de opções e configurações através de uma estrutura flexível baseada em códigos e chaves. Este módulo centraliza todas as parametrizações auxiliares do sistema, como estados de licenças, tipos de entidades, classificações, entre outros.
 
 ### 1.1 Objetivos
+
 - Centralizar parametrizações do sistema numa estrutura única e flexível
 - Permitir gestão dinâmica de opções sem alterações de código
 - Suportar internacionalização (i18n) das opções
@@ -14,6 +16,7 @@ O módulo de **Parametrização Base** é um componente fundamental do sistema q
 - Garantir performance através de cache inteligente
 
 ### 1.2 Casos de Uso Principais
+
 - **Consulta de Opções**: Obter lista de opções por código (ex: estados de licença)
 - **Gestão Administrativa**: CRUD completo de parametrizações
 - **Suporte Multilíngue**: Opções em diferentes idiomas
@@ -137,9 +140,9 @@ public class Option {
     private String description;
     private Map<String, Object> metadata;
     private AuditInfo auditInfo;
-    
+
     // Factory Method
-    public static Option create(OptionCode code, OptionKey key, 
+    public static Option create(OptionCode code, OptionKey key,
                                OptionValue value, Locale locale) {
         var option = new Option();
         option.id = OptionId.generate();
@@ -151,18 +154,18 @@ public class Option {
         option.auditInfo = AuditInfo.create();
         return option;
     }
-    
+
     // Business Methods
     public void updateValue(OptionValue newValue) {
         this.value = Objects.requireNonNull(newValue, "Valor é obrigatório");
         this.auditInfo = this.auditInfo.update();
     }
-    
+
     public void deactivate() {
         this.active = false;
         this.auditInfo = this.auditInfo.update();
     }
-    
+
     public boolean isActive() {
         return Boolean.TRUE.equals(this.active);
     }
@@ -171,7 +174,7 @@ public class Option {
 // OptionCode.java - Value Object
 public class OptionCode {
     private final String value;
-    
+
     private OptionCode(String value) {
         if (value == null || value.trim().isEmpty()) {
             throw new IllegalArgumentException("Código não pode ser vazio");
@@ -181,11 +184,11 @@ public class OptionCode {
         }
         this.value = value.toUpperCase().trim();
     }
-    
+
     public static OptionCode of(String value) {
         return new OptionCode(value);
     }
-    
+
     public String getValue() {
         return value;
     }
@@ -197,15 +200,18 @@ public class OptionCode {
 ### 4.1 Endpoints de Consulta (Públicos)
 
 #### GET /api/v1/options/{ccode}
+
 Obter todas as opções de um código específico.
 
 **Parâmetros:**
+
 - `ccode` (path): Código do conjunto de opções
 - `locale` (query, opcional): Idioma (default: pt-CV)
 - `format` (query, opcional): Formato da resposta (list|map, default: list)
 - `includeInactive` (query, opcional): Incluir opções inativas (default: false)
 
 **Resposta (format=list):**
+
 ```json
 {
   "code": "LICENSE_STATUS",
@@ -228,6 +234,7 @@ Obter todas as opções de um código específico.
 ```
 
 **Resposta (format=map):**
+
 ```json
 {
   "code": "LICENSE_STATUS",
@@ -241,29 +248,28 @@ Obter todas as opções de um código específico.
 ```
 
 #### GET /api/v1/options
+
 Obter múltiplos conjuntos de opções numa única chamada.
 
 **Parâmetros:**
+
 - `codes` (query): Lista de códigos separados por vírgula
 - `locale` (query, opcional): Idioma (default: pt-CV)
 - `format` (query, opcional): Formato da resposta (list|map, default: list)
 
 **Resposta:**
+
 ```json
 {
   "locale": "pt-CV",
   "optionSets": {
     "LICENSE_STATUS": {
       "code": "LICENSE_STATUS",
-      "items": [
-        {"key": "DRAFT", "value": "Rascunho", "sortOrder": 1}
-      ]
+      "items": [{ "key": "DRAFT", "value": "Rascunho", "sortOrder": 1 }]
     },
     "ENTITY_TYPE": {
       "code": "ENTITY_TYPE",
-      "items": [
-        {"key": "MINISTRY", "value": "Ministério", "sortOrder": 1}
-      ]
+      "items": [{ "key": "MINISTRY", "value": "Ministério", "sortOrder": 1 }]
     }
   }
 }
@@ -272,9 +278,11 @@ Obter múltiplos conjuntos de opções numa única chamada.
 ### 4.2 Endpoints de Gestão (Administrativos)
 
 #### POST /api/v1/options/admin
+
 Criar nova opção.
 
 **Request Body:**
+
 ```json
 {
   "code": "LICENSE_STATUS",
@@ -291,15 +299,19 @@ Criar nova opção.
 ```
 
 #### PUT /api/v1/options/admin/{id}
+
 Atualizar opção existente.
 
 #### DELETE /api/v1/options/admin/{id}
+
 Eliminar opção (soft delete - marca como inativa).
 
 #### GET /api/v1/options/admin
+
 Listar todas as opções com filtros avançados e paginação.
 
 **Parâmetros:**
+
 - `code` (query, opcional): Filtrar por código
 - `locale` (query, opcional): Filtrar por idioma
 - `active` (query, opcional): Filtrar por status
@@ -314,6 +326,7 @@ Listar todas as opções com filtros avançados e paginação.
 **Ator:** Sistema/Frontend
 **Pré-condições:** Código de opções existe no sistema
 **Fluxo Principal:**
+
 1. Sistema solicita opções para um código específico
 2. Sistema verifica cache para o código e locale
 3. Se não existe em cache, consulta base de dados
@@ -322,6 +335,7 @@ Listar todas as opções com filtros avançados e paginação.
 6. Retorna lista de opções formatada
 
 **Fluxos Alternativos:**
+
 - 2a. Código não existe: retorna lista vazia
 - 3a. Erro de base de dados: retorna erro 500
 
@@ -330,6 +344,7 @@ Listar todas as opções com filtros avançados e paginação.
 **Ator:** Administrador do Sistema
 **Pré-condições:** Utilizador autenticado com role ADMIN
 **Fluxo Principal:**
+
 1. Administrador acede à interface de gestão
 2. Sistema apresenta lista de opções com filtros
 3. Administrador seleciona ação (criar/editar/eliminar)
@@ -339,6 +354,7 @@ Listar todas as opções com filtros avançados e paginação.
 7. Sistema confirma operação
 
 **Regras de Negócio:**
+
 - Não permitir duplicação de (code, key, locale)
 - Validar formato dos códigos (alfanumérico, maiúsculas)
 - Manter auditoria de todas as alterações
@@ -354,7 +370,7 @@ public class Option {
     private void validateUniqueConstraint(OptionCode code, OptionKey key, Locale locale) {
         // Validação de unicidade será feita no repositório
     }
-    
+
     private void validateCodeFormat(OptionCode code) {
         String value = code.getValue();
         if (!value.matches("^[A-Z][A-Z0-9_]*$")) {
@@ -363,7 +379,7 @@ public class Option {
             );
         }
     }
-    
+
     private void validateKeyFormat(OptionKey key) {
         String value = key.getValue();
         if (!value.matches("^[A-Z][A-Z0-9_]*$")) {
@@ -392,17 +408,17 @@ public class Option {
 @Service
 @CacheConfig(cacheNames = "options")
 public class OptionCacheService {
-    
+
     @Cacheable(key = "#code + '_' + #locale")
     public List<OptionResponse> getOptionsByCode(String code, String locale) {
         return optionRepository.findByCodeAndLocaleAndActiveTrue(code, locale);
     }
-    
+
     @CacheEvict(key = "#code + '_' + #locale")
     public void evictCache(String code, String locale) {
         // Cache invalidation
     }
-    
+
     @CacheEvict(allEntries = true)
     public void evictAllCache() {
         // Clear all cache
@@ -437,7 +453,7 @@ spring:
 @Configuration
 @EnableWebSecurity
 public class ParameterizationSecurityConfig {
-    
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authz -> authz
@@ -457,31 +473,31 @@ public class ParameterizationSecurityConfig {
 ```java
 @ExtendWith(MockitoExtension.class)
 class GetOptionsByCodeUseCaseTest {
-    
+
     @Mock
     private OptionRepositoryPort optionRepository;
-    
+
     @Mock
     private OptionCachePort optionCache;
-    
+
     @InjectMocks
     private GetOptionsByCodeUseCase useCase;
-    
+
     @Test
     void shouldReturnOptionsWhenCodeExists() {
         // Given
         String code = "LICENSE_STATUS";
         String locale = "pt-CV";
         List<Option> options = createSampleOptions();
-        
+
         when(optionCache.getOptionsByCode(code, locale))
             .thenReturn(Optional.empty());
         when(optionRepository.findByCodeAndLocaleAndActiveTrue(code, locale))
             .thenReturn(options);
-        
+
         // When
         OptionSetResponse result = useCase.execute(code, locale, "list", false);
-        
+
         // Then
         assertThat(result.getCode()).isEqualTo(code);
         assertThat(result.getItems()).hasSize(3);
@@ -496,25 +512,25 @@ class GetOptionsByCodeUseCaseTest {
 @SpringBootTest
 @Testcontainers
 class ParameterizationControllerIntegrationTest {
-    
+
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16")
             .withDatabaseName("licensing_test")
             .withUsername("test")
             .withPassword("test");
-    
+
     @Autowired
     private TestRestTemplate restTemplate;
-    
+
     @Test
     void shouldReturnOptionsWhenValidCodeProvided() {
         // Given
         String code = "LICENSE_STATUS";
-        
+
         // When
         ResponseEntity<OptionSetResponse> response = restTemplate.getForEntity(
             "/api/v1/options/" + code, OptionSetResponse.class);
-        
+
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getCode()).isEqualTo(code);
@@ -603,32 +619,32 @@ INSERT INTO t_options (ccode, ckey, cvalue, locale, sort_order, description) VAL
 ```java
 @Component
 public class ParameterizationMetrics {
-    
+
     private final Counter optionRequestsCounter;
     private final Timer optionRequestsTimer;
     private final Gauge cacheHitRatio;
-    
+
     public ParameterizationMetrics(MeterRegistry meterRegistry) {
         this.optionRequestsCounter = Counter.builder("options.requests.total")
             .description("Total number of option requests")
             .tag("module", "parameterization")
             .register(meterRegistry);
-            
+
         this.optionRequestsTimer = Timer.builder("options.requests.duration")
             .description("Option request duration")
             .register(meterRegistry);
-            
+
         this.cacheHitRatio = Gauge.builder("options.cache.hit.ratio")
             .description("Cache hit ratio for options")
             .register(meterRegistry, this, ParameterizationMetrics::getCacheHitRatio);
     }
-    
+
     public void recordRequest(String code, String locale) {
         optionRequestsCounter.increment(
             Tags.of("code", code, "locale", locale)
         );
     }
-    
+
     private double getCacheHitRatio() {
         // Implementar lógica de cálculo do cache hit ratio
         return 0.85; // Exemplo
@@ -641,15 +657,15 @@ public class ParameterizationMetrics {
 ```java
 @Component
 public class ParameterizationHealthIndicator implements HealthIndicator {
-    
+
     private final OptionRepository optionRepository;
-    
+
     @Override
     public Health health() {
         try {
             long totalOptions = optionRepository.count();
             long activeOptions = optionRepository.countByActiveTrue();
-            
+
             return Health.up()
                 .withDetail("totalOptions", totalOptions)
                 .withDetail("activeOptions", activeOptions)
@@ -678,7 +694,7 @@ public class ParameterizationHealthIndicator implements HealthIndicator {
     )
 )
 public class ParameterizationOpenApiConfig {
-    
+
     @Bean
     public GroupedOpenApi parameterizationApi() {
         return GroupedOpenApi.builder()
@@ -696,7 +712,7 @@ public class ParameterizationOpenApiConfig {
 @RequestMapping("/api/v1/options")
 @Tag(name = "Parametrização", description = "Gestão de opções e parametrizações do sistema")
 public class ParameterizationController {
-    
+
     @GetMapping("/{code}")
     @Operation(
         summary = "Obter opções por código",
@@ -709,10 +725,10 @@ public class ParameterizationController {
     public ResponseEntity<OptionSetResponse> getOptionsByCode(
         @Parameter(description = "Código do conjunto de opções", example = "LICENSE_STATUS")
         @PathVariable String code,
-        
+
         @Parameter(description = "Idioma das opções", example = "pt-CV")
         @RequestParam(defaultValue = "pt-CV") String locale,
-        
+
         @Parameter(description = "Formato da resposta", example = "list")
         @RequestParam(defaultValue = "list") String format
     ) {
@@ -733,12 +749,12 @@ public class ParameterizationController {
 
 ### 13.2 Riscos e Mitigações
 
-| Risco | Impacto | Mitigação |
-|-------|---------|----------|
-| Performance de consultas | Alto | Implementar cache eficiente |
-| Crescimento descontrolado de dados | Médio | Implementar soft delete e arquivamento |
-| Inconsistência de dados | Alto | Validações rigorosas e transações |
-| Falha de cache | Médio | Fallback para base de dados |
+| Risco                              | Impacto | Mitigação                              |
+| ---------------------------------- | ------- | -------------------------------------- |
+| Performance de consultas           | Alto    | Implementar cache eficiente            |
+| Crescimento descontrolado de dados | Médio   | Implementar soft delete e arquivamento |
+| Inconsistência de dados            | Alto    | Validações rigorosas e transações      |
+| Falha de cache                     | Médio   | Fallback para base de dados            |
 
 ### 13.3 Métricas de Sucesso
 

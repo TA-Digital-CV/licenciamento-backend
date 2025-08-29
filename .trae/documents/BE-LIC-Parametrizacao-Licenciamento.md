@@ -1,4 +1,5 @@
 # BE-LIC-Parametrização-Licenciamento
+
 ## Sistema de Licenciamento de Cabo Verde - Especificação Consolidada do Backend
 
 ## 1. Visão Geral da Arquitetura
@@ -43,7 +44,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     %% Módulo Principal - Hierarquia de Licenciamento
     T_SECTOR {
         uuid id PK
@@ -57,7 +58,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_CATEGORY {
         uuid id PK
         varchar name
@@ -73,7 +74,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_LICENSE_TYPE {
         uuid id PK
         varchar name
@@ -97,7 +98,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     %% Módulo Parâmetros Gerais
     T_LICENSE_PARAMETER {
         uuid id PK
@@ -125,7 +126,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     %% Módulo Legislações
     T_LEGISLATION {
         uuid id PK
@@ -143,7 +144,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     %% Módulo Entidades
     T_ENTITY {
         uuid id PK
@@ -155,7 +156,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_ENTITY_CONTACT {
         uuid id PK
         uuid entity_id_fk FK
@@ -167,7 +168,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     %% Módulo Tipos de Processos
     T_LICENSE_TYPE_PROCESS_TYPE {
         uuid id PK
@@ -180,7 +181,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     %% Módulo Taxas
     T_FEE_CATEGORY {
         uuid id PK
@@ -193,7 +194,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_PROCESS_TYPE_FEE {
         uuid id PK
         uuid license_type_process_type_id_fk FK
@@ -211,7 +212,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     %% Relacionamentos
     T_SECTOR ||--o{ T_CATEGORY : "contains"
     T_CATEGORY ||--o{ T_CATEGORY : "parent-child"
@@ -228,16 +229,19 @@ erDiagram
 ### 2.2 Entidades Principais
 
 #### 2.2.1 Hierarquia de Licenciamento
+
 - **Setor**: Setores económicos (Agricultura, Turismo, Indústria)
 - **Categoria**: Estrutura hierárquica de atividades económicas
 - **Tipo de Licença**: Configuração específica de licenciamento
 
 #### 2.2.2 Configurações e Parâmetros
+
 - **Options**: Sistema central de parametrizações
 - **License Parameter**: Parâmetros específicos por tipo de licença
 - **Legislation**: Documentos normativos associados
 
 #### 2.2.3 Entidades Operacionais
+
 - **Entity**: Entidades reguladoras (Ministérios, Agências, Inspeções)
 - **Process Type**: Definições de processos no Activity
 - **Fee**: Sistema de taxas por processo
@@ -259,22 +263,22 @@ graph TD
     A --> E
     A --> F
     A --> G
-    
+
     subgraph "Camada Base"
         A
     end
-    
+
     subgraph "Camada Principal"
         B
     end
-    
+
     subgraph "Camada de Configuração"
         C
         D
         E
         F
     end
-    
+
     subgraph "Camada Operacional"
         G
     end
@@ -354,7 +358,7 @@ src/main/java/cv/gov/licensing/
 public class Money {
     private final BigDecimal amount;
     private final Currency currency;
-    
+
     public static Money cvEscudos(BigDecimal amount) {
         return new Money(amount, Currency.getInstance("CVE"));
     }
@@ -377,15 +381,15 @@ public interface DomainEvent {
 public abstract class AggregateRoot<ID> {
     protected ID id;
     private List<DomainEvent> domainEvents = new ArrayList<>();
-    
+
     protected void addDomainEvent(DomainEvent event) {
         domainEvents.add(event);
     }
-    
+
     public List<DomainEvent> getDomainEvents() {
         return Collections.unmodifiableList(domainEvents);
     }
-    
+
     public void clearDomainEvents() {
         domainEvents.clear();
     }
@@ -397,6 +401,7 @@ public abstract class AggregateRoot<ID> {
 ### 5.1 Endpoints por Módulo
 
 #### 5.1.1 PR00 - Parametrização Base
+
 ```
 GET    /api/v1/options/{code}                    # Consultar opções por código
 GET    /api/v1/options                           # Consultar múltiplos códigos
@@ -406,6 +411,7 @@ DELETE /api/v1/options/admin/{id}                # Eliminar opção (admin)
 ```
 
 #### 5.1.2 PR01 - Setores/Categorias/Tipos
+
 ```
 # Setores
 GET    /api/v1/sectors                           # Listar setores
@@ -425,6 +431,7 @@ PUT    /api/v1/license-types/{id}                # Atualizar tipo
 ```
 
 #### 5.1.3 PR01.01 - Dados Gerais
+
 ```
 GET    /api/v1/license-parameters                # Listar parâmetros
 POST   /api/v1/license-parameters                # Criar parâmetros
@@ -433,6 +440,7 @@ GET    /api/v1/license-parameters/license-type/{id} # Por tipo de licença
 ```
 
 #### 5.1.4 PR01.02 - Legislações
+
 ```
 GET    /api/v1/legislations                      # Listar legislações
 POST   /api/v1/legislations                      # Criar legislação
@@ -442,6 +450,7 @@ DELETE /api/v1/legislations/{id}/document       # Remover documento
 ```
 
 #### 5.1.5 PR01.03 - Entidades
+
 ```
 GET    /api/v1/entities                          # Listar entidades
 POST   /api/v1/entities                          # Criar entidade
@@ -451,6 +460,7 @@ DELETE /api/v1/entities/{id}/contacts/{contactId} # Remover contacto
 ```
 
 #### 5.1.6 PR01.04 - Tipos de Processos
+
 ```
 GET    /api/v1/process-types                     # Listar associações
 POST   /api/v1/process-types                     # Criar associação
@@ -459,6 +469,7 @@ POST   /api/v1/process-types/validate            # Validar definição
 ```
 
 #### 5.1.7 PR01.05 - Taxas
+
 ```
 GET    /api/v1/fees                              # Listar taxas
 POST   /api/v1/fees                              # Criar taxa
@@ -502,12 +513,12 @@ public class OperationResponse {
 ```java
 @Component
 public class ActivityServerIntegration {
-    
+
     public ProcessDefinitionInfo validateProcessDefinition(
             String serverUrl, String processDefinitionKey) {
         // Validação de definições de processo
     }
-    
+
     public List<ProcessDefinition> getAvailableProcesses(String serverUrl) {
         // Listar processos disponíveis
     }
@@ -519,11 +530,11 @@ public class ActivityServerIntegration {
 ```java
 @Component
 public class DocumentStorageService {
-    
+
     public String uploadDocument(MultipartFile file, String folder) {
         // Upload de documentos
     }
-    
+
     public void deleteDocument(String documentUrl) {
         // Eliminação de documentos
     }
@@ -535,7 +546,7 @@ public class DocumentStorageService {
 ```java
 @Component
 public class OrganizationService {
-    
+
     public OrganizationId findOrCreateOrganization(String organizationName) {
         // Integração com REDGLOBAL.GLB_T_ORGANIZATION
     }
@@ -588,7 +599,7 @@ spring:
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authz -> authz
@@ -609,20 +620,20 @@ public class SecurityConfig {
 ```java
 @Component
 public class LicensingMetrics {
-    
+
     private final Counter licenseCreationCounter;
     private final Timer licenseProcessingTimer;
     private final Gauge activeLicensesGauge;
-    
+
     public LicensingMetrics(MeterRegistry meterRegistry) {
         this.licenseCreationCounter = Counter.builder("licenses.created.total")
             .description("Total number of licenses created")
             .register(meterRegistry);
-            
+
         this.licenseProcessingTimer = Timer.builder("license.processing.time")
             .description("Time taken to process license applications")
             .register(meterRegistry);
-            
+
         this.activeLicensesGauge = Gauge.builder("licenses.active.count")
             .description("Number of active licenses")
             .register(meterRegistry, this, LicensingMetrics::getActiveLicenseCount);
@@ -637,13 +648,13 @@ public class LicensingMetrics {
 @SpringBootTest
 @Testcontainers
 class LicensingIntegrationTest {
-    
+
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16")
             .withDatabaseName("licensing_test")
             .withUsername("test")
             .withPassword("test");
-    
+
     @Container
     static MinIOContainer minio = new MinIOContainer("minio/minio:latest")
             .withUserName("minioadmin")
@@ -654,26 +665,31 @@ class LicensingIntegrationTest {
 ## 8. Roadmap de Desenvolvimento
 
 ### 8.1 Fase 1 - Fundação (4-6 semanas)
+
 - Implementação do módulo Options (PR00)
 - Estrutura base DDD e Shared Kernel
 - Configuração de infraestrutura (DB, Cache, Security)
 
 ### 8.2 Fase 2 - Core (6-8 semanas)
+
 - Implementação da hierarquia Setores/Categorias/Tipos (PR01)
 - APIs REST básicas
 - Testes unitários e de integração
 
 ### 8.3 Fase 3 - Configuração (4-6 semanas)
+
 - Parâmetros Gerais (PR01.01)
 - Legislações (PR01.02)
 - Entidades (PR01.03)
 
 ### 8.4 Fase 4 - Integração (4-6 semanas)
+
 - Tipos de Processos (PR01.04)
 - Integração com Activity Servers
 - Taxas (PR01.05)
 
 ### 8.5 Fase 5 - Otimização (2-4 semanas)
+
 - Performance tuning
 - Monitorização e métricas
 - Documentação final
@@ -681,17 +697,20 @@ class LicensingIntegrationTest {
 ## 9. Considerações de Performance
 
 ### 9.1 Otimizações de Base de Dados
+
 - Índices estratégicos em campos de consulta frequente
 - Paginação obrigatória em todas as listagens
 - Queries otimizadas com JPA Criteria API
 - Connection pooling configurado adequadamente
 
 ### 9.2 Cache Strategy
+
 - Cache L1: Hibernate Second Level Cache
 - Cache L2: Redis para dados compartilhados
 - Cache L3: CDN para recursos estáticos
 
 ### 9.3 Monitorização
+
 - Métricas de performance com Micrometer
 - Logging estruturado com Logback
 - Health checks para todos os componentes

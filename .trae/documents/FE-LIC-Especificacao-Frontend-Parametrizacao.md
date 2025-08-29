@@ -10,31 +10,28 @@ O sistema de parametrização de licenciamento é uma aplicação web responsáv
 
 **Estrutura Hierárquica:**
 
-* **Configurações Base**
+- **Configurações Base**
+  - Opções Gerais
 
-  * Opções Gerais
+  - Parâmetros do Sistema
 
-  * Parâmetros do Sistema
+- **Parametrização de Licenciamento**
+  - Setores
 
-* **Parametrização de Licenciamento**
+  - Categorias
 
-  * Setores
+  - Tipos de Licenças
 
-  * Categorias
+- **Dossier Tipo Licença**
+  - Dados Gerais
 
-  * Tipos de Licenças
+  - Legislações
 
-* **Dossier Tipo Licença**
+  - Entidades
 
-  * Dados Gerais
+  - Associação Tipo Processos
 
-  * Legislações
-
-  * Entidades
-
-  * Associação Tipo Processos
-
-  * Associação Taxas
+  - Associação Taxas
 
 ### 2.2 Breadcrumbs
 
@@ -42,21 +39,21 @@ O sistema de parametrização de licenciamento é uma aplicação web responsáv
 
 **Exemplos:**
 
-* Home > Configurações Base > Opções Gerais
+- Home > Configurações Base > Opções Gerais
 
-* Home > Parametrização > Setores > Novo Setor
+- Home > Parametrização > Setores > Novo Setor
 
-* Home > Dossier Tipo Licença > Dados Gerais > Editar Parâmetros
+- Home > Dossier Tipo Licença > Dados Gerais > Editar Parâmetros
 
 ### 2.3 Navegação por Tabs
 
 **Aplicação em:**
 
-* Página de Tipos de Licenças (inclui tab "Dossier Tipo Licença")
+- Página de Tipos de Licenças (inclui tab "Dossier Tipo Licença")
 
-* Página de Dossier Tipo Licença (5 tabs principais)
+- Página de Dossier Tipo Licença (5 tabs principais)
 
-* Formulários de edição complexos
+- Formulários de edição complexos
 
 ## 3. Configurações Base
 
@@ -64,69 +61,65 @@ O sistema de parametrização de licenciamento é uma aplicação web responsáv
 
 **Estrutura da Página:**
 
-* Header com título "Configurações Base - Opções Gerais"
+- Header com título "Configurações Base - Opções Gerais"
 
-* Barra de ações (Novo, Importar, Exportar)
+- Barra de ações (Novo, Importar, Exportar)
 
-* Lista principal com filtros
+- Lista principal com filtros
 
-* Área de detalhes/formulário
+- Área de detalhes/formulário
 
 **Lista de Opções:**
 
-* **Colunas:** Código, Nome, Tipo, Valor, Status, Idioma, Ações
+- **Colunas:** Código, Nome, Tipo, Valor, Status, Idioma, Ações
 
-* **Filtros Disponíveis:**
+- **Filtros Disponíveis:**
+  - Busca por texto (código/nome)
 
-  * Busca por texto (código/nome)
+  - Filtro por tipo de opção
 
-  * Filtro por tipo de opção
+  - Filtro por status (Ativo/Inativo)
 
-  * Filtro por status (Ativo/Inativo)
+  - Filtro por idioma
 
-  * Filtro por idioma
+- **Ordenação:** Por código, nome, tipo, data de criação
 
-* **Ordenação:** Por código, nome, tipo, data de criação
-
-* **Paginação:** 25/50/100 itens por página
+- **Paginação:** 25/50/100 itens por página
 
 **Formulário de Opção:**
 
-* **Campos Obrigatórios:**
+- **Campos Obrigatórios:**
+  - Código da opção (único, alfanumérico)
 
-  * Código da opção (único, alfanumérico)
+  - Nome da opção
 
-  * Nome da opção
+  - Tipo de opção (dropdown)
 
-  * Tipo de opção (dropdown)
+  - Valor da opção
 
-  * Valor da opção
+- **Campos Opcionais:**
+  - Descrição
 
-* **Campos Opcionais:**
+  - Idioma (dropdown com idiomas suportados)
 
-  * Descrição
+  - Status (Ativo/Inativo)
 
-  * Idioma (dropdown com idiomas suportados)
+  - Ordem de exibição
 
-  * Status (Ativo/Inativo)
+- **Validações:**
+  - Código único no sistema
 
-  * Ordem de exibição
+  - Formato do valor conforme tipo selecionado
 
-* **Validações:**
-
-  * Código único no sistema
-
-  * Formato do valor conforme tipo selecionado
-
-  * Nome obrigatório para cada idioma
+  - Nome obrigatório para cada idioma
 
 **Ações Disponíveis:**
 
-* **Na Lista:** Visualizar, Editar, Duplicar, Ativar/Desativar, Excluir
+- **Na Lista:** Visualizar, Editar, Duplicar, Ativar/Desativar, Excluir
 
-* **Globais:** Criar Nova Opção, Importar CSV, Exportar CSV/Excel
+- **Globais:** Criar Nova Opção, Importar CSV, Exportar CSV/Excel
 
-* **Em Lote:** Ativar/Desativar múltiplas opções, Excluir selecionadas
+- **Em Lote:** Ativar/Desativar múltiplas opções, Excluir selecionadas
 
 ## 4. Parametrização de Licenciamento
 
@@ -148,47 +141,43 @@ Setor
 
 **Layout da Página:**
 
-* Painel tabulado: (Setores > Categorias > Tipos)
+- Painel tabulado: (Setores > Categorias > Tipos)
 
-* Painel direito: Lista/Formulário do item selecionado
+- Painel direito: Lista/Formulário do item selecionado
 
-* Barra superior: Breadcrumbs e ações contextuais
+- Barra superior: Breadcrumbs e ações contextuais
 
 **Lista de Setores:**
 
-* **Colunas:** Nome, Código, Descrição, Nº Categorias, Status, Ações
+- **Colunas:** Nome, Código, Descrição, Nº Categorias, Status, Ações
 
-* **Filtros:**
+- **Filtros:**
+  - Busca por nome/código
 
-  * Busca por nome/código
+  - Status (Ativo/Inativo/Todos)
 
-  * Status (Ativo/Inativo/Todos)
-
-* **Ordenação:** Alfabética, por código, por data de criação
+- **Ordenação:** Alfabética, por código, por data de criação
 
 **Formulário de Setor:**
 
-* **Campos Obrigatórios:**
+- **Campos Obrigatórios:**
+  - Nome do setor
 
-  * Nome do setor
+  - Código do setor (único)
 
-  * Código do setor (único)
+- **Campos Opcionais:**
+  - Descrição
 
-* **Campos Opcionais:**
+  - Status (Ativo/Inativo)
 
-  * Descrição
+  - Ordem de exibição
 
-  * Status (Ativo/Inativo)
+- **Validações:**
+  - Nome único dentro do sistema
 
-  * Ordem de exibição
+  - Código alfanumérico único
 
-* **Validações:**
-
-  * Nome único dentro do sistema
-
-  * Código alfanumérico único
-
-  * Verificação de dependências antes da exclusão
+  - Verificação de dependências antes da exclusão
 
 ### 4.3 Página de Categorias
 
@@ -196,43 +185,39 @@ Setor
 
 **Lista de Categorias:**
 
-* **Colunas:** Nome, Código, Setor, Nº Tipos de Licença, Status, Ações
+- **Colunas:** Nome, Código, Setor, Nº Tipos de Licença, Status, Ações
 
-* **Filtros:**
+- **Filtros:**
+  - Busca por nome/código
 
-  * Busca por nome/código
+  - Filtro por setor (se aplicável)
 
-  * Filtro por setor (se aplicável)
+  - Status
 
-  * Status
-
-* **Dependências:** Lista filtrada pelo setor selecionado
+- **Dependências:** Lista filtrada pelo setor selecionado
 
 **Formulário de Categoria:**
 
-* **Campos Obrigatórios:**
+- **Campos Obrigatórios:**
+  - Nome da categoria
 
-  * Nome da categoria
+  - Código da categoria
 
-  * Código da categoria
+  - Setor pai (pré-selecionado se vier da árvore)
 
-  * Setor pai (pré-selecionado se vier da árvore)
+- **Campos Opcionais:**
+  - Descrição
 
-* **Campos Opcionais:**
+  - Status
 
-  * Descrição
+  - Ordem dentro do setor
 
-  * Status
+- **Validações:**
+  - Nome único dentro do setor
 
-  * Ordem dentro do setor
+  - Código único no sistema
 
-* **Validações:**
-
-  * Nome único dentro do setor
-
-  * Código único no sistema
-
-  * Setor deve estar ativo
+  - Setor deve estar ativo
 
 ### 4.4 Página de Tipos de Licenças
 
@@ -243,49 +228,44 @@ Setor
 
 **Tab Principal - Lista de Tipos:**
 
-* **Colunas:** Nome, Código, Categoria, Setor, Status, Tem Dossier, Ações
+- **Colunas:** Nome, Código, Categoria, Setor, Status, Tem Dossier, Ações
 
-* **Filtros:**
+- **Filtros:**
+  - Busca por nome/código
 
-  * Busca por nome/código
+  - Filtro por setor
 
-  * Filtro por setor
+  - Filtro por categoria (dependente do setor)
 
-  * Filtro por categoria (dependente do setor)
+  - Status
 
-  * Status
+  - Possui dossier (Sim/Não)
 
-  * Possui dossier (Sim/Não)
+- **Indicadores Visuais:**
+  - Ícone especial para tipos com dossier configurado
 
-* **Indicadores Visuais:**
-
-  * Ícone especial para tipos com dossier configurado
-
-  * Cores diferentes por status
+  - Cores diferentes por status
 
 **Formulário de Tipo de Licença:**
 
-* **Campos Obrigatórios:**
+- **Campos Obrigatórios:**
+  - Nome do tipo
 
-  * Nome do tipo
+  - Código do tipo
 
-  * Código do tipo
+  - Categoria pai
 
-  * Categoria pai
+- **Campos Opcionais:**
+  - Descrição
 
-* **Campos Opcionais:**
+  - Status
 
-  * Descrição
+  - Configurar dossier (checkbox)
 
-  * Status
+- **Ações Condicionais:**
+  - Se "Configurar dossier" marcado: botão "Configurar Dossier"
 
-  * Configurar dossier (checkbox)
-
-* **Ações Condicionais:**
-
-  * Se "Configurar dossier" marcado: botão "Configurar Dossier"
-
-  * Link direto para tab "Dossier Tipo Licença"
+  - Link direto para tab "Dossier Tipo Licença"
 
 ## 5. Dossier Tipo Licença
 
@@ -303,207 +283,190 @@ Setor
 
 **Formulário de Parâmetros:**
 
-* **Seção Validade:**
+- **Seção Validade:**
+  - Unidade de validade (dropdown: dias, meses, anos)
 
-  * Unidade de validade (dropdown: dias, meses, anos)
+  - Período de validade (numérico)
 
-  * Período de validade (numérico)
+  - Validade provisória (checkbox + período)
 
-  * Validade provisória (checkbox + período)
+- **Seção Modelo:**
+  - Modelo de licença (dropdown)
 
-* **Seção Modelo:**
+  - Tipo de documento (dropdown)
 
-  * Modelo de licença (dropdown)
+- **Seção Status:**
+  - Status do parâmetro (Ativo/Inativo)
 
-  * Tipo de documento (dropdown)
+  - Data de vigência
 
-* **Seção Status:**
+- **Validações:**
+  - Período deve ser maior que zero
 
-  * Status do parâmetro (Ativo/Inativo)
+  - Data de vigência não pode ser anterior à atual
 
-  * Data de vigência
-
-* **Validações:**
-
-  * Período deve ser maior que zero
-
-  * Data de vigência não pode ser anterior à atual
-
-  * Modelo deve estar disponível no sistema
+  - Modelo deve estar disponível no sistema
 
 ### 5.3 Tab "Legislações"
 
 **Lista de Legislações:**
 
-* **Colunas:** Nome, Tipo, Data Publicação, Status, Documento, Ações
+- **Colunas:** Nome, Tipo, Data Publicação, Status, Documento, Ações
 
-* **Filtros:**
+- **Filtros:**
+  - Busca por nome
 
-  * Busca por nome
+  - Tipo de legislação
 
-  * Tipo de legislação
+  - Período de publicação (data início/fim)
 
-  * Período de publicação (data início/fim)
+  - Status
 
-  * Status
-
-* **Ações:** Visualizar documento, Editar, Remover associação
+- **Ações:** Visualizar documento, Editar, Remover associação
 
 **Formulário de Legislação:**
 
-* **Campos Obrigatórios:**
+- **Campos Obrigatórios:**
+  - Nome da legislação
 
-  * Nome da legislação
+  - Tipo (Lei, Decreto, Portaria, etc.)
 
-  * Tipo (Lei, Decreto, Portaria, etc.)
+  - Data de publicação
 
-  * Data de publicação
+- **Campos Opcionais:**
+  - Número oficial
 
-* **Campos Opcionais:**
+  - Resumo/Descrição
 
-  * Número oficial
+  - URL do documento
 
-  * Resumo/Descrição
+  - Upload de arquivo
 
-  * URL do documento
+  - Status (Vigente/Revogada)
 
-  * Upload de arquivo
-
-  * Status (Vigente/Revogada)
-
-* **Integração:** Upload para Minio storage
+- **Integração:** Upload para Minio storage
 
 ### 5.4 Tab "Entidades"
 
 **Lista de Entidades:**
 
-* **Colunas:** Nome, Tipo, Contatos, Status, Ações
+- **Colunas:** Nome, Tipo, Contatos, Status, Ações
 
-* **Filtros:**
+- **Filtros:**
+  - Busca por nome
 
-  * Busca por nome
+  - Tipo de entidade
 
-  * Tipo de entidade
+  - Status
 
-  * Status
-
-* **Visualização:** Cards ou lista detalhada
+- **Visualização:** Cards ou lista detalhada
 
 **Formulário de Entidade:**
 
-* **Dados Principais:**
+- **Dados Principais:**
+  - Nome da entidade
 
-  * Nome da entidade
+  - Tipo (dropdown)
 
-  * Tipo (dropdown)
+  - Status
 
-  * Status
+- **Seção Contatos (sub-formulário):**
+  - Tipo de contato (Email, Telefone, Endereço)
 
-* **Seção Contatos (sub-formulário):**
+  - Valor do contato
 
-  * Tipo de contato (Email, Telefone, Endereço)
+  - Contato principal (checkbox)
 
-  * Valor do contato
+  - Status do contato
 
-  * Contato principal (checkbox)
-
-  * Status do contato
-
-* **Ações:** Adicionar/Remover contatos dinamicamente
+- **Ações:** Adicionar/Remover contatos dinamicamente
 
 ### 5.5 Tab "Associação Tipo Processos"
 
 **Lista de Associações:**
 
-* **Colunas:** Tipo de Processo, Servidor Activity, Status, Ações
+- **Colunas:** Tipo de Processo, Servidor Activity, Status, Ações
 
-* **Filtros:**
+- **Filtros:**
+  - Busca por tipo de processo
 
-  * Busca por tipo de processo
+  - Servidor de destino
 
-  * Servidor de destino
-
-  * Status da associação
+  - Status da associação
 
 **Formulário de Associação:**
 
-* **Campos:**
+- **Campos:**
+  - Tipo de licença (pré-selecionado)
 
-  * Tipo de licença (pré-selecionado)
+  - Tipo de processo (dropdown com busca)
 
-  * Tipo de processo (dropdown com busca)
+  - Servidor Activity (dropdown)
 
-  * Servidor Activity (dropdown)
+  - Status da associação
 
-  * Status da associação
+- **Validações:**
+  - Servidor deve estar ativo e acessível
 
-* **Validações:**
+  - Tipo de processo deve existir no servidor selecionado
 
-  * Servidor deve estar ativo e acessível
-
-  * Tipo de processo deve existir no servidor selecionado
-
-  * Não permitir associações duplicadas
+  - Não permitir associações duplicadas
 
 ### 5.6 Tab "Associação Taxas"
 
 **Estrutura Hierárquica:**
 
-* **Categorias de Taxas** (nível superior)
+- **Categorias de Taxas** (nível superior)
 
-* **Taxas por Tipo de Processo** (nível inferior)
+- **Taxas por Tipo de Processo** (nível inferior)
 
 **Lista de Categorias de Taxas:**
 
-* **Colunas:** Nome, Descrição, Nº Taxas, Status, Ações
+- **Colunas:** Nome, Descrição, Nº Taxas, Status, Ações
 
-* **Ações:** Expandir/Colapsar para mostrar taxas
+- **Ações:** Expandir/Colapsar para mostrar taxas
 
 **Lista de Taxas (expandida):**
 
-* **Colunas:** Nome, Valor, Moeda, Tipo Processo, Status, Ações
+- **Colunas:** Nome, Valor, Moeda, Tipo Processo, Status, Ações
 
-* **Filtros:**
+- **Filtros:**
+  - Busca por nome
 
-  * Busca por nome
+  - Faixa de valores (min/max)
 
-  * Faixa de valores (min/max)
+  - Moeda
 
-  * Moeda
+  - Tipo de processo
 
-  * Tipo de processo
-
-  * Status
+  - Status
 
 **Formulário de Taxa:**
 
-* **Campos Obrigatórios:**
+- **Campos Obrigatórios:**
+  - Nome da taxa
 
-  * Nome da taxa
+  - Valor base
 
-  * Valor base
+  - Moeda (dropdown)
 
-  * Moeda (dropdown)
+  - Tipo de processo associado
 
-  * Tipo de processo associado
+- **Campos Opcionais:**
+  - Descrição
 
-* **Campos Opcionais:**
+  - Fórmula de cálculo
 
-  * Descrição
+  - Valor mínimo/máximo
 
-  * Fórmula de cálculo
+  - Status
 
-  * Valor mínimo/máximo
+- **Validações:**
+  - Valor deve ser positivo
 
-  * Status
+  - Moeda deve estar ativa no sistema
 
-* **Validações:**
-
-  * Valor deve ser positivo
-
-  * Moeda deve estar ativa no sistema
-
-  * Fórmula deve ser válida (se informada)
+  - Fórmula deve ser válida (se informada)
 
 ## 6. Funcionalidades Transversais
 
@@ -511,85 +474,85 @@ Setor
 
 **Padrão de Ações:**
 
-* **Criar:** Botão "+" ou "Novo" → Formulário em modal ou página
+- **Criar:** Botão "+" ou "Novo" → Formulário em modal ou página
 
-* **Visualizar:** Clique na linha ou ícone "olho" → Modo somente leitura
+- **Visualizar:** Clique na linha ou ícone "olho" → Modo somente leitura
 
-* **Editar:** Ícone "lápis" → Formulário editável
+- **Editar:** Ícone "lápis" → Formulário editável
 
-* **Excluir:** Ícone "lixeira" → Confirmação → Verificação de dependências
+- **Excluir:** Ícone "lixeira" → Confirmação → Verificação de dependências
 
 **Validações de Dependência:**
 
-* Antes de excluir: verificar se item possui filhos ou associações
+- Antes de excluir: verificar se item possui filhos ou associações
 
-* Mensagens claras sobre impedimentos
+- Mensagens claras sobre impedimentos
 
-* Sugestão de ações alternativas (desativar em vez de excluir)
+- Sugestão de ações alternativas (desativar em vez de excluir)
 
 ### 6.2 Filtros e Busca
 
 **Componentes Padrão:**
 
-* **Busca Global:** Campo de texto no topo das listas
+- **Busca Global:** Campo de texto no topo das listas
 
-* **Filtros Laterais:** Painel colapsável com filtros específicos
+- **Filtros Laterais:** Painel colapsável com filtros específicos
 
-* **Filtros Rápidos:** Chips/tags para filtros comuns
+- **Filtros Rápidos:** Chips/tags para filtros comuns
 
-* **Filtros Avançados:** Modal com múltiplos critérios
+- **Filtros Avançados:** Modal com múltiplos critérios
 
 **Funcionalidades:**
 
-* Busca em tempo real (debounce)
+- Busca em tempo real (debounce)
 
-* Combinação de múltiplos filtros
+- Combinação de múltiplos filtros
 
-* Salvamento de filtros favoritos
+- Salvamento de filtros favoritos
 
-* Limpeza rápida de todos os filtros
+- Limpeza rápida de todos os filtros
 
 ### 6.3 Responsividade
 
 **Breakpoints:**
 
-* **Desktop:** > 1200px - Layout completo com painéis laterais
+- **Desktop:** > 1200px - Layout completo com painéis laterais
 
-* **Tablet:** 768px - 1200px - Painéis colapsáveis
+- **Tablet:** 768px - 1200px - Painéis colapsáveis
 
-* **Mobile:** < 768px - Layout em stack, navegação por drawer
+- **Mobile:** < 768px - Layout em stack, navegação por drawer
 
 **Adaptações Mobile:**
 
-* Menu principal em drawer lateral
+- Menu principal em drawer lateral
 
-* Tabs horizontais com scroll
+- Tabs horizontais com scroll
 
-* Formulários em tela cheia
+- Formulários em tela cheia
 
-* Listas com cards em vez de tabelas
+- Listas com cards em vez de tabelas
 
-* Ações contextuais em menu dropdown
+- Ações contextuais em menu dropdown
 
 ### 6.4 Estados e Feedback
 
 **Estados Visuais:**
 
-* **Loading:** Spinners e skeletons durante carregamento
+- **Loading:** Spinners e skeletons durante carregamento
 
-* **Vazio:** Mensagens e ilustrações para listas vazias
+- **Vazio:** Mensagens e ilustrações para listas vazias
 
-* **Erro:** Mensagens de erro com ações de recuperação
+- **Erro:** Mensagens de erro com ações de recuperação
 
-* **Sucesso:** Notificações de confirmação de ações
+- **Sucesso:** Notificações de confirmação de ações
 
 **Indicadores de Status:**
 
-* Cores padronizadas (verde=ativo, vermelho=inativo, amarelo=pendente)
+- Cores padronizadas (verde=ativo, vermelho=inativo, amarelo=pendente)
 
-* Ícones consistentes para cada tipo de status
+- Ícones consistentes para cada tipo de status
 
-* Tooltips explicativos
+- Tooltips explicativos
 
 ## 7. Integrações e Dependências
 
@@ -603,69 +566,68 @@ Setor
 
 **Comportamentos:**
 
-* Desativação em cascata com confirmação
+- Desativação em cascata com confirmação
 
-* Validação de integridade antes de alterações
+- Validação de integridade antes de alterações
 
-* Mensagens claras sobre impactos das mudanças
+- Mensagens claras sobre impactos das mudanças
 
 ### 7.2 Integrações Externas
 
 **Activity Servers:**
 
-* Validação de conectividade em tempo real
+- Validação de conectividade em tempo real
 
-* Cache de tipos de processo disponíveis
+- Cache de tipos de processo disponíveis
 
-* Indicadores visuais de status da conexão
+- Indicadores visuais de status da conexão
 
 **Minio Storage:**
 
-* Upload de documentos com progress bar
+- Upload de documentos com progress bar
 
-* Preview de documentos quando possível
+- Preview de documentos quando possível
 
-* Gestão de versões de arquivos
+- Gestão de versões de arquivos
 
 **Organizações Globais:**
 
-* Sincronização de dados de entidades
+- Sincronização de dados de entidades
 
-* Validação de informações de contato
+- Validação de informações de contato
 
-* Atualização automática de dados
+- Atualização automática de dados
 
 ## 8. Considerações de UX/UI
 
 ### 8.1 Princípios de Design
 
-* **Consistência:** Padrões visuais e de interação uniformes
+- **Consistência:** Padrões visuais e de interação uniformes
 
-* **Clareza:** Informações organizadas e fáceis de encontrar
+- **Clareza:** Informações organizadas e fáceis de encontrar
 
-* **Eficiência:** Fluxos otimizados para tarefas frequentes
+- **Eficiência:** Fluxos otimizados para tarefas frequentes
 
-* **Feedback:** Resposta imediata às ações do usuário
+- **Feedback:** Resposta imediata às ações do usuário
 
-* **Prevenção de Erros:** Validações e confirmações apropriadas
+- **Prevenção de Erros:** Validações e confirmações apropriadas
 
 ### 8.2 Acessibilidade
 
-* **Navegação por teclado:** Todos os elementos acessíveis via Tab
+- **Navegação por teclado:** Todos os elementos acessíveis via Tab
 
-* **Leitores de tela:** Labels e descrições apropriadas
+- **Leitores de tela:** Labels e descrições apropriadas
 
-* **Contraste:** Cores que atendem padrões WCAG
+- **Contraste:** Cores que atendem padrões WCAG
 
-* **Tamanhos:** Elementos clicáveis com tamanho mínimo adequado
+- **Tamanhos:** Elementos clicáveis com tamanho mínimo adequado
 
 ### 8.3 Performance
 
-* **Lazy Loading:** Carregamento sob demanda de dados
+- **Lazy Loading:** Carregamento sob demanda de dados
 
-* **Paginação:** Limitação de itens por página
+- **Paginação:** Limitação de itens por página
 
-* **Cache:** Armazenamento local de dados frequentes
+- **Cache:** Armazenamento local de dados frequentes
 
-* **Otimização:** Minimização de requisições desnecessárias
-
+- **Otimização:** Minimização de requisições desnecessárias

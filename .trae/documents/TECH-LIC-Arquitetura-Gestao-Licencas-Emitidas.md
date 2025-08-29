@@ -12,45 +12,45 @@ graph TD
     D --> E[Domain Model]
     E --> F[Repository Layer - JPA]
     F --> G[PostgreSQL 15+]
-    
+
     B --> H[JWT Authentication Filter]
     H --> I[Spring Security]
-    
+
     C --> J[Integration Services]
     J --> K[Activity Server]
     J --> L[Financial System]
     J --> M[Notification System]
     J --> N[Parametrização System]
-    
+
     D --> O[Cache Layer - Redis]
     F --> P[Event Store]
-    
+
     subgraph "Presentation Layer"
         A
     end
-    
+
     subgraph "Web Layer (Spring Boot)"
         B
         H
         I
     end
-    
+
     subgraph "Application Layer"
         C
     end
-    
+
     subgraph "Domain Layer"
         D
         E
     end
-    
+
     subgraph "Infrastructure Layer"
         F
         G
         O
         P
     end
-    
+
     subgraph "External Bounded Contexts"
         K
         L
@@ -63,139 +63,139 @@ graph TD
 
 #### Aggregates Principais:
 
-* **IssuedLicense** - Aggregate Root para licenças emitidas com controle de ciclo de vida
+- **IssuedLicense** - Aggregate Root para licenças emitidas com controle de ciclo de vida
 
-* **Establishment** - **Aggregate Root para estabelecimentos registrados (NOVO)**
+- **Establishment** - **Aggregate Root para estabelecimentos registrados (NOVO)**
 
-* **EstablishmentRegistration** - **Aggregate para processos de registro de estabelecimentos (NOVO)**
+- **EstablishmentRegistration** - **Aggregate para processos de registro de estabelecimentos (NOVO)**
 
-* **LicenseIssuer** - Aggregate para órgãos emissores de licenças
+- **LicenseIssuer** - Aggregate para órgãos emissores de licenças
 
-* **LicenseHolder** - Aggregate base para titulares de licenças
+- **LicenseHolder** - Aggregate base para titulares de licenças
 
-* **IndividualHolder** - Aggregate para pessoas físicas titulares
+- **IndividualHolder** - Aggregate para pessoas físicas titulares
 
-* **CorporateHolder** - Aggregate para pessoas jurídicas titulares
+- **CorporateHolder** - Aggregate para pessoas jurídicas titulares
 
-* **LegalRepresentative** - Entity para representantes legais
+- **LegalRepresentative** - Entity para representantes legais
 
-* **LicenseRenewal** - Aggregate para processos de renovação
+- **LicenseRenewal** - Aggregate para processos de renovação
 
-* **LicenseAmendment** - Aggregate para alterações de licenças
+- **LicenseAmendment** - Aggregate para alterações de licenças
 
-* **LicenseTransfer** - Aggregate para transferências de titularidade
+- **LicenseTransfer** - Aggregate para transferências de titularidade
 
 #### Domain Services:
 
-* **EstablishmentValidationService** - **Validações de registro e conformidade de estabelecimentos (NOVO)**
+- **EstablishmentValidationService** - **Validações de registro e conformidade de estabelecimentos (NOVO)**
 
-* **GeoreferencingService** - **Validação de coordenadas GPS e dados cartográficos (NOVO)**
+- **GeoreferencingService** - **Validação de coordenadas GPS e dados cartográficos (NOVO)**
 
-* **DocumentValidationService** - **Validação de documentação específica por segmento (NOVO)**
+- **DocumentValidationService** - **Validação de documentação específica por segmento (NOVO)**
 
-* **ComplianceService** - **Verificação de conformidade com legislação vigente (NOVO)**
+- **ComplianceService** - **Verificação de conformidade com legislação vigente (NOVO)**
 
-* **LicenseValidationService** - Validações de regras de negócio e integridade
+- **LicenseValidationService** - Validações de regras de negócio e integridade
 
-* **HolderValidationService** - Validações específicas de titulares (PF/PJ)
+- **HolderValidationService** - Validações específicas de titulares (PF/PJ)
 
-* **NotificationService** - Gestão de alertas e notificações
+- **NotificationService** - Gestão de alertas e notificações
 
-* **FeeCalculationService** - Cálculo de taxas e valores
+- **FeeCalculationService** - Cálculo de taxas e valores
 
-* **AuditService** - Rastreabilidade e auditoria completa
+- **AuditService** - Rastreabilidade e auditoria completa
 
-* **LicenseLifecycleService** - Gestão do ciclo de vida das licenças
+- **LicenseLifecycleService** - Gestão do ciclo de vida das licenças
 
 ## 2. Stack Tecnológico Spring Boot DDD
 
 ### 2.1 Frontend (Presentation Layer)
 
-* **React 18** - Framework principal com TypeScript
+- **React 18** - Framework principal com TypeScript
 
-* **Axios** - Cliente HTTP para integração com Spring Boot REST APIs
+- **Axios** - Cliente HTTP para integração com Spring Boot REST APIs
 
-* **TanStack Query** - Cache e sincronização de estado servidor
+- **TanStack Query** - Cache e sincronização de estado servidor
 
-* **React Hook Form** - Gerenciamento de formulários com validação
+- **React Hook Form** - Gerenciamento de formulários com validação
 
-* **React Router v6** - Roteamento SPA
+- **React Router v6** - Roteamento SPA
 
-* **Material-UI v5** - Design System corporativo
+- **Material-UI v5** - Design System corporativo
 
-* **Recharts** - Visualização de dados e dashboards
+- **Recharts** - Visualização de dados e dashboards
 
-* **Date-fns** - Manipulação de datas e períodos
+- **Date-fns** - Manipulação de datas e períodos
 
 ### 2.2 Backend Spring Boot (Domain + Application + Infrastructure)
 
 #### Framework Principal
 
-* **Spring Boot 3.2+** - Framework principal com Java 17+
+- **Spring Boot 3.2+** - Framework principal com Java 17+
 
-* **Spring Web MVC** - Controllers REST e tratamento de requisições
+- **Spring Web MVC** - Controllers REST e tratamento de requisições
 
-* **Spring Security 6** - Autenticação e autorização com JWT
+- **Spring Security 6** - Autenticação e autorização com JWT
 
-* **Spring Data JPA** - Abstração de persistência e repositórios
+- **Spring Data JPA** - Abstração de persistência e repositórios
 
 #### Domain Layer
 
-* **Java 17+** - Linguagem principal com records e pattern matching
+- **Java 17+** - Linguagem principal com records e pattern matching
 
-* **Bean Validation (JSR-303)** - Validação de Value Objects e Entities
+- **Bean Validation (JSR-303)** - Validação de Value Objects e Entities
 
-* **Domain Events** - Comunicação entre Aggregates via Spring Events
+- **Domain Events** - Comunicação entre Aggregates via Spring Events
 
-* **MapStruct** - Mapeamento entre DTOs e Domain Objects
+- **MapStruct** - Mapeamento entre DTOs e Domain Objects
 
 #### Application Layer
 
-* **Spring Boot Starters** - Configuração automática de dependências
+- **Spring Boot Starters** - Configuração automática de dependências
 
-* **CQRS Pattern** - Separação Command/Query com Spring Components
+- **CQRS Pattern** - Separação Command/Query com Spring Components
 
-* **Spring Transaction Management** - Controle transacional declarativo
+- **Spring Transaction Management** - Controle transacional declarativo
 
-* **Spring Validation** - Validação de entrada via annotations
+- **Spring Validation** - Validação de entrada via annotations
 
 #### Infrastructure Layer
 
-* **PostgreSQL 15+** - Banco de dados relacional principal
+- **PostgreSQL 15+** - Banco de dados relacional principal
 
-* **HikariCP** - Pool de conexões de alta performance
+- **HikariCP** - Pool de conexões de alta performance
 
-* **Flyway** - Versionamento e migração de schema
+- **Flyway** - Versionamento e migração de schema
 
-* **Redis** - Cache distribuído e sessões via Spring Data Redis
+- **Redis** - Cache distribuído e sessões via Spring Data Redis
 
-* **Spring Boot Actuator** - Monitoramento e métricas
+- **Spring Boot Actuator** - Monitoramento e métricas
 
-* **Logback** - Logging estruturado com SLF4J
+- **Logback** - Logging estruturado com SLF4J
 
 ### 2.3 Segurança e Autenticação
 
-* **JWT (JSON Web Tokens)** - Autenticação stateless
+- **JWT (JSON Web Tokens)** - Autenticação stateless
 
-* **Spring Security JWT** - Implementação segura de JWT
+- **Spring Security JWT** - Implementação segura de JWT
 
-* **BCrypt** - Hash de senhas com salt
+- **BCrypt** - Hash de senhas com salt
 
-* **CORS Configuration** - Configuração de Cross-Origin Resource Sharing
+- **CORS Configuration** - Configuração de Cross-Origin Resource Sharing
 
-* **Rate Limiting** - Controle de taxa de requisições
+- **Rate Limiting** - Controle de taxa de requisições
 
 ### 2.4 Infraestrutura e DevOps
 
-* **Docker** - Containerização de serviços
+- **Docker** - Containerização de serviços
 
-* **Docker Compose** - Orquestração local de containers
+- **Docker Compose** - Orquestração local de containers
 
-* **NGINX** - Load balancer e proxy reverso
+- **NGINX** - Load balancer e proxy reverso
 
-* **Prometheus + Grafana** - Observabilidade e métricas de negócio
+- **Prometheus + Grafana** - Observabilidade e métricas de negócio
 
-* **Sentry** - Monitoramento de erros e performance
+- **Sentry** - Monitoramento de erros e performance
 
 ## 3. Estrutura de Pacotes Spring Boot
 
@@ -289,28 +289,28 @@ src/main/java/cv/gov/licensing/
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.0</version>
         <relativePath/>
     </parent>
-    
+
     <groupId>cv.gov</groupId>
     <artifactId>licensing-system</artifactId>
     <version>1.0.0</version>
     <name>Sistema de Licenciamento</name>
-    
+
     <properties>
         <java.version>17</java.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <jjwt.version>0.12.3</jjwt.version>
     </properties>
-    
+
     <dependencies>
         <!-- Spring Boot Starters -->
         <dependency>
@@ -337,7 +337,7 @@ src/main/java/cv/gov/licensing/
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        
+
         <!-- Database -->
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -348,7 +348,7 @@ src/main/java/cv/gov/licensing/
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
-        
+
         <!-- JWT -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
@@ -367,14 +367,14 @@ src/main/java/cv/gov/licensing/
             <version>${jjwt.version}</version>
             <scope>runtime</scope>
         </dependency>
-        
+
         <!-- MapStruct -->
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
         </dependency>
-        
+
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -387,7 +387,7 @@ src/main/java/cv/gov/licensing/
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -421,7 +421,7 @@ src/main/java/cv/gov/licensing/
 spring:
   application:
     name: licensing-system
-  
+
   datasource:
     url: jdbc:postgresql://localhost:5432/licensing_db
     username: ${DB_USERNAME:licensing_user}
@@ -433,7 +433,7 @@ spring:
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000
-  
+
   jpa:
     hibernate:
       ddl-auto: validate
@@ -447,12 +447,12 @@ spring:
           batch_size: 25
         order_inserts: true
         order_updates: true
-  
+
   flyway:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
-  
+
   data:
     redis:
       host: ${REDIS_HOST:localhost}
@@ -464,13 +464,13 @@ spring:
           max-active: 8
           max-idle: 8
           min-idle: 0
-  
+
   security:
     jwt:
       secret: ${JWT_SECRET:mySecretKey}
       expiration: 86400000 # 24 hours
       refresh-expiration: 604800000 # 7 days
-  
+
   servlet:
     multipart:
       max-file-size: 10MB
@@ -491,8 +491,8 @@ logging:
     org.springframework.security: DEBUG
     org.hibernate.SQL: DEBUG
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
-    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'
+    file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
   file:
     name: logs/licensing-system.log
 
@@ -500,7 +500,7 @@ app:
   cors:
     allowed-origins: ${CORS_ORIGINS:http://localhost:3000,http://localhost:5173}
     allowed-methods: GET,POST,PUT,DELETE,OPTIONS
-    allowed-headers: "*"
+    allowed-headers: '*'
     allow-credentials: true
 ```
 
@@ -513,18 +513,18 @@ app:
 @RequestMapping("/api/v1/licenses")
 @RequiredArgsConstructor
 public class LicenseController {
-    
+
     private final LicenseApplicationService licenseService;
     private final LicenseMapper licenseMapper;
-    
+
     @GetMapping
     public ResponseEntity<PagedResponse<LicenseResponse>> getAllLicenses(
             @Valid @ModelAttribute LicenseSearchRequest request,
             Pageable pageable) {
-        
+
         Page<IssuedLicense> licenses = licenseService.searchLicenses(request, pageable);
         PagedResponse<LicenseResponse> response = licenseMapper.toPagedResponse(licenses);
-        
+
         return ResponseEntity.ok(response);
     }
 }
@@ -537,21 +537,21 @@ public class LicenseController {
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class LicenseApplicationService {
-    
+
     private final LicenseRepository licenseRepository;
     private final HolderRepository holderRepository;
     private final LicenseValidationService validationService;
     private final ApplicationEventPublisher eventPublisher;
-    
+
     @Transactional
     public IssuedLicense issueLicense(IssueLicenseCommand command) {
         // Validações de domínio
         validationService.validateLicenseIssuance(command);
-        
+
         // Buscar titular
         LicenseHolder holder = holderRepository.findById(command.getHolderId())
             .orElseThrow(() -> new HolderNotFoundException(command.getHolderId()));
-        
+
         // Criar licença
         IssuedLicense license = IssuedLicense.builder()
             .licenseNumber(generateLicenseNumber())
@@ -562,13 +562,13 @@ public class LicenseApplicationService {
             .expiryDate(calculateExpiryDate(command.getLicenseType()))
             .status(LicenseStatus.ACTIVE)
             .build();
-        
+
         // Salvar
         IssuedLicense savedLicense = licenseRepository.save(license);
-        
+
         // Publicar evento de domínio
         eventPublisher.publishEvent(new LicenseIssuedEvent(savedLicense.getId()));
-        
+
         return savedLicense;
     }
 }
@@ -602,12 +602,12 @@ GET /api/v1/license-issuers
 
 **Query Parameters:**
 
-| Parâmetro  | Tipo    | Obrigatório | Descrição                     | Validação Domain |
-| ---------- | ------- | ----------- | ----------------------------- | ---------------- |
-| page       | number  | false       | Página atual (padrão: 1)      | PaginationVO     |
-| limit      | number  | false       | Itens por página (padrão: 25) | PaginationVO     |
-| search     | string  | false       | Busca por nome ou código      | SearchVO         |
-| is\_active | boolean | false       | Filtro por status ativo       | StatusVO         |
+| Parâmetro | Tipo    | Obrigatório | Descrição                     | Validação Domain |
+| --------- | ------- | ----------- | ----------------------------- | ---------------- |
+| page      | number  | false       | Página atual (padrão: 1)      | PaginationVO     |
+| limit     | number  | false       | Itens por página (padrão: 25) | PaginationVO     |
+| search    | string  | false       | Busca por nome ou código      | SearchVO         |
+| is_active | boolean | false       | Filtro por status ativo       | StatusVO         |
 
 **Response:**
 
@@ -669,13 +669,13 @@ GET /api/v1/license-holders
 
 **Query Parameters:**
 
-| Parâmetro        | Tipo   | Obrigatório | Descrição                      | Validação Domain |
-| ---------------- | ------ | ----------- | ------------------------------ | ---------------- |
-| page             | number | false       | Página atual (padrão: 1)       | PaginationVO     |
-| limit            | number | false       | Itens por página (padrão: 25)  | PaginationVO     |
-| holder\_type     | string | false       | 'individual' ou 'corporate'    | HolderTypeVO     |
-| search           | string | false       | Busca por nome ou documento    | SearchVO         |
-| document\_number | string | false       | Filtro por número de documento | DocumentVO       |
+| Parâmetro       | Tipo   | Obrigatório | Descrição                      | Validação Domain |
+| --------------- | ------ | ----------- | ------------------------------ | ---------------- |
+| page            | number | false       | Página atual (padrão: 1)       | PaginationVO     |
+| limit           | number | false       | Itens por página (padrão: 25)  | PaginationVO     |
+| holder_type     | string | false       | 'individual' ou 'corporate'    | HolderTypeVO     |
+| search          | string | false       | Busca por nome ou documento    | SearchVO         |
+| document_number | string | false       | Filtro por número de documento | DocumentVO       |
 
 **Response:**
 
@@ -715,7 +715,7 @@ GET /api/v1/license-holders
       "registration_number": "REG-2024-001",
       "incorporation_date": "2020-05-10",
       "legal_form": "sociedade_limitada",
-      "share_capital": 1000000.00,
+      "share_capital": 1000000.0,
       "business_activity": "Comércio geral",
       "legal_representatives": [
         {
@@ -799,7 +799,7 @@ POST /api/v1/license-holders/corporate
   "registration_number": "REG-2024-002",
   "incorporation_date": "2019-03-15",
   "legal_form": "sociedade_anonima",
-  "share_capital": 5000000.00,
+  "share_capital": 5000000.0,
   "business_activity": "Construção civil",
   "legal_representatives": [
     {
@@ -843,21 +843,21 @@ GET /api/v1/issued-licenses
 
 **Query Parameters (com validação via Domain Services):**
 
-| Parâmetro          | Tipo   | Obrigatório | Descrição                                      | Validação Domain |
-| ------------------ | ------ | ----------- | ---------------------------------------------- | ---------------- |
-| page               | number | false       | Página atual (padrão: 1)                       | PaginationVO     |
-| limit              | number | false       | Itens por página (padrão: 25, max: 100)        | PaginationVO     |
-| search             | string | false       | Busca por número, titular (T\_LICENSE\_HOLDER) | SearchVO         |
-| status             | string | false       | Filtro por status via T\_OPTIONS               | StatusVO         |
-| license\_type\_id  | uuid   | false       | Filtro por T\_LICENSE\_TYPE                    | LicenseTypeVO    |
-| issuer\_id         | uuid   | false       | Filtro por T\_LICENSE\_ISSUER                  | IssuerVO         |
-| holder\_id         | uuid   | false       | Filtro por T\_LICENSE\_HOLDER                  | HolderVO         |
-| holder\_type       | string | false       | Filtro por tipo: 'individual' ou 'corporate'   | HolderTypeVO     |
-| sector\_id         | uuid   | false       | Filtro por T\_SECTOR                           | SectorVO         |
-| issue\_date\_from  | date   | false       | Data inicial de emissão                        | DateRangeVO      |
-| issue\_date\_to    | date   | false       | Data final de emissão                          | DateRangeVO      |
-| expiry\_date\_from | date   | false       | Data inicial de vencimento                     | DateRangeVO      |
-| expiry\_date\_to   | date   | false       | Data final de vencimento                       | DateRangeVO      |
+| Parâmetro        | Tipo   | Obrigatório | Descrição                                    | Validação Domain |
+| ---------------- | ------ | ----------- | -------------------------------------------- | ---------------- |
+| page             | number | false       | Página atual (padrão: 1)                     | PaginationVO     |
+| limit            | number | false       | Itens por página (padrão: 25, max: 100)      | PaginationVO     |
+| search           | string | false       | Busca por número, titular (T_LICENSE_HOLDER) | SearchVO         |
+| status           | string | false       | Filtro por status via T_OPTIONS              | StatusVO         |
+| license_type_id  | uuid   | false       | Filtro por T_LICENSE_TYPE                    | LicenseTypeVO    |
+| issuer_id        | uuid   | false       | Filtro por T_LICENSE_ISSUER                  | IssuerVO         |
+| holder_id        | uuid   | false       | Filtro por T_LICENSE_HOLDER                  | HolderVO         |
+| holder_type      | string | false       | Filtro por tipo: 'individual' ou 'corporate' | HolderTypeVO     |
+| sector_id        | uuid   | false       | Filtro por T_SECTOR                          | SectorVO         |
+| issue_date_from  | date   | false       | Data inicial de emissão                      | DateRangeVO      |
+| issue_date_to    | date   | false       | Data final de emissão                        | DateRangeVO      |
+| expiry_date_from | date   | false       | Data inicial de vencimento                   | DateRangeVO      |
+| expiry_date_to   | date   | false       | Data final de vencimento                     | DateRangeVO      |
 
 **Response (DTO via Application Service):**
 
@@ -928,9 +928,9 @@ GET /api/v1/issued-licenses/{id}
 
 **Headers:**
 
-* `Authorization: Bearer {jwt_token}`
+- `Authorization: Bearer {jwt_token}`
 
-* `Content-Type: application/json`
+- `Content-Type: application/json`
 
 **RLS Validation:** Acesso filtrado por perfil de usuário via Supabase RLS
 
@@ -960,7 +960,7 @@ GET /api/v1/issued-licenses/{id}
     "registration_number": "REG-2024-001",
     "incorporation_date": "2020-05-10",
     "legal_form": "sociedade_limitada",
-    "share_capital": 1000000.00,
+    "share_capital": 1000000.0,
     "business_activity": "Comércio geral",
     "contacts": [
       {
@@ -1061,14 +1061,14 @@ GET /api/v1/issued-licenses/{id}
   ],
   "fees": {
     "issuance": {
-      "amount": 5000.00,
+      "amount": 5000.0,
       "currency": "CVE",
       "status": "paid",
       "payment_date": "2024-01-10T00:00:00Z",
       "payment_reference": "PAY-2024-001234"
     },
     "renewal": {
-      "amount": 3000.00,
+      "amount": 3000.0,
       "currency": "CVE",
       "status": "pending",
       "due_date": "2024-12-15T00:00:00Z"
@@ -1113,7 +1113,7 @@ GET /api/v1/issued-licenses/{id}
     {
       "id": "uuid",
       "fee_type": "issuance",
-      "amount": 5000.00,
+      "amount": 5000.0,
       "currency": "CVE",
       "status": "paid",
       "due_date": "2024-01-10T00:00:00Z",
@@ -1123,7 +1123,7 @@ GET /api/v1/issued-licenses/{id}
     {
       "id": "uuid",
       "fee_type": "renewal",
-      "amount": 3000.00,
+      "amount": 3000.0,
       "currency": "CVE",
       "status": "pending",
       "due_date": "2024-12-15T00:00:00Z"
@@ -1193,18 +1193,9 @@ POST /api/v1/establishments/register
     "validation_required": true
   },
   "compliance_status": false,
-  "required_documents": [
-    "LICENCA_TURISTICA",
-    "CERTIFICADO_SEGURANCA",
-    "ALVARA_SANITARIO"
-  ],
-  "submitted_documents": [
-    "LICENCA_TURISTICA"
-  ],
-  "pending_documents": [
-    "CERTIFICADO_SEGURANCA",
-    "ALVARA_SANITARIO"
-  ],
+  "required_documents": ["LICENCA_TURISTICA", "CERTIFICADO_SEGURANCA", "ALVARA_SANITARIO"],
+  "submitted_documents": ["LICENCA_TURISTICA"],
+  "pending_documents": ["CERTIFICADO_SEGURANCA", "ALVARA_SANITARIO"],
   "created_at": "2024-01-15T10:30:00Z"
 }
 ```
@@ -1217,21 +1208,21 @@ GET /api/v1/establishments
 
 **Query Parameters:**
 
-| Parâmetro | Tipo | Obrigatório | Descrição |
-|-----------|------|-------------|----------|
-| holder_id | uuid | false | Filtro por titular |
-| segment | string | false | Filtro por segmento (COMERCIAL, TURISTICO, INDUSTRIAL) |
-| category | string | false | Filtro por categoria específica |
-| operational_status | string | false | Status operacional (ACTIVE, INACTIVE, SUSPENDED) |
-| compliance_status | boolean | false | Status de conformidade |
-| municipality | string | false | Filtro por município |
-| parish | string | false | Filtro por freguesia |
-| latitude_min | decimal | false | Coordenada mínima de latitude |
-| latitude_max | decimal | false | Coordenada máxima de latitude |
-| longitude_min | decimal | false | Coordenada mínima de longitude |
-| longitude_max | decimal | false | Coordenada máxima de longitude |
-| page | number | false | Página (padrão: 0) |
-| size | number | false | Tamanho da página (padrão: 20, max: 100) |
+| Parâmetro          | Tipo    | Obrigatório | Descrição                                              |
+| ------------------ | ------- | ----------- | ------------------------------------------------------ |
+| holder_id          | uuid    | false       | Filtro por titular                                     |
+| segment            | string  | false       | Filtro por segmento (COMERCIAL, TURISTICO, INDUSTRIAL) |
+| category           | string  | false       | Filtro por categoria específica                        |
+| operational_status | string  | false       | Status operacional (ACTIVE, INACTIVE, SUSPENDED)       |
+| compliance_status  | boolean | false       | Status de conformidade                                 |
+| municipality       | string  | false       | Filtro por município                                   |
+| parish             | string  | false       | Filtro por freguesia                                   |
+| latitude_min       | decimal | false       | Coordenada mínima de latitude                          |
+| latitude_max       | decimal | false       | Coordenada máxima de latitude                          |
+| longitude_min      | decimal | false       | Coordenada mínima de longitude                         |
+| longitude_max      | decimal | false       | Coordenada máxima de longitude                         |
+| page               | number  | false       | Página (padrão: 0)                                     |
+| size               | number  | false       | Tamanho da página (padrão: 20, max: 100)               |
 
 #### Validação de Georreferenciamento
 
@@ -1303,9 +1294,7 @@ POST /api/v1/establishments/{id}/compliance-check
       "details": "Estabelecimento em zona comercial adequada, mas próximo a área residencial"
     }
   ],
-  "recommendations": [
-    "Considerar medidas de redução de ruído para conformidade com zoneamento"
-  ],
+  "recommendations": ["Considerar medidas de redução de ruído para conformidade com zoneamento"],
   "next_inspection_date": "2024-07-15",
   "checked_at": "2024-01-15T14:30:00Z",
   "checked_by": "uuid"
@@ -1392,7 +1381,7 @@ POST /api/v1/issued-licenses/{id}/transfers
   "status": "pending_approval",
   "estimated_completion_days": 10,
   "transfer_fee": {
-    "amount": 2500.00,
+    "amount": 2500.0,
     "currency": "CVE",
     "due_date": "2024-01-25T00:00:00Z"
   },
@@ -1433,7 +1422,7 @@ POST /api/v1/issued-licenses/{id}/renewals
   "status": "approved",
   "new_expiry_date": "2026-01-15T00:00:00Z",
   "renewal_fee": {
-    "amount": 3000.00,
+    "amount": 3000.0,
     "currency": "CVE",
     "status": "pending",
     "due_date": "2024-12-15T00:00:00Z",
@@ -1449,9 +1438,9 @@ POST /api/v1/issued-licenses/{id}/renewals
 
 **Headers:**
 
-* Authorization: Bearer {supabase\_jwt\_token}
+- Authorization: Bearer {supabase_jwt_token}
 
-* Content-Type: application/json
+- Content-Type: application/json
 
 **Domain Service:** `LicenseRenewalService`\
 **Aggregate:** `IssuedLicense` + `LicenseRenewal`\
@@ -1497,7 +1486,7 @@ POST /api/v1/issued-licenses/{id}/renewals
     },
     "fees": {
       "renewal_fee": {
-        "amount": 3000.00,
+        "amount": 3000.0,
         "currency": "CVE",
         "status": "pending",
         "due_date": "2024-12-31T00:00:00Z",
@@ -1522,7 +1511,7 @@ POST /api/v1/issued-licenses/{id}/renewals
 
 **Headers:**
 
-* Authorization: Bearer {supabase\_jwt\_token}
+- Authorization: Bearer {supabase_jwt_token}
 
 **Domain Service:** `AlertMonitoringService`\
 **Read Model:** `LicenseAlertView`\
@@ -1530,17 +1519,17 @@ POST /api/v1/issued-licenses/{id}/renewals
 
 **Query Parameters:**
 
-* `alert_type`: expiry, renewal, suspension (opcional)
+- `alert_type`: expiry, renewal, suspension (opcional)
 
-* `priority`: high, medium, low (opcional)
+- `priority`: high, medium, low (opcional)
 
-* `days_ahead`: número de dias para alertas de vencimento (padrão: 30)
+- `days_ahead`: número de dias para alertas de vencimento (padrão: 30)
 
-* `status`: pending, acknowledged, resolved (opcional)
+- `status`: pending, acknowledged, resolved (opcional)
 
-* `page`: número da página (padrão: 1)
+- `page`: número da página (padrão: 1)
 
-* `limit`: itens por página (padrão: 20)
+- `limit`: itens por página (padrão: 20)
 
 **Response (via RLS + Cache Redis):**
 
@@ -1606,9 +1595,9 @@ POST /api/v1/issued-licenses/{id}/renewals
 
 **Headers:**
 
-* Authorization: Bearer {supabase\_jwt\_token}
+- Authorization: Bearer {supabase_jwt_token}
 
-* Content-Type: application/json
+- Content-Type: application/json
 
 **Domain Service:** `ReportGenerationService`\
 **Command Handler:** `GenerateReportCommandHandler`\
@@ -1655,7 +1644,7 @@ POST /api/v1/issued-licenses/{id}/renewals
 
 **Headers:**
 
-* Authorization: Bearer {supabase\_jwt\_token}
+- Authorization: Bearer {supabase_jwt_token}
 
 **Read Model:** `ReportStatusView`\
 **Tables:** `T_REPORT_GENERATION`, `T_REPORT_AUDIT`
@@ -1712,21 +1701,21 @@ graph TD
   E --> F[(Supabase PostgreSQL)]
   E --> G[Redis Cache]
   E --> H[RabbitMQ]
-  
+
   subgraph "Bounded Context: Gestão de Licenças Emitidas"
     subgraph "Presentation Layer"
       B1[Controllers]
       B2[DTOs]
       B3[Validators]
     end
-    
+
     subgraph "Application Layer"
       C1[Command Handlers]
       C2[Query Handlers]
       C3[Application Services]
       C4[Event Handlers]
     end
-    
+
     subgraph "Domain Layer"
       D1[Aggregates]
       D2[Domain Services]
@@ -1734,7 +1723,7 @@ graph TD
       D4[Value Objects]
       D5[Repositories Interfaces]
     end
-    
+
     subgraph "Infrastructure Layer"
       E1[Repository Implementations]
       E2[External Service Adapters]
@@ -1742,14 +1731,14 @@ graph TD
       E4[Cache Providers]
     end
   end
-  
+
   subgraph "External Bounded Contexts"
     I[Activity Server]
     J[Sistema Financeiro]
     K[Notificações]
     L[Parametrização]
   end
-  
+
   E2 --> I
   E2 --> J
   E2 --> K
@@ -1765,14 +1754,14 @@ erDiagram
     %% Entidades de Emissão
     T_LICENSE_ISSUER ||--o{ T_ISSUED_LICENSE : "issues"
     T_ISSUED_LICENSE ||--|| T_LICENSE_TYPE : "is of type"
-    
+
     %% Entidades de Titularidade
     T_LICENSE_HOLDER ||--o{ T_ISSUED_LICENSE : "owns"
     T_LICENSE_HOLDER ||--o| T_INDIVIDUAL_HOLDER : "extends"
     T_LICENSE_HOLDER ||--o| T_CORPORATE_HOLDER : "extends"
     T_CORPORATE_HOLDER ||--o{ T_LEGAL_REPRESENTATIVE : "has representatives"
     T_LICENSE_HOLDER ||--o{ T_HOLDER_CONTACT : "has contacts"
-    
+
     %% Entidades de Processo
     T_ISSUED_LICENSE ||--o{ T_LICENSE_RENEWAL : "has renewals"
     T_ISSUED_LICENSE ||--o{ T_LICENSE_AMENDMENT : "has amendments"
@@ -1781,12 +1770,12 @@ erDiagram
     T_ISSUED_LICENSE ||--o{ T_LICENSE_DOCUMENT : "has documents"
     T_ISSUED_LICENSE ||--o{ T_LICENSE_FEE : "has fees"
     T_ISSUED_LICENSE ||--o{ T_LICENSE_ALERT : "generates alerts"
-    
+
     %% Parametrização
     T_LICENSE_TYPE ||--|| T_SECTOR : "belongs to"
     T_LICENSE_TYPE ||--|| T_CATEGORY : "belongs to"
     T_CATEGORY ||--|| T_SECTOR : "belongs to"
-    
+
     %% Definições das Entidades
     T_LICENSE_ISSUER {
         uuid id PK
@@ -1802,7 +1791,7 @@ erDiagram
         uuid created_by FK
         uuid updated_by FK
     }
-    
+
     T_LICENSE_HOLDER {
         uuid id PK
         varchar holder_type
@@ -1813,7 +1802,7 @@ erDiagram
         uuid created_by FK
         uuid updated_by FK
     }
-    
+
     T_INDIVIDUAL_HOLDER {
         uuid id PK
         uuid holder_id FK
@@ -1830,7 +1819,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_CORPORATE_HOLDER {
         uuid id PK
         uuid holder_id FK
@@ -1845,7 +1834,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_LEGAL_REPRESENTATIVE {
         uuid id PK
         uuid corporate_holder_id FK
@@ -1860,7 +1849,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_HOLDER_CONTACT {
         uuid id PK
         uuid holder_id FK
@@ -1875,7 +1864,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_ISSUED_LICENSE {
         uuid id PK
         varchar license_number UK
@@ -1896,7 +1885,7 @@ erDiagram
         uuid created_by FK
         uuid updated_by FK
     }
-    
+
     T_LICENSE_TYPE {
         uuid id PK
         varchar name
@@ -1911,7 +1900,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_SECTOR {
         uuid id PK
         varchar name
@@ -1924,7 +1913,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_CATEGORY {
         uuid id PK
         varchar name
@@ -1938,7 +1927,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_LICENSE_RENEWAL {
         uuid id PK
         uuid license_id FK
@@ -1953,7 +1942,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_LICENSE_AMENDMENT {
         uuid id PK
         uuid license_id FK
@@ -1969,7 +1958,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_LICENSE_TRANSFER {
         uuid id PK
         uuid license_id FK
@@ -1985,7 +1974,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_LICENSE_AUDIT {
         uuid id PK
         uuid license_id FK
@@ -1998,7 +1987,7 @@ erDiagram
         varchar user_agent
         timestamp timestamp
     }
-    
+
     T_LICENSE_DOCUMENT {
         uuid id PK
         uuid license_id FK
@@ -2013,7 +2002,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_LICENSE_FEE {
         uuid id PK
         uuid license_id FK
@@ -2028,7 +2017,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_LICENSE_ALERT {
         uuid id PK
         uuid license_id FK
@@ -2043,7 +2032,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     T_OPTIONS {
         uuid id PK
         varchar option_group
@@ -2061,7 +2050,7 @@ erDiagram
 
 ### 6.2 Data Definition Language (DDL)
 
-#### Tabela de Emissores: T\_LICENSE\_ISSUER
+#### Tabela de Emissores: T_LICENSE_ISSUER
 
 ```sql
 -- Tabela de Órgãos Emissores de Licenças
@@ -2085,7 +2074,7 @@ CREATE INDEX idx_license_issuer_code ON T_LICENSE_ISSUER(issuer_code);
 CREATE INDEX idx_license_issuer_status ON T_LICENSE_ISSUER(status);
 ```
 
-#### Tabela Base de Titulares: T\_LICENSE\_HOLDER
+#### Tabela Base de Titulares: T_LICENSE_HOLDER
 
 ```sql
 -- Tabela Base de Titulares (Herança)
@@ -2105,7 +2094,7 @@ CREATE INDEX idx_license_holder_type ON T_LICENSE_HOLDER(holder_type);
 CREATE INDEX idx_license_holder_status ON T_LICENSE_HOLDER(status);
 ```
 
-#### Tabela de Pessoas Físicas: T\_INDIVIDUAL\_HOLDER
+#### Tabela de Pessoas Físicas: T_INDIVIDUAL_HOLDER
 
 ```sql
 -- Tabela de Titulares Pessoas Físicas
@@ -2124,7 +2113,7 @@ CREATE TABLE T_INDIVIDUAL_HOLDER (
     gender VARCHAR(10),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    
+
     CONSTRAINT fk_individual_holder FOREIGN KEY (holder_id) REFERENCES T_LICENSE_HOLDER(id) ON DELETE CASCADE
 );
 
@@ -2134,7 +2123,7 @@ CREATE INDEX idx_individual_holder_name ON T_INDIVIDUAL_HOLDER(full_name);
 CREATE INDEX idx_individual_holder_birth_date ON T_INDIVIDUAL_HOLDER(birth_date);
 ```
 
-#### Tabela de Pessoas Jurídicas: T\_CORPORATE\_HOLDER
+#### Tabela de Pessoas Jurídicas: T_CORPORATE_HOLDER
 
 ```sql
 -- Tabela de Titulares Pessoas Jurídicas
@@ -2151,7 +2140,7 @@ CREATE TABLE T_CORPORATE_HOLDER (
     share_capital VARCHAR(50),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    
+
     CONSTRAINT fk_corporate_holder FOREIGN KEY (holder_id) REFERENCES T_LICENSE_HOLDER(id) ON DELETE CASCADE
 );
 
@@ -2161,7 +2150,7 @@ CREATE INDEX idx_corporate_holder_corporate_name ON T_CORPORATE_HOLDER(corporate
 CREATE INDEX idx_corporate_holder_registration ON T_CORPORATE_HOLDER(registration_number);
 ```
 
-#### Tabela de Representantes Legais: T\_LEGAL\_REPRESENTATIVE
+#### Tabela de Representantes Legais: T_LEGAL_REPRESENTATIVE
 
 ```sql
 -- Tabela de Representantes Legais
@@ -2178,7 +2167,7 @@ CREATE TABLE T_LEGAL_REPRESENTATIVE (
     status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'expired')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    
+
     CONSTRAINT fk_legal_representative_corporate FOREIGN KEY (corporate_holder_id) REFERENCES T_CORPORATE_HOLDER(id) ON DELETE CASCADE
 );
 
@@ -2188,7 +2177,7 @@ CREATE INDEX idx_legal_representative_document ON T_LEGAL_REPRESENTATIVE(documen
 CREATE INDEX idx_legal_representative_validity ON T_LEGAL_REPRESENTATIVE(valid_from, valid_until);
 ```
 
-#### Tabela de Contatos: T\_HOLDER\_CONTACT
+#### Tabela de Contatos: T_HOLDER_CONTACT
 
 ```sql
 -- Tabela de Contatos dos Titulares
@@ -2205,7 +2194,7 @@ CREATE TABLE T_HOLDER_CONTACT (
     communication_preference VARCHAR(20) DEFAULT 'optional' CHECK (communication_preference IN ('required', 'preferred', 'optional', 'blocked')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    
+
     CONSTRAINT fk_holder_contact FOREIGN KEY (holder_id) REFERENCES T_LICENSE_HOLDER(id) ON DELETE CASCADE
 );
 
@@ -2215,7 +2204,7 @@ CREATE INDEX idx_holder_contact_type ON T_HOLDER_CONTACT(contact_type);
 CREATE INDEX idx_holder_contact_primary ON T_HOLDER_CONTACT(is_primary) WHERE is_primary = true;
 ```
 
-#### Tabela Principal: T\_ISSUED\_LICENSE
+#### Tabela Principal: T_ISSUED_LICENSE
 
 ```sql
 -- Tabela de Licenças Emitidas (Atualizada)
@@ -2238,7 +2227,7 @@ CREATE TABLE T_ISSUED_LICENSE (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by UUID NOT NULL,
     updated_by UUID,
-    
+
     CONSTRAINT fk_issued_license_issuer FOREIGN KEY (issuer_id) REFERENCES T_LICENSE_ISSUER(id),
     CONSTRAINT fk_issued_license_holder FOREIGN KEY (holder_id) REFERENCES T_LICENSE_HOLDER(id),
     CONSTRAINT fk_issued_license_type FOREIGN KEY (license_type_id) REFERENCES T_LICENSE_TYPE(id)
@@ -2254,7 +2243,7 @@ CREATE INDEX idx_issued_license_issue_date ON T_ISSUED_LICENSE(issue_date DESC);
 CREATE INDEX idx_issued_license_number ON T_ISSUED_LICENSE(license_number);
 ```
 
-#### Tabela de Alterações: T\_LICENSE\_AMENDMENT
+#### Tabela de Alterações: T_LICENSE_AMENDMENT
 
 ```sql
 -- Tabela de Alterações de Licenças
@@ -2272,7 +2261,7 @@ CREATE TABLE T_LICENSE_AMENDMENT (
     approved_by UUID,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    
+
     CONSTRAINT fk_license_amendment_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id)
 );
 
@@ -2282,7 +2271,7 @@ CREATE INDEX idx_license_amendment_status ON T_LICENSE_AMENDMENT(status);
 CREATE INDEX idx_license_amendment_type ON T_LICENSE_AMENDMENT(amendment_type);
 ```
 
-#### Tabela de Transferências: T\_LICENSE\_TRANSFER
+#### Tabela de Transferências: T_LICENSE_TRANSFER
 
 ```sql
 -- Tabela de Transferências de Licenças
@@ -2300,7 +2289,7 @@ CREATE TABLE T_LICENSE_TRANSFER (
     approved_by UUID,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    
+
     CONSTRAINT fk_license_transfer_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id),
     CONSTRAINT fk_license_transfer_old_holder FOREIGN KEY (old_holder_id) REFERENCES T_LICENSE_HOLDER(id),
     CONSTRAINT fk_license_transfer_new_holder FOREIGN KEY (new_holder_id) REFERENCES T_LICENSE_HOLDER(id)
@@ -2313,7 +2302,7 @@ CREATE INDEX idx_license_transfer_new_holder ON T_LICENSE_TRANSFER(new_holder_id
 CREATE INDEX idx_license_transfer_status ON T_LICENSE_TRANSFER(status);
 ```
 
-#### Tabela de Documentos: T\_LICENSE\_DOCUMENT
+#### Tabela de Documentos: T_LICENSE_DOCUMENT
 
 ```sql
 -- Tabela de Documentos das Licenças
@@ -2330,7 +2319,7 @@ CREATE TABLE T_LICENSE_DOCUMENT (
     uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    
+
     CONSTRAINT fk_license_document_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id)
 );
 
@@ -2340,7 +2329,7 @@ CREATE INDEX idx_license_document_type ON T_LICENSE_DOCUMENT(document_type);
 CREATE INDEX idx_license_document_status ON T_LICENSE_DOCUMENT(status);
 ```
 
-#### Tabela de Taxas: T\_LICENSE\_FEE
+#### Tabela de Taxas: T_LICENSE_FEE
 
 ```sql
 -- Tabela de Taxas das Licenças
@@ -2357,7 +2346,7 @@ CREATE TABLE T_LICENSE_FEE (
     fee_category_id UUID,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    
+
     CONSTRAINT fk_license_fee_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id)
 );
 
@@ -2464,7 +2453,7 @@ CREATE POLICY "Managers can manage fees" ON T_LICENSE_FEE
     FOR ALL USING (auth.role() = 'authenticated' AND auth.jwt() ->> 'user_role' IN ('gestor_licencas', 'admin_sistema'));
 ```
 
-#### Tabela de Titulares: T\_LICENSE\_HOLDER
+#### Tabela de Titulares: T_LICENSE_HOLDER
 
 ```sql
 -- Tabela de Titulares de Licenças
@@ -2506,7 +2495,7 @@ CREATE POLICY "Managers can manage holders" ON T_LICENSE_HOLDER
     );
 ```
 
-#### Tabela de Renovações: T\_LICENSE\_RENEWAL
+#### Tabela de Renovações: T_LICENSE_RENEWAL
 
 ```sql
 -- Tabela de Renovações de Licenças
@@ -2523,7 +2512,7 @@ CREATE TABLE T_LICENSE_RENEWAL (
     processed_by UUID,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    
+
     CONSTRAINT fk_license_renewal_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id)
 );
 
@@ -2545,7 +2534,7 @@ CREATE POLICY "Managers can manage renewals" ON T_LICENSE_RENEWAL
     );
 ```
 
-#### Tabela de Auditoria: T\_LICENSE\_AUDIT
+#### Tabela de Auditoria: T_LICENSE_AUDIT
 
 ```sql
 -- Tabela de Auditoria de Licenças
@@ -2560,7 +2549,7 @@ CREATE TABLE T_LICENSE_AUDIT (
     ip_address INET,
     user_agent TEXT,
     timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    
+
     CONSTRAINT fk_license_audit_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id)
 );
 
@@ -2584,7 +2573,7 @@ CREATE POLICY "System can insert audit logs" ON T_LICENSE_AUDIT
     FOR INSERT WITH CHECK (auth.role() = 'service_role');
 ```
 
-#### Tabela de Alertas: T\_LICENSE\_ALERT
+#### Tabela de Alertas: T_LICENSE_ALERT
 
 ```sql
 -- Tabela de Alertas de Licenças
@@ -2601,7 +2590,7 @@ CREATE TABLE T_LICENSE_ALERT (
     acknowledged_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    
+
     CONSTRAINT fk_license_alert_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id)
 );
 
@@ -2659,7 +2648,7 @@ export class LicencasService {
     private licencasRepository: Repository<Licenca>,
     private alertasService: AlertasService,
     private notificacoesService: NotificacoesService,
-    private auditoriaService: AuditoriaService
+    private auditoriaService: AuditoriaService,
   ) {}
 
   async buscarLicencas(filtros: FiltrosLicencaDto): Promise<PaginatedResult<Licenca>> {
@@ -2671,10 +2660,9 @@ export class LicencasService {
 
     // Aplicar filtros
     if (filtros.search) {
-      queryBuilder.andWhere(
-        '(licenca.numero ILIKE :search OR titular.nome ILIKE :search)',
-        { search: `%${filtros.search}%` }
-      );
+      queryBuilder.andWhere('(licenca.numero ILIKE :search OR titular.nome ILIKE :search)', {
+        search: `%${filtros.search}%`,
+      });
     }
 
     if (filtros.status) {
@@ -2682,10 +2670,10 @@ export class LicencasService {
     }
 
     if (filtros.dataVencimentoInicio && filtros.dataVencimentoFim) {
-      queryBuilder.andWhere(
-        'licenca.dataVencimento BETWEEN :inicio AND :fim',
-        { inicio: filtros.dataVencimentoInicio, fim: filtros.dataVencimentoFim }
-      );
+      queryBuilder.andWhere('licenca.dataVencimento BETWEEN :inicio AND :fim', {
+        inicio: filtros.dataVencimentoInicio,
+        fim: filtros.dataVencimentoFim,
+      });
     }
 
     // Paginação
@@ -2701,8 +2689,8 @@ export class LicencasService {
         total,
         page: filtros.page,
         limit: filtros.limit,
-        totalPages: Math.ceil(total / filtros.limit)
-      }
+        totalPages: Math.ceil(total / filtros.limit),
+      },
     };
   }
 
@@ -2727,7 +2715,7 @@ export class LicencasService {
 
   async iniciarRenovacao(id: string, dadosRenovacao: RenovacaoDto): Promise<ProcessoRenovacao> {
     const licenca = await this.obterDetalhesLicenca(id);
-    
+
     // Validar se licença pode ser renovada
     if (!licenca.tipo.permiteRenovacao) {
       throw new BadRequestException('Este tipo de licença não permite renovação');
@@ -2735,13 +2723,13 @@ export class LicencasService {
 
     // Criar processo de renovação
     const processo = await this.criarProcessoRenovacao(licenca, dadosRenovacao);
-    
+
     // Registrar no histórico
     await this.auditoriaService.registrarAcao({
       licencaId: id,
       acao: 'renovacao_iniciada',
       descricao: 'Processo de renovação iniciado',
-      usuario: dadosRenovacao.usuario
+      usuario: dadosRenovacao.usuario,
     });
 
     return processo;
@@ -2766,7 +2754,7 @@ export class LicencasService {
         licencaId: licenca.id,
         tipo: 'vencimento_30_dias',
         prioridade: 'media',
-        mensagem: `Licença ${licenca.numero} vence em 30 dias`
+        mensagem: `Licença ${licenca.numero} vence em 30 dias`,
       });
 
       await this.notificacoesService.enviarNotificacao({
@@ -2774,7 +2762,7 @@ export class LicencasService {
         canal: 'email',
         destinatario: licenca.titular.email,
         assunto: 'Licença próxima ao vencimento',
-        template: 'vencimento_30_dias'
+        template: 'vencimento_30_dias',
       });
     }
 
@@ -2793,20 +2781,20 @@ export class AlertasService {
   constructor(
     @InjectRepository(Alerta)
     private alertasRepository: Repository<Alerta>,
-    private eventEmitter: EventEmitter2
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async criarAlerta(dadosAlerta: CriarAlertaDto): Promise<Alerta> {
     const alerta = this.alertasRepository.create({
       ...dadosAlerta,
-      dataAlerta: new Date()
+      dataAlerta: new Date(),
     });
 
     const alertaSalvo = await this.alertasRepository.save(alerta);
-    
+
     // Emitir evento para processamento em tempo real
     this.eventEmitter.emit('alerta.criado', alertaSalvo);
-    
+
     return alertaSalvo;
   }
 
@@ -2819,7 +2807,7 @@ export class AlertasService {
       this.contarLicencasVencendo(30),
       this.contarLicencasVencendo(15),
       this.contarLicencasVencidas(),
-      this.contarRenovacoesPendentes()
+      this.contarRenovacoesPendentes(),
     ]);
 
     return {
@@ -2827,16 +2815,16 @@ export class AlertasService {
         licencasVencendo30Dias: vencendo30,
         licencasVencendo15Dias: vencendo15,
         licencasVencidas: vencidas,
-        renovacoesPendentes: renovacoesPendentes
+        renovacoesPendentes: renovacoesPendentes,
       },
       alertasPorTipo: await this.obterAlertasPorTipo(),
-      tendencias: await this.obterTendenciasRenovacao()
+      tendencias: await this.obterTendenciasRenovacao(),
     };
   }
 
   private async contarLicencasVencendo(dias: number): Promise<number> {
     const dataLimite = addDays(new Date(), dias);
-    
+
     return this.alertasRepository
       .createQueryBuilder('alerta')
       .innerJoin('alerta.licenca', 'licenca')
@@ -2862,7 +2850,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - REACT_APP_API_URL=http://localhost:3001/api
     depends_on:
@@ -2873,7 +2861,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "3001:3001"
+      - '3001:3001'
     environment:
       - DATABASE_URL=postgresql://postgres:password@postgres:5432/licencas
       - REDIS_URL=redis://redis:6379
@@ -2894,12 +2882,12 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "5432:5432"
+      - '5432:5432'
 
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
 
@@ -2909,15 +2897,15 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=false
     ports:
-      - "9200:9200"
+      - '9200:9200'
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
 
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/ssl:/etc/nginx/ssl
@@ -2979,7 +2967,7 @@ http {
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
-            
+
             # CORS headers
             add_header Access-Control-Allow-Origin *;
             add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS";
@@ -3016,25 +3004,25 @@ export class MetricsService {
       name: 'http_request_duration_seconds',
       help: 'Duration of HTTP requests in seconds',
       labelNames: ['method', 'route', 'status'],
-      buckets: [0.1, 0.5, 1, 2, 5]
+      buckets: [0.1, 0.5, 1, 2, 5],
     });
 
     this.httpRequestTotal = new Counter({
       name: 'http_requests_total',
       help: 'Total number of HTTP requests',
-      labelNames: ['method', 'route', 'status']
+      labelNames: ['method', 'route', 'status'],
     });
 
     // Métricas de negócio
     this.licencasAtivas = new Gauge({
       name: 'licencas_ativas_total',
-      help: 'Total number of active licenses'
+      help: 'Total number of active licenses',
     });
 
     this.alertasAtivos = new Gauge({
       name: 'alertas_ativos_total',
       help: 'Total number of active alerts',
-      labelNames: ['tipo', 'prioridade']
+      labelNames: ['tipo', 'prioridade'],
     });
 
     this.registry.registerMetric(this.httpRequestDuration);
@@ -3074,7 +3062,7 @@ export class HealthController {
     private health: HealthCheckService,
     private db: TypeOrmHealthIndicator,
     private redis: RedisHealthIndicator,
-    private elasticsearch: ElasticsearchHealthIndicator
+    private elasticsearch: ElasticsearchHealthIndicator,
   ) {}
 
   @Get()
@@ -3084,26 +3072,26 @@ export class HealthController {
       () => this.db.pingCheck('database'),
       () => this.redis.pingCheck('redis'),
       () => this.elasticsearch.pingCheck('elasticsearch'),
-      () => this.checkExternalServices()
+      () => this.checkExternalServices(),
     ]);
   }
 
   private async checkExternalServices(): Promise<HealthIndicatorResult> {
     const isHealthy = await this.verificarServicosExternos();
-    
+
     const result = this.getStatus('external-services', isHealthy);
-    
+
     if (isHealthy) {
       result['external-services'] = {
         status: 'up',
         services: {
           parametrizacao: 'up',
           activity: 'up',
-          financeiro: 'up'
-        }
+          financeiro: 'up',
+        },
       };
     }
-    
+
     return result;
   }
 }
@@ -3126,15 +3114,15 @@ describe('LicencasService', () => {
         LicencasService,
         {
           provide: getRepositoryToken(Licenca),
-          useClass: Repository
+          useClass: Repository,
         },
         {
           provide: AlertasService,
           useValue: {
-            criarAlerta: jest.fn()
-          }
-        }
-      ]
+            criarAlerta: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<LicencasService>(LicencasService);
@@ -3146,7 +3134,7 @@ describe('LicencasService', () => {
     it('deve retornar licenças paginadas', async () => {
       const mockLicencas = [
         { id: '1', numero: 'LIC-001', status: 'ativa' },
-        { id: '2', numero: 'LIC-002', status: 'ativa' }
+        { id: '2', numero: 'LIC-002', status: 'ativa' },
       ];
 
       jest.spyOn(repository, 'createQueryBuilder').mockReturnValue({
@@ -3155,13 +3143,13 @@ describe('LicencasService', () => {
         skip: jest.fn().mockReturnThis(),
         take: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
-        getManyAndCount: jest.fn().mockResolvedValue([mockLicencas, 2])
+        getManyAndCount: jest.fn().mockResolvedValue([mockLicencas, 2]),
       } as any);
 
       const resultado = await service.buscarLicencas({
         page: 1,
         limit: 10,
-        search: 'LIC'
+        search: 'LIC',
       });
 
       expect(resultado.data).toEqual(mockLicencas);
@@ -3176,14 +3164,14 @@ describe('LicencasService', () => {
           id: '1',
           numero: 'LIC-001',
           dataVencimento: addDays(new Date(), 30),
-          titular: { email: 'test@example.com' }
-        }
+          titular: { email: 'test@example.com' },
+        },
       ];
 
       jest.spyOn(repository, 'createQueryBuilder').mockReturnValue({
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
-        getMany: jest.fn().mockResolvedValue(mockLicencas)
+        getMany: jest.fn().mockResolvedValue(mockLicencas),
       } as any);
 
       await service.verificarVencimentos();
@@ -3192,7 +3180,7 @@ describe('LicencasService', () => {
         licencaId: '1',
         tipo: 'vencimento_30_dias',
         prioridade: 'media',
-        mensagem: 'Licença LIC-001 vence em 30 dias'
+        mensagem: 'Licença LIC-001 vence em 30 dias',
       });
     });
   });
@@ -3209,12 +3197,12 @@ describe('Licenças (e2e)', () => {
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule]
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
     repository = moduleFixture.get<Repository<Licenca>>(getRepositoryToken(Licenca));
-    
+
     await app.init();
   });
 
@@ -3225,7 +3213,7 @@ describe('Licenças (e2e)', () => {
         numero: 'LIC-TEST-001',
         status: 'ativa',
         dataEmissao: new Date(),
-        dataVencimento: addDays(new Date(), 365)
+        dataVencimento: addDays(new Date(), 365),
       });
 
       return request(app.getHttpServer())
@@ -3244,13 +3232,13 @@ describe('Licenças (e2e)', () => {
         numero: 'LIC-TEST-002',
         status: 'ativa',
         dataEmissao: new Date(),
-        dataVencimento: addDays(new Date(), 30)
+        dataVencimento: addDays(new Date(), 30),
       });
 
       return request(app.getHttpServer())
         .post(`/api/licencas/${licenca.id}/renovar`)
         .send({
-          observacoes: 'Renovação de teste'
+          observacoes: 'Renovação de teste',
         })
         .expect(201)
         .expect((res) => {
@@ -3278,7 +3266,7 @@ erDiagram
         timestamp updated_at
         boolean active
     }
-    
+
     LICENSE_HOLDERS {
         uuid id PK
         varchar holder_type
@@ -3296,7 +3284,7 @@ erDiagram
         timestamp updated_at
         boolean active
     }
-    
+
     CORPORATE_HOLDERS {
         uuid id PK
         uuid holder_id FK
@@ -3311,7 +3299,7 @@ erDiagram
         varchar contact_email
         varchar contact_phone
     }
-    
+
     LICENSE_ISSUERS {
         uuid id PK
         varchar issuer_code UK
@@ -3324,7 +3312,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     LICENSE_TYPES {
         uuid id PK
         varchar type_code UK
@@ -3338,7 +3326,7 @@ erDiagram
         timestamp created_at
         timestamp updated_at
     }
-    
+
     ISSUED_LICENSES {
         uuid id PK
         varchar license_number UK
@@ -3358,7 +3346,7 @@ erDiagram
         uuid created_by FK
         uuid updated_by FK
     }
-    
+
     LICENSE_DOCUMENTS {
         uuid id PK
         uuid license_id FK
@@ -3371,7 +3359,7 @@ erDiagram
         timestamp uploaded_at
         uuid uploaded_by FK
     }
-    
+
     LICENSE_HISTORY {
         uuid id PK
         uuid license_id FK
@@ -3383,7 +3371,7 @@ erDiagram
         uuid performed_by FK
         jsonb metadata
     }
-    
+
     AUDIT_LOGS {
         uuid id PK
         varchar entity_type
@@ -3396,7 +3384,7 @@ erDiagram
         varchar ip_address
         varchar user_agent
     }
-    
+
     %% Relacionamentos
     LICENSE_HOLDERS ||--o{ ISSUED_LICENSES : "possui"
     LICENSE_HOLDERS ||--o| CORPORATE_HOLDERS : "extends"
@@ -3413,6 +3401,7 @@ erDiagram
 ### 5.2 Esquema de Tabelas e Relacionamentos
 
 #### Tabela: users
+
 ```sql
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -3427,6 +3416,7 @@ CREATE TABLE users (
 ```
 
 #### Tabela: license_holders
+
 ```sql
 CREATE TABLE license_holders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -3448,6 +3438,7 @@ CREATE TABLE license_holders (
 ```
 
 #### Tabela: corporate_holders
+
 ```sql
 CREATE TABLE corporate_holders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -3466,6 +3457,7 @@ CREATE TABLE corporate_holders (
 ```
 
 #### Tabela: license_types
+
 ```sql
 CREATE TABLE license_types (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -3483,6 +3475,7 @@ CREATE TABLE license_types (
 ```
 
 #### Tabela: license_issuers
+
 ```sql
 CREATE TABLE license_issuers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -3499,6 +3492,7 @@ CREATE TABLE license_issuers (
 ```
 
 #### Tabela: issued_licenses
+
 ```sql
 CREATE TABLE issued_licenses (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -3585,7 +3579,8 @@ CREATE INDEX idx_audit_logs_action ON audit_logs(action);
 
 ### 5.4 Scripts SQL de Criação do Banco
 
-#### V1__Create_Initial_Schema.sql
+#### V1\_\_Create_Initial_Schema.sql
+
 ```sql
 -- Extensões necessárias
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -3620,12 +3615,14 @@ CREATE TRIGGER update_issued_licenses_updated_at BEFORE UPDATE ON issued_license
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 ```
 
-#### V2__Create_Indexes.sql
+#### V2\_\_Create_Indexes.sql
+
 ```sql
 -- Todos os índices definidos na seção 5.3
 ```
 
-#### V3__Insert_Initial_Data.sql
+#### V3\_\_Insert_Initial_Data.sql
+
 ```sql
 -- Dados iniciais para license_types
 INSERT INTO license_types (type_code, type_name, description, validity_months, fee_amount) VALUES
@@ -3658,27 +3655,27 @@ INSERT INTO users (email, password_hash, full_name, role) VALUES
 @EnableMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
-    
+
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtTokenProvider jwtTokenProvider;
-    
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
     }
-    
+
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-    
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> 
+            .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .exceptionHandling(exceptions -> exceptions
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
@@ -3689,20 +3686,20 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/public/**").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                
+
                 // Endpoints administrativos
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/**").hasRole("ADMIN")
-                
+
                 // Endpoints de operadores
                 .requestMatchers(HttpMethod.POST, "/api/v1/licenses").hasAnyRole("ADMIN", "OPERATOR")
                 .requestMatchers(HttpMethod.PUT, "/api/v1/licenses/**").hasAnyRole("ADMIN", "OPERATOR")
-                
+
                 // Demais endpoints requerem autenticação
                 .anyRequest().authenticated())
-            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), 
+            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                            UsernamePasswordAuthenticationFilter.class);
-        
+
         return http.build();
     }
 }
@@ -3714,27 +3711,27 @@ public class SecurityConfig {
 @Component
 @Slf4j
 public class JwtTokenProvider {
-    
+
     private final String jwtSecret;
     private final long jwtExpirationMs;
     private final long jwtRefreshExpirationMs;
     private final Key key;
-    
+
     public JwtTokenProvider(
             @Value("${spring.security.jwt.secret}") String jwtSecret,
             @Value("${spring.security.jwt.expiration}") long jwtExpirationMs,
             @Value("${spring.security.jwt.refresh-expiration}") long jwtRefreshExpirationMs) {
-        
+
         this.jwtSecret = jwtSecret;
         this.jwtExpirationMs = jwtExpirationMs;
         this.jwtRefreshExpirationMs = jwtRefreshExpirationMs;
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
-    
+
     public String generateAccessToken(Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         Date expiryDate = new Date(System.currentTimeMillis() + jwtExpirationMs);
-        
+
         return Jwts.builder()
                 .setSubject(userPrincipal.getId().toString())
                 .setIssuedAt(new Date())
@@ -3744,10 +3741,10 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
-    
+
     public String generateRefreshToken(UUID userId) {
         Date expiryDate = new Date(System.currentTimeMillis() + jwtRefreshExpirationMs);
-        
+
         return Jwts.builder()
                 .setSubject(userId.toString())
                 .setIssuedAt(new Date())
@@ -3756,17 +3753,17 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
-    
+
     public UUID getUserIdFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        
+
         return UUID.fromString(claims.getSubject());
     }
-    
+
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -3792,35 +3789,35 @@ public class JwtTokenProvider {
 ```java
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    
+
     private final JwtTokenProvider tokenProvider;
-    
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        
+
         try {
             String jwt = getJwtFromRequest(request);
-            
+
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 UUID userId = tokenProvider.getUserIdFromToken(jwt);
-                
+
                 UserDetails userDetails = userDetailsService.loadUserById(userId);
-                UsernamePasswordAuthenticationToken authentication = 
+                UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
-                
+
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception ex) {
             logger.error("Could not set user authentication in security context", ex);
         }
-        
+
         filterChain.doFilter(request, response);
     }
-    
+
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
@@ -3842,21 +3839,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    
+
     private final AuthenticationService authService;
-    
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse response = authService.authenticate(request);
         return ResponseEntity.ok(response);
     }
-    
+
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
         AuthResponse response = authService.refreshToken(request.getRefreshToken());
         return ResponseEntity.ok(response);
     }
-    
+
     @PostMapping("/logout")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> logout(HttpServletRequest request) {
@@ -3875,22 +3872,22 @@ public class AuthController {
 @RequiredArgsConstructor
 @Validated
 public class LicenseController {
-    
+
     private final LicenseApplicationService licenseService;
     private final LicenseMapper licenseMapper;
-    
+
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR', 'USER')")
     public ResponseEntity<PagedResponse<LicenseResponse>> getAllLicenses(
             @Valid @ModelAttribute LicenseSearchRequest request,
             @PageableDefault(size = 25, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        
+
         Page<IssuedLicense> licenses = licenseService.searchLicenses(request, pageable);
         PagedResponse<LicenseResponse> response = licenseMapper.toPagedResponse(licenses);
-        
+
         return ResponseEntity.ok(response);
     }
-    
+
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR') or @licenseSecurityService.canAccessLicense(#id, authentication.name)")
     public ResponseEntity<LicenseDetailResponse> getLicenseById(@PathVariable UUID id) {
@@ -3898,60 +3895,60 @@ public class LicenseController {
         LicenseDetailResponse response = licenseMapper.toDetailResponse(license);
         return ResponseEntity.ok(response);
     }
-    
+
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     public ResponseEntity<LicenseResponse> createLicense(
             @Valid @RequestBody CreateLicenseRequest request,
             Authentication authentication) {
-        
+
         IssueLicenseCommand command = licenseMapper.toCommand(request, authentication);
         IssuedLicense license = licenseService.issueLicense(command);
         LicenseResponse response = licenseMapper.toResponse(license);
-        
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .location(URI.create("/api/v1/licenses/" + license.getId()))
                 .body(response);
     }
-    
+
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     public ResponseEntity<LicenseResponse> updateLicense(
             @PathVariable UUID id,
             @Valid @RequestBody UpdateLicenseRequest request,
             Authentication authentication) {
-        
+
         UpdateLicenseCommand command = licenseMapper.toUpdateCommand(id, request, authentication);
         IssuedLicense license = licenseService.updateLicense(command);
         LicenseResponse response = licenseMapper.toResponse(license);
-        
+
         return ResponseEntity.ok(response);
     }
-    
+
     @PostMapping("/{id}/renew")
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
     public ResponseEntity<LicenseResponse> renewLicense(
             @PathVariable UUID id,
             @Valid @RequestBody RenewLicenseRequest request,
             Authentication authentication) {
-        
+
         RenewLicenseCommand command = licenseMapper.toRenewCommand(id, request, authentication);
         IssuedLicense license = licenseService.renewLicense(command);
         LicenseResponse response = licenseMapper.toResponse(license);
-        
+
         return ResponseEntity.ok(response);
     }
-    
+
     @PostMapping("/{id}/suspend")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> suspendLicense(
             @PathVariable UUID id,
             @Valid @RequestBody SuspendLicenseRequest request,
             Authentication authentication) {
-        
+
         SuspendLicenseCommand command = licenseMapper.toSuspendCommand(id, request, authentication);
         licenseService.suspendLicense(command);
-        
+
         return ResponseEntity.ok().build();
     }
 }
@@ -3966,11 +3963,11 @@ public class LicenseController {
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginRequest {
-    
+
     @NotBlank(message = "Email é obrigatório")
     @Email(message = "Email deve ter formato válido")
     private String email;
-    
+
     @NotBlank(message = "Senha é obrigatória")
     @Size(min = 6, message = "Senha deve ter pelo menos 6 caracteres")
     private String password;
@@ -3984,7 +3981,7 @@ public class AuthResponse {
     private String tokenType = "Bearer";
     private Long expiresIn;
     private UserInfo user;
-    
+
     @Data
     @Builder
     public static class UserInfo {
@@ -4003,28 +4000,28 @@ public class AuthResponse {
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateLicenseRequest {
-    
+
     @NotNull(message = "ID do titular é obrigatório")
     private UUID holderId;
-    
+
     @NotNull(message = "ID do tipo de licença é obrigatório")
     private UUID licenseTypeId;
-    
+
     @NotNull(message = "ID do emissor é obrigatório")
     private UUID issuerId;
-    
+
     @Future(message = "Data de vencimento deve ser futura")
     private LocalDate expiryDate;
-    
+
     @Size(max = 1000, message = "Condições não podem exceder 1000 caracteres")
     private String conditions;
-    
+
     @Size(max = 500, message = "Observações não podem exceder 500 caracteres")
     private String notes;
-    
+
     @DecimalMin(value = "0.0", message = "Taxa paga deve ser positiva")
     private BigDecimal feePaid;
-    
+
     private String paymentReference;
 }
 
@@ -4044,7 +4041,7 @@ public class LicenseResponse {
     private String paymentReference;
     private Instant createdAt;
     private Instant updatedAt;
-    
+
     @Data
     @Builder
     public static class HolderSummary {
@@ -4053,7 +4050,7 @@ public class LicenseResponse {
         private String documentNumber;
         private HolderType type;
     }
-    
+
     @Data
     @Builder
     public static class LicenseTypeSummary {
@@ -4062,7 +4059,7 @@ public class LicenseResponse {
         private String name;
         private Integer validityMonths;
     }
-    
+
     @Data
     @Builder
     public static class IssuerSummary {
@@ -4082,7 +4079,7 @@ public class LicenseResponse {
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-    
+
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidation(ValidationException ex) {
@@ -4093,14 +4090,14 @@ public class GlobalExceptionHandler {
                 .timestamp(Instant.now())
                 .build();
     }
-    
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> 
+        ex.getBindingResult().getFieldErrors().forEach(error ->
             errors.put(error.getField(), error.getDefaultMessage()));
-        
+
         return ErrorResponse.builder()
                 .error("VALIDATION_ERROR")
                 .message("Dados de entrada inválidos")
@@ -4108,7 +4105,7 @@ public class GlobalExceptionHandler {
                 .timestamp(Instant.now())
                 .build();
     }
-    
+
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleEntityNotFound(EntityNotFoundException ex) {
@@ -4119,7 +4116,7 @@ public class GlobalExceptionHandler {
                 .timestamp(Instant.now())
                 .build();
     }
-    
+
     @ExceptionHandler(BusinessRuleException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ErrorResponse handleBusinessRule(BusinessRuleException ex) {
@@ -4130,7 +4127,7 @@ public class GlobalExceptionHandler {
                 .timestamp(Instant.now())
                 .build();
     }
-    
+
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handleAccessDenied(AccessDeniedException ex) {
@@ -4141,7 +4138,7 @@ public class GlobalExceptionHandler {
                 .timestamp(Instant.now())
                 .build();
     }
-    
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleGeneral(Exception ex) {
@@ -4166,18 +4163,18 @@ public class ErrorResponse {
 
 #### Status Codes Padronizados
 
-| Status Code | Situação | Exemplo |
-|-------------|----------|----------|
-| 200 OK | Operação bem-sucedida | GET /api/v1/licenses |
-| 201 Created | Recurso criado | POST /api/v1/licenses |
-| 204 No Content | Operação sem retorno | DELETE /api/v1/licenses/{id} |
-| 400 Bad Request | Dados inválidos | Validação de campos |
-| 401 Unauthorized | Não autenticado | Token JWT inválido |
-| 403 Forbidden | Sem permissão | Acesso negado por role |
-| 404 Not Found | Recurso não encontrado | Licença inexistente |
-| 409 Conflict | Conflito de estado | Licença já existe |
-| 422 Unprocessable Entity | Regra de negócio violada | Titular inativo |
-| 500 Internal Server Error | Erro interno | Falha no banco de dados |
+| Status Code               | Situação                 | Exemplo                      |
+| ------------------------- | ------------------------ | ---------------------------- |
+| 200 OK                    | Operação bem-sucedida    | GET /api/v1/licenses         |
+| 201 Created               | Recurso criado           | POST /api/v1/licenses        |
+| 204 No Content            | Operação sem retorno     | DELETE /api/v1/licenses/{id} |
+| 400 Bad Request           | Dados inválidos          | Validação de campos          |
+| 401 Unauthorized          | Não autenticado          | Token JWT inválido           |
+| 403 Forbidden             | Sem permissão            | Acesso negado por role       |
+| 404 Not Found             | Recurso não encontrado   | Licença inexistente          |
+| 409 Conflict              | Conflito de estado       | Licença já existe            |
+| 422 Unprocessable Entity  | Regra de negócio violada | Titular inativo              |
+| 500 Internal Server Error | Erro interno             | Falha no banco de dados      |
 
 ## 8. Diagramas Arquiteturais
 
@@ -4189,11 +4186,11 @@ graph TB
         WEB["React Web App"]
         MOBILE["React Native App"]
     end
-    
+
     subgraph "API Gateway"
         NGINX["Nginx Reverse Proxy"]
     end
-    
+
     subgraph "Application Layer - Spring Boot"
         AUTH["Authentication Service"]
         LICENSE["License Service"]
@@ -4201,50 +4198,50 @@ graph TB
         ISSUER["Issuer Service"]
         AUDIT["Audit Service"]
     end
-    
+
     subgraph "Security Layer"
         JWT["JWT Token Provider"]
         RBAC["Role-Based Access Control"]
         FILTER["JWT Authentication Filter"]
     end
-    
+
     subgraph "Data Access Layer"
         REPO["JPA Repositories"]
         CACHE["Redis Cache"]
     end
-    
+
     subgraph "Database Layer"
         POSTGRES[("PostgreSQL 15+")]
         REDIS[("Redis 7+")]
     end
-    
+
     subgraph "External Services"
         EMAIL["Email Service"]
         FILE["File Storage"]
         PAYMENT["Payment Gateway"]
     end
-    
+
     WEB --> NGINX
     MOBILE --> NGINX
     NGINX --> AUTH
     NGINX --> LICENSE
     NGINX --> HOLDER
     NGINX --> ISSUER
-    
+
     AUTH --> JWT
     AUTH --> RBAC
     LICENSE --> FILTER
     HOLDER --> FILTER
     ISSUER --> FILTER
-    
+
     LICENSE --> REPO
     HOLDER --> REPO
     ISSUER --> REPO
     AUDIT --> REPO
-    
+
     REPO --> POSTGRES
     CACHE --> REDIS
-    
+
     LICENSE --> EMAIL
     LICENSE --> FILE
     LICENSE --> PAYMENT
@@ -4262,7 +4259,7 @@ sequenceDiagram
     participant J as JWT Provider
     participant P as PostgreSQL
     participant R as Redis
-    
+
     C->>N: POST /api/v1/auth/login
     N->>A: Forward request
     A->>P: Validate credentials
@@ -4287,7 +4284,7 @@ sequenceDiagram
     participant P as PostgreSQL
     participant Au as Audit Service
     participant E as Email Service
-    
+
     C->>N: POST /api/v1/licenses + JWT
     N->>F: Validate JWT
     F->>L: Authorized request
@@ -4313,7 +4310,7 @@ sequenceDiagram
     participant L as License Service
     participant R as Redis Cache
     participant P as PostgreSQL
-    
+
     C->>N: GET /api/v1/licenses + JWT
     N->>F: Validate JWT
     F->>L: Authorized request + User context
@@ -4339,74 +4336,74 @@ graph TB
     subgraph "Load Balancer"
         LB["AWS ALB / Azure Load Balancer"]
     end
-    
+
     subgraph "DMZ - Public Subnet"
         NGINX1["Nginx 1"]
         NGINX2["Nginx 2"]
     end
-    
+
     subgraph "Application Tier - Private Subnet"
         APP1["Spring Boot App 1<br/>Port 8080"]
         APP2["Spring Boot App 2<br/>Port 8080"]
         APP3["Spring Boot App 3<br/>Port 8080"]
     end
-    
+
     subgraph "Cache Tier"
         REDIS_MASTER["Redis Master"]
         REDIS_REPLICA["Redis Replica"]
     end
-    
+
     subgraph "Database Tier - Private Subnet"
         PG_MASTER["PostgreSQL Master<br/>Port 5432"]
         PG_REPLICA["PostgreSQL Read Replica"]
     end
-    
+
     subgraph "Monitoring & Logging"
         PROMETHEUS["Prometheus"]
         GRAFANA["Grafana"]
         ELK["ELK Stack"]
     end
-    
+
     subgraph "External Services"
         S3["AWS S3 / Azure Blob"]
         SES["AWS SES / SendGrid"]
         PAYMENT_GW["Payment Gateway"]
     end
-    
+
     LB --> NGINX1
     LB --> NGINX2
-    
+
     NGINX1 --> APP1
     NGINX1 --> APP2
     NGINX2 --> APP2
     NGINX2 --> APP3
-    
+
     APP1 --> REDIS_MASTER
     APP2 --> REDIS_MASTER
     APP3 --> REDIS_MASTER
-    
+
     REDIS_MASTER --> REDIS_REPLICA
-    
+
     APP1 --> PG_MASTER
     APP2 --> PG_MASTER
     APP3 --> PG_MASTER
-    
+
     APP1 --> PG_REPLICA
     APP2 --> PG_REPLICA
     APP3 --> PG_REPLICA
-    
+
     PG_MASTER --> PG_REPLICA
-    
+
     APP1 --> S3
     APP1 --> SES
     APP1 --> PAYMENT_GW
-    
+
     APP1 --> PROMETHEUS
     APP2 --> PROMETHEUS
     APP3 --> PROMETHEUS
-    
+
     PROMETHEUS --> GRAFANA
-    
+
     APP1 --> ELK
     APP2 --> ELK
     APP3 --> ELK
@@ -4414,36 +4411,51 @@ graph TB
 
 #### Configuração de Rede e Segurança
 
-| Componente | Subnet | Portas | Acesso |
-|------------|--------|--------|---------|
-| Load Balancer | Public | 80, 443 | Internet |
-| Nginx | Public | 80, 443, 8080 | Load Balancer |
-| Spring Boot Apps | Private | 8080, 8081 (actuator) | Nginx |
-| PostgreSQL | Private | 5432 | Apps only |
-| Redis | Private | 6379 | Apps only |
-| Monitoring | Private | 9090, 3000, 9200 | Admin VPN |
+| Componente       | Subnet  | Portas                | Acesso        |
+| ---------------- | ------- | --------------------- | ------------- |
+| Load Balancer    | Public  | 80, 443               | Internet      |
+| Nginx            | Public  | 80, 443, 8080         | Load Balancer |
+| Spring Boot Apps | Private | 8080, 8081 (actuator) | Nginx         |
+| PostgreSQL       | Private | 5432                  | Apps only     |
+| Redis            | Private | 6379                  | Apps only     |
+| Monitoring       | Private | 9090, 3000, 9200      | Admin VPN     |
 
 #### Especificações de Infraestrutura
 
 **Aplicação (Spring Boot)**
+
 - **CPU**: 2-4 vCPUs por instância
+
 - **RAM**: 4-8 GB por instância
+
 - **Storage**: 50 GB SSD
+
 - **JVM**: OpenJDK 17+ com G1GC
+
 - **Heap**: -Xms2g -Xmx6g
 
 **Banco de Dados (PostgreSQL)**
+
 - **CPU**: 4-8 vCPUs
+
 - **RAM**: 16-32 GB
+
 - **Storage**: 500 GB SSD com IOPS provisionado
+
 - **Connections**: max_connections = 200
+
 - **Shared Buffers**: 25% da RAM
 
 **Cache (Redis)**
+
 - **CPU**: 2 vCPUs
+
 - **RAM**: 8-16 GB
+
 - **Storage**: 100 GB SSD
+
 - **Persistence**: RDB + AOF
+
 - **Max Memory Policy**: allkeys-lru
 
 ## 9. Configurações de Deploy
@@ -4488,8 +4500,8 @@ services:
   app:
     build: .
     ports:
-      - "8080:8080"
-      - "8081:8081"
+      - '8080:8080'
+      - '8081:8081'
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/license_db
@@ -4500,7 +4512,7 @@ services:
     networks:
       - app-network
     restart: unless-stopped
-    
+
   postgres:
     image: postgres:15-alpine
     environment:
@@ -4511,27 +4523,27 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "5432:5432"
+      - '5432:5432'
     networks:
       - app-network
     restart: unless-stopped
-    
+
   redis:
     image: redis:7-alpine
     command: redis-server --appendonly yes --maxmemory 1gb --maxmemory-policy allkeys-lru
     volumes:
       - redis_data:/data
     ports:
-      - "6379:6379"
+      - '6379:6379'
     networks:
       - app-network
     restart: unless-stopped
-    
+
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/ssl:/etc/nginx/ssl
@@ -4572,48 +4584,48 @@ spec:
         app: license-management
     spec:
       containers:
-      - name: app
-        image: license-management:latest
-        ports:
-        - containerPort: 8080
-        - containerPort: 8081
-        env:
-        - name: SPRING_PROFILES_ACTIVE
-          value: "kubernetes"
-        - name: SPRING_DATASOURCE_URL
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: url
-        - name: SPRING_DATASOURCE_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: username
-        - name: SPRING_DATASOURCE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: password
-        resources:
-          requests:
-            memory: "2Gi"
-            cpu: "1000m"
-          limits:
-            memory: "6Gi"
-            cpu: "2000m"
-        livenessProbe:
-          httpGet:
-            path: /actuator/health/liveness
-            port: 8081
-          initialDelaySeconds: 60
-          periodSeconds: 30
-        readinessProbe:
-          httpGet:
-            path: /actuator/health/readiness
-            port: 8081
-          initialDelaySeconds: 30
-          periodSeconds: 10
+        - name: app
+          image: license-management:latest
+          ports:
+            - containerPort: 8080
+            - containerPort: 8081
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: 'kubernetes'
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: url
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+          resources:
+            requests:
+              memory: '2Gi'
+              cpu: '1000m'
+            limits:
+              memory: '6Gi'
+              cpu: '2000m'
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8081
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 10
 ```
 
 ## 10. Conformidade Legal e Regulamentação (NOVO)
@@ -4623,32 +4635,51 @@ spec:
 #### Marcos Legais de Referência
 
 - **Lei nº 103/VIII/2016** - Lei de Bases do Licenciamento Industrial
+
 - **Decreto-Lei nº 54/2018** - Regulamento do Licenciamento de Estabelecimentos Turísticos
+
 - **Lei nº 85/VII/2010** - Código do Ordenamento do Território e Urbanismo
+
 - **Decreto-Lei nº 43/2010** - Regulamento Nacional de Edificações Urbanas
+
 - **Lei nº 41/VIII/2014** - Lei de Bases do Ambiente
 
 #### Requisitos de Conformidade por Segmento
 
 **Estabelecimentos Comerciais:**
+
 - Licença de funcionamento municipal
+
 - Certificado de segurança contra incêndios
+
 - Alvará sanitário (quando aplicável)
+
 - Certificado de conformidade urbanística
+
 - Declaração de impacto ambiental (estabelecimentos específicos)
 
 **Estabelecimentos Turísticos:**
+
 - Licença de estabelecimento turístico (Ministério do Turismo)
+
 - Certificado de classificação turística
+
 - Licença de exploração de atividades turísticas
+
 - Certificado de segurança e higiene
+
 - Licença ambiental (quando aplicável)
 
 **Estabelecimentos Industriais:**
+
 - Licença industrial
+
 - Estudo de impacto ambiental
+
 - Licença de instalação
+
 - Certificado de conformidade técnica
+
 - Licença de exploração
 
 ### 10.2 Sistema de Validação Automática
@@ -4658,14 +4689,14 @@ spec:
 ```java
 @Service
 public class LegalComplianceValidationService {
-    
+
     public ComplianceResult validateEstablishmentCompliance(
-            EstablishmentType type, 
+            EstablishmentType type,
             List<Document> documents,
             Location location) {
-        
+
         ComplianceResult result = new ComplianceResult();
-        
+
         // Validação por segmento
         switch (type.getSegment()) {
             case COMERCIAL:
@@ -4678,13 +4709,13 @@ public class LegalComplianceValidationService {
                 result = validateIndustrialCompliance(documents, location);
                 break;
         }
-        
+
         // Validação de zoneamento
         result.addCheck(validateZoningCompliance(type, location));
-        
+
         // Validação ambiental
         result.addCheck(validateEnvironmentalCompliance(type, location));
-        
+
         return result;
     }
 }
@@ -4695,43 +4726,43 @@ public class LegalComplianceValidationService {
 ```java
 @Component
 public class RegulatoryIntegrationService {
-    
+
     @Autowired
     private MunicipalLicensingClient municipalClient;
-    
+
     @Autowired
     private TourismMinistryClient tourismClient;
-    
+
     @Autowired
     private EnvironmentalAgencyClient environmentalClient;
-    
+
     public ValidationResult validateWithAuthorities(
             String establishmentId,
             EstablishmentType type) {
-        
+
         ValidationResult result = new ValidationResult();
-        
+
         // Validação municipal
         if (requiresMunicipalValidation(type)) {
             MunicipalValidation municipal = municipalClient
                 .validateEstablishment(establishmentId);
             result.addValidation("MUNICIPAL", municipal);
         }
-        
+
         // Validação turística
         if (type.getSegment() == EstablishmentSegment.TURISTICO) {
             TourismValidation tourism = tourismClient
                 .validateTourismEstablishment(establishmentId);
             result.addValidation("TOURISM", tourism);
         }
-        
+
         // Validação ambiental
         if (requiresEnvironmentalValidation(type)) {
             EnvironmentalValidation environmental = environmentalClient
                 .validateEnvironmentalCompliance(establishmentId);
             result.addValidation("ENVIRONMENTAL", environmental);
         }
-        
+
         return result;
     }
 }
@@ -4745,36 +4776,36 @@ public class RegulatoryIntegrationService {
 @Entity
 @Table(name = "t_compliance_audit")
 public class ComplianceAudit {
-    
+
     @Id
     private UUID id;
-    
+
     @Column(name = "establishment_id")
     private UUID establishmentId;
-    
+
     @Column(name = "audit_type")
     @Enumerated(EnumType.STRING)
     private AuditType auditType; // INITIAL, PERIODIC, COMPLAINT, RENEWAL
-    
+
     @Column(name = "audit_date")
     private LocalDateTime auditDate;
-    
+
     @Column(name = "auditor_id")
     private UUID auditorId;
-    
+
     @Column(name = "compliance_score")
     private BigDecimal complianceScore;
-    
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private ComplianceStatus status; // COMPLIANT, NON_COMPLIANT, CONDITIONAL
-    
+
     @Column(name = "findings", columnDefinition = "TEXT")
     private String findings;
-    
+
     @Column(name = "recommendations", columnDefinition = "TEXT")
     private String recommendations;
-    
+
     @Column(name = "next_audit_date")
     private LocalDate nextAuditDate;
 }
@@ -4820,39 +4851,39 @@ graph TD
 @Entity
 @Table(name = "t_legal_parameter")
 public class LegalParameter {
-    
+
     @Id
     private UUID id;
-    
+
     @Column(name = "parameter_code")
     private String parameterCode; // ex: "TOURISM_MIN_AREA", "COMMERCIAL_SAFETY_REQ"
-    
+
     @Column(name = "segment")
     @Enumerated(EnumType.STRING)
     private EstablishmentSegment segment;
-    
+
     @Column(name = "category")
     private String category;
-    
+
     @Column(name = "parameter_value")
     private String parameterValue;
-    
+
     @Column(name = "data_type")
     @Enumerated(EnumType.STRING)
     private ParameterDataType dataType; // STRING, NUMBER, BOOLEAN, DATE
-    
+
     @Column(name = "validation_rule")
     private String validationRule; // Regex ou regra de validação
-    
+
     @Column(name = "legal_reference")
     private String legalReference; // Referência à lei ou decreto
-    
+
     @Column(name = "effective_date")
     private LocalDate effectiveDate;
-    
+
     @Column(name = "expiry_date")
     private LocalDate expiryDate;
-    
+
     @Column(name = "is_mandatory")
     private Boolean isMandatory;
 }
@@ -4878,7 +4909,7 @@ FOR VALUES FROM ('2024-01-01') TO ('2025-01-01');
 
 -- View materializada para dashboard
 CREATE MATERIALIZED VIEW dashboard_resumo AS
-SELECT 
+SELECT
   COUNT(*) FILTER (WHERE status = 'ativa') as licencas_ativas,
   COUNT(*) FILTER (WHERE status = 'expirada') as licencas_expiradas,
   COUNT(*) FILTER (WHERE data_vencimento <= CURRENT_DATE + INTERVAL '30 days' AND status = 'ativa') as vencendo_30_dias
@@ -4915,7 +4946,7 @@ CREATE TRIGGER licencas_changed
 export class CacheService {
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private redisService: RedisService
+    private redisService: RedisService,
   ) {}
 
   // Cache de consultas frequentes
