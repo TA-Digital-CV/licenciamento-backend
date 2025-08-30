@@ -30,7 +30,17 @@ O sistema é composto pelos seguintes módulos principais:
 
    * Dossier de tipos de licença (dados gerais, legislações, entidades, processos, taxas)
 
-2. **Gestão de Titulares de Licença** (PR02.02)
+2. **Gestão de Estabelecimentos** (PR02.01)
+
+   * Cadastro e gestão de estabelecimentos
+
+   * Controle de localização geográfica
+
+   * Gestão de documentos dos estabelecimentos
+
+   * Classificação e segmentação
+
+3. **Gestão de Titulares de Licença** (PR02.02)
 
    * Cadastro e gestão de pessoas físicas e jurídicas
 
@@ -40,7 +50,7 @@ O sistema é composto pelos seguintes módulos principais:
 
    * Gestão de documentos dos titulares
 
-3. **Gestão de Licenças Emitidas** (PR02.03)
+4. **Gestão de Licenças Emitidas** (PR02.03)
 
    * Emissão de licenças definitivas e provisórias
 
@@ -50,7 +60,7 @@ O sistema é composto pelos seguintes módulos principais:
 
    * Gestão de renovações
 
-4. **Gestão de Emissores de Licenças** (PR02.04)
+5. **Gestão de Emissores de Licenças** (PR02.04)
 
    * Cadastro de órgãos emissores
 
@@ -60,7 +70,7 @@ O sistema é composto pelos seguintes módulos principais:
 
    * Acreditação de emissores
 
-5. **Gestão de Processos de Licenciamento** (PR02.05)
+6. **Gestão de Processos de Licenciamento** (PR02.05)
 
    * Controle do fluxo de processos
 
@@ -459,7 +469,20 @@ POST   /api/v1/license-types
 PUT    /api/v1/license-types/{id}
 ```
 
-#### 4.1.2 Gestão de Titulares
+#### 4.1.2 Gestão de Estabelecimentos
+
+```http
+GET    /api/v1/establishments
+POST   /api/v1/establishments
+GET    /api/v1/establishments/{id}
+PUT    /api/v1/establishments/{id}
+PUT    /api/v1/establishments/{id}/activate
+PUT    /api/v1/establishments/{id}/suspend
+POST   /api/v1/establishments/{id}/documents
+GET    /api/v1/establishments/nearby
+```
+
+#### 4.1.3 Gestão de Titulares
 
 ```http
 GET    /api/v1/license-holders
@@ -471,7 +494,7 @@ PUT    /api/v1/license-holders/{id}/suspend
 PUT    /api/v1/license-holders/{id}/reactivate
 ```
 
-#### 4.1.3 Gestão de Emissores
+#### 4.1.4 Gestão de Emissores
 
 ```http
 GET    /api/v1/license-issuers
@@ -482,7 +505,7 @@ POST   /api/v1/license-issuers/{id}/competences
 POST   /api/v1/license-issuers/{id}/jurisdictions
 ```
 
-#### 4.1.4 Gestão de Processos
+#### 4.1.5 Gestão de Processos
 
 **Operações básicas de processos:**
 
@@ -565,7 +588,7 @@ GET    /api/v1/licensing-processes/pending-documents
 GET    /api/v1/licensing-processes/by-analyst/{analystId}
 ```
 
-#### 4.1.5 Gestão de Licenças
+#### 4.1.6 Gestão de Licenças
 
 ```http
 GET    /api/v1/issued-licenses
@@ -801,7 +824,17 @@ Os módulos se comunicam através de eventos de domínio:
 
 * Datas de vigência válidas
 
-#### 6.2.2 Titulares
+#### 6.2.2 Estabelecimentos
+
+* Coordenadas geográficas válidas
+
+* Documentação de registro completa
+
+* Classificação adequada ao segmento
+
+* Status ativo para licenciamento
+
+#### 6.2.3 Titulares
 
 * Documentos de identificação válidos
 
@@ -809,7 +842,7 @@ Os módulos se comunicam através de eventos de domínio:
 
 * Status ativo para emissão de licenças
 
-#### 6.2.3 Emissores
+#### 6.2.4 Emissores
 
 * Competências dentro do escopo legal
 
@@ -817,7 +850,7 @@ Os módulos se comunicam através de eventos de domínio:
 
 * Autorização para o tipo de licença
 
-#### 6.2.4 Licenças
+#### 6.2.5 Licenças
 
 * Titular habilitado
 
@@ -827,7 +860,7 @@ Os módulos se comunicam através de eventos de domínio:
 
 * Documentação completa
 
-#### 6.2.5 Processos de Licenciamento
+#### 6.2.6 Processos de Licenciamento
 
 **Validações de Criação**:
 
@@ -1004,6 +1037,18 @@ Cada módulo possui documentação detalhada nos seguintes arquivos:
 * **PR01.04-BE-LIC-Dossier-Tipo-Licenca-Associacao-Tipo-Processos.md**: Associação com tipos de processos
 
 * **PR01.05-BE-LIC-Dossier-Tipo-Licenca-Associacao-Taxas.md**: Associação com taxas
+
+* **PR02.01-BE-LIC-Gestao-Estabelecimentos.md**: Gestão completa de estabelecimentos, incluindo:
+
+  * Cadastro e registro de estabelecimentos
+
+  * Controle de localização geográfica com coordenadas GPS
+
+  * Gestão de documentos e classificações
+
+  * Busca por proximidade geográfica
+
+  * Validações de conformidade
 
 * **PR02.02-BE-LIC-Gestao-Titulares-Licenca.md**: Gestão de titulares de licença
 
