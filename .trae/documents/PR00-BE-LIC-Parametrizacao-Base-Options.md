@@ -37,10 +37,10 @@ CREATE TABLE t_options (
     active BOOLEAN DEFAULT TRUE,          -- Status ativo/inativo
     metadata JSONB,                       -- Metadados adicionais
     description TEXT,                     -- Descrição detalhada
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by VARCHAR(100),
-    updated_by VARCHAR(100)
+    last_modified_by VARCHAR(100)
 );
 
 -- Índices para performance
@@ -555,10 +555,10 @@ CREATE TABLE t_options (
     active BOOLEAN DEFAULT TRUE,
     metadata JSONB,
     description TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by VARCHAR(100),
-    updated_by VARCHAR(100)
+    last_modified_by VARCHAR(100)
 );
 
 CREATE UNIQUE INDEX idx_options_unique ON t_options(ccode, ckey, locale);

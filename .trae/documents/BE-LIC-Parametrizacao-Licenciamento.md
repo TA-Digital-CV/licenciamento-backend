@@ -41,8 +41,8 @@ erDiagram
         boolean active
         jsonb metadata
         text description
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     %% Módulo Principal - Hierarquia de Licenciamento
@@ -55,8 +55,8 @@ erDiagram
         boolean active
         integer sort_order
         jsonb metadata
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_CATEGORY {
@@ -71,8 +71,8 @@ erDiagram
         boolean active
         integer sort_order
         jsonb metadata
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_LICENSE_TYPE {
@@ -95,8 +95,8 @@ erDiagram
         boolean active
         integer sort_order
         jsonb metadata
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     %% Módulo Parâmetros Gerais
@@ -123,8 +123,8 @@ erDiagram
         uuid network_application_id_fk FK
         uuid organization_id_fk FK
         uuid user_id_fk FK
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     %% Módulo Legislações
@@ -141,8 +141,8 @@ erDiagram
         varchar document_mime_type
         bigint document_size
         varchar status
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     %% Módulo Entidades
@@ -153,8 +153,8 @@ erDiagram
         varchar entity_name
         varchar entity_type
         varchar status
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_ENTITY_CONTACT {
@@ -165,8 +165,8 @@ erDiagram
         varchar email
         boolean is_primary
         varchar status
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     %% Módulo Tipos de Processos
@@ -178,8 +178,8 @@ erDiagram
         varchar activity_server_url
         varchar process_definition_key
         varchar status
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     %% Módulo Taxas
@@ -191,8 +191,8 @@ erDiagram
         varchar category_type
         boolean active
         integer sort_order
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_PROCESS_TYPE_FEE {
@@ -209,8 +209,8 @@ erDiagram
         decimal maximum_amount
         integer validity_days
         boolean active
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     %% Relacionamentos

@@ -36,10 +36,10 @@ CREATE TABLE t_sector (
     active BOOLEAN DEFAULT TRUE,
     sort_order INTEGER,
     metadata JSONB,                        -- Configurações específicas
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by VARCHAR(100),
-    updated_by VARCHAR(100)
+    last_modified_by VARCHAR(100)
 );
 
 -- Índices
@@ -64,10 +64,10 @@ CREATE TABLE t_category (
     active BOOLEAN DEFAULT TRUE,
     sort_order INTEGER,
     metadata JSONB,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by VARCHAR(100),
-    updated_by VARCHAR(100)
+    last_modified_by VARCHAR(100)
 );
 
 -- Índices
@@ -111,10 +111,10 @@ CREATE TABLE t_license_type (
     sort_order INTEGER,
     metadata JSONB,                           -- Configurações específicas adicionais
 
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by VARCHAR(100),
-    updated_by VARCHAR(100)
+    last_modified_by VARCHAR(100)
 );
 
 -- Índices
@@ -908,10 +908,10 @@ CREATE TABLE t_sector (
     active BOOLEAN DEFAULT TRUE,
     sort_order INTEGER,
     metadata JSONB,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by VARCHAR(100),
-    updated_by VARCHAR(100)
+    last_modified_by VARCHAR(100)
 );
 
 -- Criar tabela de categorias
@@ -927,10 +927,10 @@ CREATE TABLE t_category (
     active BOOLEAN DEFAULT TRUE,
     sort_order INTEGER,
     metadata JSONB,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by VARCHAR(100),
-    updated_by VARCHAR(100)
+    last_modified_by VARCHAR(100)
 );
 
 -- Criar tabela de tipos de licenças
@@ -954,10 +954,10 @@ CREATE TABLE t_license_type (
     active BOOLEAN DEFAULT TRUE,
     sort_order INTEGER,
     metadata JSONB,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by VARCHAR(100),
-    updated_by VARCHAR(100)
+    last_modified_by VARCHAR(100)
 );
 
 -- Criar índices

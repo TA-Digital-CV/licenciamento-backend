@@ -773,7 +773,7 @@ POST   /api/v1/issued-licenses/{id}/renew
         "address": "Palácio do Governo, Praia"
       },
       "is_active": true,
-      "created_at": "2024-01-01T00:00:00Z"
+      "created_date": "2024-01-01T00:00:00Z"
     }
   ],
   "pagination": {
@@ -852,7 +852,7 @@ GET /api/v1/license-holders
           "is_primary": true
         }
       ],
-      "created_at": "2024-01-10T00:00:00Z"
+      "created_date": "2024-01-10T00:00:00Z"
     },
     {
       "id": "uuid",
@@ -881,7 +881,7 @@ GET /api/v1/license-holders
           "is_primary": true
         }
       ],
-      "created_at": "2024-01-05T00:00:00Z"
+      "created_date": "2024-01-05T00:00:00Z"
     }
   ],
   "pagination": {
@@ -1051,8 +1051,8 @@ GET /api/v1/issued-licenses
       "issue_date": "2024-01-15T00:00:00Z",
       "expiry_date": "2025-01-15T00:00:00Z",
       "days_to_expiry": 45,
-      "created_at": "2024-01-15T10:30:00Z",
-      "updated_at": "2024-01-15T10:30:00Z"
+      "created_date": "2024-01-15T10:30:00Z",
+      "last_modified_date": "2024-01-15T10:30:00Z"
     }
   ],
   "pagination": {
@@ -1129,7 +1129,7 @@ GET /api/v1/issued-licenses/{id}
         "is_primary": true
       }
     ],
-    "created_at": "2024-01-10T00:00:00Z"
+    "created_date": "2024-01-10T00:00:00Z"
   },
   "legal_representatives": [
     {
@@ -1221,8 +1221,8 @@ GET /api/v1/issued-licenses/{id}
       "due_date": "2024-12-15T00:00:00Z"
     }
   },
-    "created_at": "2024-01-15T10:30:00Z",
-    "updated_at": "2024-01-15T10:30:00Z"
+    "created_date": "2024-01-15T10:30:00Z",
+    "last_modified_date": "2024-01-15T10:30:00Z"
   }
   "amendments": [
     {
@@ -1279,8 +1279,8 @@ GET /api/v1/issued-licenses/{id}
       "due_date": "2024-12-15T00:00:00Z"
     }
   ],
-  "created_at": "2024-01-15T10:30:00Z",
-  "updated_at": "2024-01-15T10:30:00Z"
+  "created_date": "2024-01-15T10:30:00Z",
+  "last_modified_date": "2024-01-15T10:30:00Z"
 }
 ```
 
@@ -1346,7 +1346,7 @@ POST /api/v1/establishments/register
   "required_documents": ["LICENCA_TURISTICA", "CERTIFICADO_SEGURANCA", "ALVARA_SANITARIO"],
   "submitted_documents": ["LICENCA_TURISTICA"],
   "pending_documents": ["CERTIFICADO_SEGURANCA", "ALVARA_SANITARIO"],
-  "created_at": "2024-01-15T10:30:00Z"
+  "created_date": "2024-01-15T10:30:00Z"
 }
 ```
 
@@ -1489,7 +1489,7 @@ POST /api/v1/issued-licenses/{id}/amendments
   "process_number": "AMD-2024-001234",
   "status": "pending_approval",
   "estimated_completion_days": 5,
-  "created_at": "2024-01-20T10:00:00Z"
+  "created_date": "2024-01-20T10:00:00Z"
 }
 ```
 
@@ -1535,7 +1535,7 @@ POST /api/v1/issued-licenses/{id}/transfers
     "currency": "CVE",
     "due_date": "2024-01-25T00:00:00Z"
   },
-  "created_at": "2024-01-20T10:00:00Z"
+  "created_date": "2024-01-20T10:00:00Z"
 }
 ```
 
@@ -1578,7 +1578,7 @@ POST /api/v1/issued-licenses/{id}/renewals
     "due_date": "2024-12-15T00:00:00Z",
     "payment_reference": "REN-PAY-2024-001234"
   },
-  "created_at": "2024-12-01T10:00:00Z"
+  "created_date": "2024-12-01T10:00:00Z"
 }
 ```
 
@@ -1700,7 +1700,7 @@ POST /api/v1/issued-licenses/{id}/renewals
       "expiry_date": "2024-02-15T00:00:00Z",
       "days_remaining": 15,
       "status": "pending",
-      "created_at": "2024-01-31T00:00:00Z",
+      "created_date": "2024-01-31T00:00:00Z",
       "acknowledged_at": null,
       "acknowledged_by": null,
       "metadata": {
@@ -1784,7 +1784,7 @@ POST /api/v1/issued-licenses/{id}/renewals
   "status": "processing",
   "estimated_completion_minutes": 5,
   "status_url": "/api/v1/reports/uuid/status",
-  "created_at": "2024-01-15T10:30:00Z"
+  "created_date": "2024-01-15T10:30:00Z"
 }
 ```
 
@@ -2606,10 +2606,10 @@ erDiagram
         varchar contact_email
         varchar contact_phone
         varchar status
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
         uuid created_by FK
-        uuid updated_by FK
+        uuid last_modified_by FK
     }
 
     T_LICENSE_HOLDER {
@@ -2617,10 +2617,10 @@ erDiagram
         varchar holder_type
         varchar status
         varchar classification
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
         uuid created_by FK
-        uuid updated_by FK
+        uuid last_modified_by FK
     }
 
     T_INDIVIDUAL_HOLDER {
@@ -2636,8 +2636,8 @@ erDiagram
         varchar document_type
         varchar document_number UK
         varchar gender
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_CORPORATE_HOLDER {
@@ -2651,8 +2651,8 @@ erDiagram
         varchar corporate_type
         date incorporation_date
         varchar share_capital
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_LEGAL_REPRESENTATIVE {
@@ -2666,8 +2666,8 @@ erDiagram
         date valid_from
         date valid_until
         varchar status
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_HOLDER_CONTACT {
@@ -2681,8 +2681,8 @@ erDiagram
         varchar verification_method
         timestamp verified_at
         varchar communication_preference
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_ISSUED_LICENSE {
@@ -2700,10 +2700,10 @@ erDiagram
         integer renewal_count
         text observations
         jsonb metadata
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
         uuid created_by FK
-        uuid updated_by FK
+        uuid last_modified_by FK
     }
 
     T_LICENSE_TYPE {
@@ -2716,9 +2716,9 @@ erDiagram
         uuid category_id FK
         boolean is_active
         uuid created_by FK
-        uuid updated_by FK
-        timestamp created_at
-        timestamp updated_at
+        uuid last_modified_by FK
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_SECTOR {
@@ -2729,9 +2729,9 @@ erDiagram
         boolean is_active
         integer sort_order
         uuid created_by FK
-        uuid updated_by FK
-        timestamp created_at
-        timestamp updated_at
+        uuid last_modified_by FK
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_CATEGORY {
@@ -2743,9 +2743,9 @@ erDiagram
         boolean is_active
         integer sort_order
         uuid created_by FK
-        uuid updated_by FK
-        timestamp created_at
-        timestamp updated_at
+        uuid last_modified_by FK
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_LICENSE_RENEWAL {
@@ -2759,8 +2759,8 @@ erDiagram
         text observations
         uuid requested_by FK
         uuid processed_by FK
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_LICENSE_AMENDMENT {
@@ -2775,8 +2775,8 @@ erDiagram
         date effective_date
         uuid requested_by FK
         uuid approved_by FK
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_LICENSE_TRANSFER {
@@ -2791,8 +2791,8 @@ erDiagram
         date effective_date
         uuid requested_by FK
         uuid approved_by FK
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_LICENSE_AUDIT {
@@ -2819,8 +2819,8 @@ erDiagram
         varchar status
         uuid uploaded_by FK
         timestamp uploaded_at
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_LICENSE_FEE {
@@ -2834,8 +2834,8 @@ erDiagram
         date payment_date
         varchar payment_reference
         uuid fee_category_id FK
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_LICENSE_ALERT {
@@ -2849,8 +2849,8 @@ erDiagram
         text message
         uuid acknowledged_by FK
         timestamp acknowledged_at
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     T_OPTIONS {
@@ -2862,9 +2862,9 @@ erDiagram
         boolean is_active
         integer sort_order
         uuid created_by FK
-        uuid updated_by FK
-        timestamp created_at
-        timestamp updated_at
+        uuid last_modified_by FK
+        timestamp created_date
+        timestamp last_modified_date
     }
 ```
 
@@ -2883,10 +2883,10 @@ CREATE TABLE T_LICENSE_ISSUER (
     contact_email VARCHAR(255),
     contact_phone VARCHAR(20),
     status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'suspended')),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by UUID NOT NULL,
-    updated_by UUID
+    last_modified_by UUID
 );
 
 -- Índices
@@ -2903,10 +2903,10 @@ CREATE TABLE T_LICENSE_HOLDER (
     holder_type VARCHAR(20) NOT NULL CHECK (holder_type IN ('individual', 'corporate')),
     status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'suspended', 'blocked')),
     classification VARCHAR(50),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by UUID NOT NULL,
-    updated_by UUID
+    last_modified_by UUID
 );
 
 -- Índices
@@ -2931,8 +2931,8 @@ CREATE TABLE T_INDIVIDUAL_HOLDER (
     document_type VARCHAR(20) NOT NULL,
     document_number VARCHAR(50) UNIQUE NOT NULL,
     gender VARCHAR(10),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 
     CONSTRAINT fk_individual_holder FOREIGN KEY (holder_id) REFERENCES T_LICENSE_HOLDER(id) ON DELETE CASCADE
 );
@@ -2958,8 +2958,8 @@ CREATE TABLE T_CORPORATE_HOLDER (
     corporate_type VARCHAR(50),
     incorporation_date DATE,
     share_capital VARCHAR(50),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 
     CONSTRAINT fk_corporate_holder FOREIGN KEY (holder_id) REFERENCES T_LICENSE_HOLDER(id) ON DELETE CASCADE
 );
@@ -2985,8 +2985,8 @@ CREATE TABLE T_LEGAL_REPRESENTATIVE (
     valid_from DATE NOT NULL,
     valid_until DATE,
     status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'expired')),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 
     CONSTRAINT fk_legal_representative_corporate FOREIGN KEY (corporate_holder_id) REFERENCES T_CORPORATE_HOLDER(id) ON DELETE CASCADE
 );
@@ -3012,8 +3012,8 @@ CREATE TABLE T_HOLDER_CONTACT (
     verification_method VARCHAR(50),
     verified_at TIMESTAMP WITH TIME ZONE,
     communication_preference VARCHAR(20) DEFAULT 'optional' CHECK (communication_preference IN ('required', 'preferred', 'optional', 'blocked')),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 
     CONSTRAINT fk_holder_contact FOREIGN KEY (holder_id) REFERENCES T_LICENSE_HOLDER(id) ON DELETE CASCADE
 );
@@ -3043,10 +3043,10 @@ CREATE TABLE T_ISSUED_LICENSE (
     renewal_count INTEGER DEFAULT 0,
     observations TEXT,
     metadata JSONB,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by UUID NOT NULL,
-    updated_by UUID,
+    last_modified_by UUID,
 
     CONSTRAINT fk_issued_license_issuer FOREIGN KEY (issuer_id) REFERENCES T_LICENSE_ISSUER(id),
     CONSTRAINT fk_issued_license_holder FOREIGN KEY (holder_id) REFERENCES T_LICENSE_HOLDER(id),
@@ -3079,8 +3079,8 @@ CREATE TABLE T_LICENSE_AMENDMENT (
     effective_date DATE,
     requested_by UUID NOT NULL,
     approved_by UUID,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 
     CONSTRAINT fk_license_amendment_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id)
 );
@@ -3107,8 +3107,8 @@ CREATE TABLE T_LICENSE_TRANSFER (
     effective_date DATE,
     requested_by UUID NOT NULL,
     approved_by UUID,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 
     CONSTRAINT fk_license_transfer_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id),
     CONSTRAINT fk_license_transfer_old_holder FOREIGN KEY (old_holder_id) REFERENCES T_LICENSE_HOLDER(id),
@@ -3137,8 +3137,8 @@ CREATE TABLE T_LICENSE_DOCUMENT (
     status VARCHAR(20) NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'archived', 'deleted')),
     uploaded_by UUID NOT NULL,
     uploaded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 
     CONSTRAINT fk_license_document_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id)
 );
@@ -3164,8 +3164,8 @@ CREATE TABLE T_LICENSE_FEE (
     payment_date DATE,
     payment_reference VARCHAR(100),
     fee_category_id UUID,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 
     CONSTRAINT fk_license_fee_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id)
 );
@@ -3291,9 +3291,9 @@ CREATE TABLE T_LICENSE_HOLDER (
     legal_representative_id UUID,
     is_active BOOLEAN DEFAULT true,
     created_by UUID NOT NULL,
-    updated_by UUID,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    last_modified_by UUID,
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Índices
@@ -3330,8 +3330,8 @@ CREATE TABLE T_LICENSE_RENEWAL (
     observations TEXT,
     requested_by UUID NOT NULL,
     processed_by UUID,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 
     CONSTRAINT fk_license_renewal_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id)
 );
@@ -3408,8 +3408,8 @@ CREATE TABLE T_LICENSE_ALERT (
     message TEXT,
     acknowledged_by UUID,
     acknowledged_at TIMESTAMP WITH TIME ZONE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 
     CONSTRAINT fk_license_alert_license FOREIGN KEY (license_id) REFERENCES T_ISSUED_LICENSE(id)
 );
@@ -4082,8 +4082,8 @@ erDiagram
         varchar password_hash
         varchar full_name
         varchar role
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
         boolean active
     }
 
@@ -4100,8 +4100,8 @@ erDiagram
         date birth_date
         varchar gender
         varchar nationality
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
         boolean active
     }
 
@@ -4129,8 +4129,8 @@ erDiagram
         varchar contact_email
         varchar contact_phone
         boolean active
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     LICENSE_TYPES {
@@ -4143,8 +4143,8 @@ erDiagram
         varchar currency
         text requirements
         boolean active
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
     }
 
     ISSUED_LICENSES {
@@ -4161,10 +4161,10 @@ erDiagram
         text notes
         decimal fee_paid
         varchar payment_reference
-        timestamp created_at
-        timestamp updated_at
+        timestamp created_date
+        timestamp last_modified_date
         uuid created_by FK
-        uuid updated_by FK
+        uuid last_modified_by FK
     }
 
     LICENSE_DOCUMENTS {
@@ -4229,8 +4229,8 @@ CREATE TABLE users (
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL DEFAULT 'USER' CHECK (role IN ('ADMIN', 'OPERATOR', 'USER')),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     active BOOLEAN DEFAULT true
 );
 ```
@@ -4251,8 +4251,8 @@ CREATE TABLE license_holders (
     birth_date DATE,
     gender VARCHAR(10) CHECK (gender IN ('M', 'F', 'OTHER')),
     nationality VARCHAR(100),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     active BOOLEAN DEFAULT true
 );
 ```
@@ -4289,8 +4289,8 @@ CREATE TABLE license_types (
     currency VARCHAR(3) DEFAULT 'CVE',
     requirements TEXT,
     active BOOLEAN DEFAULT true,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ```
 
@@ -4306,8 +4306,8 @@ CREATE TABLE license_issuers (
     contact_email VARCHAR(255),
     contact_phone VARCHAR(20),
     active BOOLEAN DEFAULT true,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ```
 
@@ -4328,10 +4328,10 @@ CREATE TABLE issued_licenses (
     notes TEXT,
     fee_paid DECIMAL(10,2) DEFAULT 0.00,
     payment_reference VARCHAR(100),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_modified_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by UUID REFERENCES users(id),
-    updated_by UUID REFERENCES users(id)
+    last_modified_by UUID REFERENCES users(id)
 );
 ```
 
@@ -4350,7 +4350,7 @@ CREATE INDEX idx_license_holders_document_number ON license_holders(document_num
 CREATE INDEX idx_license_holders_email ON license_holders(email);
 CREATE INDEX idx_license_holders_type ON license_holders(holder_type);
 CREATE INDEX idx_license_holders_active ON license_holders(active);
-CREATE INDEX idx_license_holders_created_at ON license_holders(created_at DESC);
+CREATE INDEX idx_license_holders_created_date ON license_holders(created_date DESC);
 
 -- Corporate Holders
 CREATE INDEX idx_corporate_holders_holder_id ON corporate_holders(holder_id);
@@ -4373,7 +4373,7 @@ CREATE INDEX idx_issued_licenses_issuer_id ON issued_licenses(issuer_id);
 CREATE INDEX idx_issued_licenses_status ON issued_licenses(status);
 CREATE INDEX idx_issued_licenses_issue_date ON issued_licenses(issue_date DESC);
 CREATE INDEX idx_issued_licenses_expiry_date ON issued_licenses(expiry_date);
-CREATE INDEX idx_issued_licenses_created_at ON issued_licenses(created_at DESC);
+CREATE INDEX idx_issued_licenses_created_date ON issued_licenses(created_date DESC);
 
 -- Índices compostos para consultas complexas
 CREATE INDEX idx_issued_licenses_holder_status ON issued_licenses(holder_id, status);
@@ -4407,10 +4407,10 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
 -- Função para atualizar timestamp
-CREATE OR REPLACE FUNCTION update_updated_at_column()
+CREATE OR REPLACE FUNCTION update_last_modified_date_column()
 RETURNS TRIGGER AS $$
 BEGIN
-    NEW.updated_at = NOW();
+    NEW.last_modified_date = NOW();
     RETURN NEW;
 END;
 $$ language 'plpgsql';
@@ -4418,21 +4418,21 @@ $$ language 'plpgsql';
 -- Criação das tabelas (conforme definido acima)
 -- ... (todas as tabelas CREATE TABLE)
 
--- Triggers para updated_at
-CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+-- Triggers para last_modified_date
+CREATE TRIGGER update_users_last_modified_date BEFORE UPDATE ON users
+    FOR EACH ROW EXECUTE FUNCTION update_last_modified_date_column();
 
-CREATE TRIGGER update_license_holders_updated_at BEFORE UPDATE ON license_holders
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_license_holders_last_modified_date BEFORE UPDATE ON license_holders
+    FOR EACH ROW EXECUTE FUNCTION update_last_modified_date_column();
 
-CREATE TRIGGER update_license_types_updated_at BEFORE UPDATE ON license_types
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_license_types_last_modified_date BEFORE UPDATE ON license_types
+    FOR EACH ROW EXECUTE FUNCTION update_last_modified_date_column();
 
-CREATE TRIGGER update_license_issuers_updated_at BEFORE UPDATE ON license_issuers
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_license_issuers_last_modified_date BEFORE UPDATE ON license_issuers
+    FOR EACH ROW EXECUTE FUNCTION update_last_modified_date_column();
 
-CREATE TRIGGER update_issued_licenses_updated_at BEFORE UPDATE ON issued_licenses
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_issued_licenses_last_modified_date BEFORE UPDATE ON issued_licenses
+    FOR EACH ROW EXECUTE FUNCTION update_last_modified_date_column();
 ```
 
 #### V2\_\_Create\_Indexes.sql
