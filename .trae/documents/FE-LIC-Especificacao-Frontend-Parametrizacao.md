@@ -5,7 +5,7 @@
 Este documento especifica os requisitos e integrações do frontend para o módulo de parametrização do sistema de licenciamento, incluindo a comunicação com a API backend e as interfaces de usuário necessárias.
 
 **Versão:** 1.0  
-**Data:** 2024  
+**Data:** 2025  
 **Responsável:** Equipe de Desenvolvimento Frontend
 
 ---

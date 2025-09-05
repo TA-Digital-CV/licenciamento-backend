@@ -7,7 +7,7 @@ Este documento especifica a implementação da gestão de opções no sistema de
 **Módulo:** Parametrização Base  
 **Componente:** Gestão de Opções  
 **Versão:** 1.0  
-**Data:** 2024
+**Data:** 2025
 
 ---
 

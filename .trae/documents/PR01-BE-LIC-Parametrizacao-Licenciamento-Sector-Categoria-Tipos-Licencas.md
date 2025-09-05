@@ -7,7 +7,7 @@ Este documento especifica a implementação dos módulos principais de parametri
 **Módulo:** Parametrização de Licenciamento  
 **Componentes:** Setores, Categorias, Tipos de Licenças  
 **Versão:** 1.0  
-**Data:** 2024
+**Data:** 2025
 
 ---
 
@@ -282,8 +282,8 @@ public class SectorRequestDTO {
   "sectorName": "Comercial",
   "active": true,
   "sortOrder": 1,
-  "createdAt": "2024-01-15T10:30:00Z",
-  "updatedAt": "2024-01-15T10:30:00Z"
+  "createdAt": "2025-01-15T10:30:00Z",
+  "updatedAt": "2025-01-15T10:30:00Z"
 }
 ```
 
@@ -319,8 +319,8 @@ public class SectorRequestDTO {
   "sectorName": "Comercial",
   "active": true,
   "sortOrder": 2,
-  "createdAt": "2024-01-15T11:00:00Z",
-  "updatedAt": "2024-01-15T11:00:00Z"
+  "createdAt": "2025-01-15T11:00:00Z",
+  "updatedAt": "2025-01-15T11:00:00Z"
 }
 ```
 
@@ -483,7 +483,7 @@ public class CategoryRequestDTO {
   "message": "Tipo de licença ativado com sucesso",
   "licenseTypeId": "lt-001",
   "status": "active",
-  "timestamp": "2024-01-15T10:30:00Z"
+  "timestamp": "2025-01-15T10:30:00Z"
 }
 ```
 

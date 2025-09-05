@@ -639,7 +639,7 @@ Authorization: Bearer {token}
 {
   "analystId": "550e8400-e29b-41d4-a716-446655440006",
   "assignmentReason": "Especialista em licenças comerciais",
-  "targetDecisionDate": "2024-02-15"
+  "targetDecisionDate": "2025-02-15"
 }
 ```
 
@@ -652,7 +652,7 @@ Authorization: Bearer {token}
   "success": true,
   "data": { ... },
   "message": "Operation completed successfully",
-  "timestamp": "2024-01-15T10:30:00Z"
+  "timestamp": "2025-01-15T10:30:00Z"
 }
 ```
 
@@ -671,7 +671,7 @@ Authorization: Bearer {token}
       }
     ]
   },
-  "timestamp": "2024-01-15T10:30:00Z"
+  "timestamp": "2025-01-15T10:30:00Z"
 }
 ```
 
@@ -685,7 +685,7 @@ Authorization: Bearer {token}
     "message": "License holder does not have legal capacity",
     "details": []
   },
-  "timestamp": "2024-01-15T10:30:00Z"
+  "timestamp": "2025-01-15T10:30:00Z"
 }
 ```
 
@@ -696,15 +696,15 @@ Authorization: Bearer {token}
   "success": true,
   "data": {
     "id": "550e8400-e29b-41d4-a716-446655440005",
-    "processNumber": "LIC-2024-001234",
+    "processNumber": "LIC-2025-001234",
     "status": "SUBMITTED",
-    "submissionDate": "2024-01-15",
-    "targetDecisionDate": "2024-02-15",
+    "submissionDate": "2025-01-15",
+    "targetDecisionDate": "2025-02-15",
     "applicationFeeAmount": 150.00,
     "feePaymentStatus": "PENDING"
   },
   "message": "Processo de licenciamento criado com sucesso",
-  "timestamp": "2024-01-15T10:30:00Z"
+  "timestamp": "2025-01-15T10:30:00Z"
 }
 ```
 

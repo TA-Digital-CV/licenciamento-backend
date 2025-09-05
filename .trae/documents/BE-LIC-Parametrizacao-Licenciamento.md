@@ -726,5 +726,5 @@ A implementação deve seguir a ordem de dependências estabelecida, começando 
 
 **Documento**: BE-LIC-Parametrização-Licenciamento  
 **Versão**: 1.0  
-**Data**: Janeiro 2024  
+**Data**: Agosto 2025  
 **Autor**: Sistema de Licenciamento - Cabo Verde
