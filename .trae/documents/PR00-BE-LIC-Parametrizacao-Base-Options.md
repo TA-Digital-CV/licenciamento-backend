@@ -13,7 +13,43 @@ Este documento especifica a implementação da gestão de opções no sistema de
 
 ## 2. Arquitetura do Módulo
 
+<<<<<<< HEAD
 ### 2.1 Estrutura de Pacotes
+=======
+### 1.2 Casos de Uso Principais
+
+- **Consulta de Opções**: Obter lista de opções por código (ex: estados de licença)
+- **Gestão Administrativa**: CRUD completo de parametrizações
+- **Suporte Multilíngue**: Opções em diferentes idiomas
+- **Cache Dinâmico**: Performance otimizada para consultas frequentes
+
+## 2. Modelo de Dados
+
+### 2.1 Estrutura da Tabela t_options
+
+```sql
+CREATE TABLE t_options (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ccode VARCHAR(50) NOT NULL,           -- Código do conjunto de opções
+    ckey VARCHAR(50) NOT NULL,            -- Chave da opção específica
+    cvalue VARCHAR(255) NOT NULL,         -- Valor/Label da opção
+    locale VARCHAR(10) DEFAULT 'pt-CV',   -- Idioma (pt-CV, en, etc.)
+    sort_order INTEGER,                   -- Ordem de apresentação
+    active BOOLEAN DEFAULT TRUE,          -- Status ativo/inativo
+    metadata JSONB,                       -- Metadados adicionais
+    description TEXT,                     -- Descrição detalhada
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by VARCHAR(100),
+    updated_by VARCHAR(100)
+);
+
+-- Índices para performance
+CREATE UNIQUE INDEX idx_options_unique ON t_options(ccode, ckey, locale);
+CREATE INDEX idx_options_ccode ON t_options(ccode);
+CREATE INDEX idx_options_active ON t_options(active);
+CREATE INDEX idx_options_sort ON t_options(ccode, sort_order NULLS LAST, ckey);
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 ```
 cv.igrp.license.configuration/
 ├── interfaces/rest/
@@ -573,4 +609,367 @@ public class WrapperListOptionsDTO {
 - API de sincronização entre ambientes
 - Interface de tradução automática
 
+<<<<<<< HEAD
 Este documento serve como referência completa para a implementação e manutenção do módulo de gestão de opções no sistema de licenciamento.
+=======
+    @Cacheable(key = "#code + '_' + #locale")
+    public List<OptionResponse> getOptionsByCode(String code, String locale) {
+        return optionRepository.findByCodeAndLocaleAndActiveTrue(code, locale);
+    }
+
+    @CacheEvict(key = "#code + '_' + #locale")
+    public void evictCache(String code, String locale) {
+        // Cache invalidation
+    }
+
+    @CacheEvict(allEntries = true)
+    public void evictAllCache() {
+        // Clear all cache
+    }
+}
+```
+
+### 7.2 Configuração de Cache
+
+```yaml
+# application.yml
+spring:
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=1h
+    cache-names:
+      - options
+```
+
+## 8. Segurança
+
+### 8.1 Controlo de Acesso
+
+- **Consulta (GET)**: Acesso público (sem autenticação)
+- **Gestão (POST/PUT/DELETE)**: Requer autenticação JWT + role ADMIN
+- **Auditoria**: Todas as operações administrativas são auditadas
+
+### 8.2 Configuração de Segurança
+
+```java
+@Configuration
+@EnableWebSecurity
+public class ParameterizationSecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(authz -> authz
+            .requestMatchers(HttpMethod.GET, "/api/v1/options/**").permitAll()
+            .requestMatchers("/api/v1/options/admin/**").hasRole("ADMIN")
+            .anyRequest().authenticated()
+        );
+        return http.build();
+    }
+}
+```
+
+## 9. Testes
+
+### 9.1 Testes Unitários
+
+```java
+@ExtendWith(MockitoExtension.class)
+class GetOptionsByCodeUseCaseTest {
+
+    @Mock
+    private OptionRepositoryPort optionRepository;
+
+    @Mock
+    private OptionCachePort optionCache;
+
+    @InjectMocks
+    private GetOptionsByCodeUseCase useCase;
+
+    @Test
+    void shouldReturnOptionsWhenCodeExists() {
+        // Given
+        String code = "LICENSE_STATUS";
+        String locale = "pt-CV";
+        List<Option> options = createSampleOptions();
+
+        when(optionCache.getOptionsByCode(code, locale))
+            .thenReturn(Optional.empty());
+        when(optionRepository.findByCodeAndLocaleAndActiveTrue(code, locale))
+            .thenReturn(options);
+
+        // When
+        OptionSetResponse result = useCase.execute(code, locale, "list", false);
+
+        // Then
+        assertThat(result.getCode()).isEqualTo(code);
+        assertThat(result.getItems()).hasSize(3);
+        verify(optionCache).cacheOptions(code, locale, any());
+    }
+}
+```
+
+### 9.2 Testes de Integração
+
+```java
+@SpringBootTest
+@Testcontainers
+class ParameterizationControllerIntegrationTest {
+
+    @Container
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16")
+            .withDatabaseName("licensing_test")
+            .withUsername("test")
+            .withPassword("test");
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    @Test
+    void shouldReturnOptionsWhenValidCodeProvided() {
+        // Given
+        String code = "LICENSE_STATUS";
+
+        // When
+        ResponseEntity<OptionSetResponse> response = restTemplate.getForEntity(
+            "/api/v1/options/" + code, OptionSetResponse.class);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getCode()).isEqualTo(code);
+        assertThat(response.getBody().getItems()).isNotEmpty();
+    }
+}
+```
+
+## 10. Migração e Dados Iniciais
+
+### 10.1 Script de Migração Flyway
+
+```sql
+-- V001__create_options_table.sql
+CREATE TABLE t_options (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ccode VARCHAR(50) NOT NULL,
+    ckey VARCHAR(50) NOT NULL,
+    cvalue VARCHAR(255) NOT NULL,
+    locale VARCHAR(10) DEFAULT 'pt-CV',
+    sort_order INTEGER,
+    active BOOLEAN DEFAULT TRUE,
+    metadata JSONB,
+    description TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by VARCHAR(100),
+    updated_by VARCHAR(100)
+);
+
+CREATE UNIQUE INDEX idx_options_unique ON t_options(ccode, ckey, locale);
+CREATE INDEX idx_options_ccode ON t_options(ccode);
+CREATE INDEX idx_options_active ON t_options(active);
+CREATE INDEX idx_options_sort ON t_options(ccode, sort_order NULLS LAST, ckey);
+```
+
+### 10.2 Dados Iniciais
+
+```sql
+-- V002__insert_initial_options.sql
+
+-- Estados de Licenças
+INSERT INTO t_options (ccode, ckey, cvalue, locale, sort_order, description) VALUES
+('LICENSE_STATUS', 'DRAFT', 'Rascunho', 'pt-CV', 1, 'Licença em fase de preparação'),
+('LICENSE_STATUS', 'PENDING', 'Pendente', 'pt-CV', 2, 'Licença submetida para análise'),
+('LICENSE_STATUS', 'UNDER_REVIEW', 'Em Análise', 'pt-CV', 3, 'Licença em processo de avaliação'),
+('LICENSE_STATUS', 'APPROVED', 'Aprovada', 'pt-CV', 4, 'Licença aprovada e ativa'),
+('LICENSE_STATUS', 'REJECTED', 'Rejeitada', 'pt-CV', 5, 'Licença rejeitada'),
+('LICENSE_STATUS', 'SUSPENDED', 'Suspensa', 'pt-CV', 6, 'Licença temporariamente suspensa'),
+('LICENSE_STATUS', 'EXPIRED', 'Expirada', 'pt-CV', 7, 'Licença expirada'),
+('LICENSE_STATUS', 'CANCELLED', 'Cancelada', 'pt-CV', 8, 'Licença cancelada pelo titular');
+
+-- Tipos de Entidades Reguladoras
+INSERT INTO t_options (ccode, ckey, cvalue, locale, sort_order, description) VALUES
+('ENTITY_TYPE', 'MINISTRY', 'Ministério', 'pt-CV', 1, 'Ministério do governo'),
+('ENTITY_TYPE', 'AGENCY', 'Agência', 'pt-CV', 2, 'Agência reguladora'),
+('ENTITY_TYPE', 'INSPECTION', 'Inspeção', 'pt-CV', 3, 'Órgão de inspeção'),
+('ENTITY_TYPE', 'MUNICIPALITY', 'Câmara Municipal', 'pt-CV', 4, 'Autoridade municipal'),
+('ENTITY_TYPE', 'INSTITUTE', 'Instituto', 'pt-CV', 5, 'Instituto público');
+
+-- Modelos de Licenciamento
+INSERT INTO t_options (ccode, ckey, cvalue, locale, sort_order, description, metadata) VALUES
+('LICENSING_MODEL', 'SIMPLE', 'Licenciamento Simples', 'pt-CV', 1, 'Processo simplificado', '{"duration_days": 30, "complexity": "low"}'),
+('LICENSING_MODEL', 'STANDARD', 'Licenciamento Padrão', 'pt-CV', 2, 'Processo padrão', '{"duration_days": 60, "complexity": "medium"}'),
+('LICENSING_MODEL', 'COMPLEX', 'Licenciamento Complexo', 'pt-CV', 3, 'Processo complexo', '{"duration_days": 90, "complexity": "high"}'),
+('LICENSING_MODEL', 'AUTOMATIC', 'Licenciamento Automático', 'pt-CV', 4, 'Aprovação automática', '{"duration_days": 1, "complexity": "none"}');
+
+-- Unidades de Validade
+INSERT INTO t_options (ccode, ckey, cvalue, locale, sort_order, description) VALUES
+('VALIDITY_UNIT', 'DAYS', 'Dias', 'pt-CV', 1, 'Validade em dias'),
+('VALIDITY_UNIT', 'MONTHS', 'Meses', 'pt-CV', 2, 'Validade em meses'),
+('VALIDITY_UNIT', 'YEARS', 'Anos', 'pt-CV', 3, 'Validade em anos'),
+('VALIDITY_UNIT', 'INDEFINITE', 'Indefinida', 'pt-CV', 4, 'Sem prazo de validade');
+
+-- Tipos de Infração
+INSERT INTO t_options (ccode, ckey, cvalue, locale, sort_order, description) VALUES
+('INFRACTION_TYPE', 'MINOR', 'Leve', 'pt-CV', 1, 'Infração de natureza leve'),
+('INFRACTION_TYPE', 'SERIOUS', 'Grave', 'pt-CV', 2, 'Infração de natureza grave'),
+('INFRACTION_TYPE', 'VERY_SERIOUS', 'Muito Grave', 'pt-CV', 3, 'Infração de natureza muito grave');
+```
+
+## 11. Monitorização e Métricas
+
+### 11.1 Métricas de Performance
+
+```java
+@Component
+public class ParameterizationMetrics {
+
+    private final Counter optionRequestsCounter;
+    private final Timer optionRequestsTimer;
+    private final Gauge cacheHitRatio;
+
+    public ParameterizationMetrics(MeterRegistry meterRegistry) {
+        this.optionRequestsCounter = Counter.builder("options.requests.total")
+            .description("Total number of option requests")
+            .tag("module", "parameterization")
+            .register(meterRegistry);
+
+        this.optionRequestsTimer = Timer.builder("options.requests.duration")
+            .description("Option request duration")
+            .register(meterRegistry);
+
+        this.cacheHitRatio = Gauge.builder("options.cache.hit.ratio")
+            .description("Cache hit ratio for options")
+            .register(meterRegistry, this, ParameterizationMetrics::getCacheHitRatio);
+    }
+
+    public void recordRequest(String code, String locale) {
+        optionRequestsCounter.increment(
+            Tags.of("code", code, "locale", locale)
+        );
+    }
+
+    private double getCacheHitRatio() {
+        // Implementar lógica de cálculo do cache hit ratio
+        return 0.85; // Exemplo
+    }
+}
+```
+
+### 11.2 Health Checks
+
+```java
+@Component
+public class ParameterizationHealthIndicator implements HealthIndicator {
+
+    private final OptionRepository optionRepository;
+
+    @Override
+    public Health health() {
+        try {
+            long totalOptions = optionRepository.count();
+            long activeOptions = optionRepository.countByActiveTrue();
+
+            return Health.up()
+                .withDetail("totalOptions", totalOptions)
+                .withDetail("activeOptions", activeOptions)
+                .withDetail("inactiveOptions", totalOptions - activeOptions)
+                .build();
+        } catch (Exception e) {
+            return Health.down()
+                .withDetail("error", e.getMessage())
+                .build();
+        }
+    }
+}
+```
+
+## 12. Documentação da API
+
+### 12.1 Configuração OpenAPI
+
+```java
+@Configuration
+@OpenAPIDefinition(
+    info = @Info(
+        title = "Parametrização Base API",
+        version = "1.0",
+        description = "API para gestão de parametrizações do sistema de licenciamento"
+    )
+)
+public class ParameterizationOpenApiConfig {
+
+    @Bean
+    public GroupedOpenApi parameterizationApi() {
+        return GroupedOpenApi.builder()
+            .group("parameterization")
+            .pathsToMatch("/api/v1/options/**")
+            .build();
+    }
+}
+```
+
+### 12.2 Anotações nos Controllers
+
+```java
+@RestController
+@RequestMapping("/api/v1/options")
+@Tag(name = "Parametrização", description = "Gestão de opções e parametrizações do sistema")
+public class ParameterizationController {
+
+    @GetMapping("/{code}")
+    @Operation(
+        summary = "Obter opções por código",
+        description = "Retorna todas as opções ativas para um código específico"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Opções encontradas"),
+        @ApiResponse(responseCode = "404", description = "Código não encontrado")
+    })
+    public ResponseEntity<OptionSetResponse> getOptionsByCode(
+        @Parameter(description = "Código do conjunto de opções", example = "LICENSE_STATUS")
+        @PathVariable String code,
+
+        @Parameter(description = "Idioma das opções", example = "pt-CV")
+        @RequestParam(defaultValue = "pt-CV") String locale,
+
+        @Parameter(description = "Formato da resposta", example = "list")
+        @RequestParam(defaultValue = "list") String format
+    ) {
+        // Implementação
+    }
+}
+```
+
+## 13. Considerações de Implementação
+
+### 13.1 Fases de Desenvolvimento
+
+1. **Fase 1** (1 semana): Modelo de dados e migração
+2. **Fase 2** (1 semana): Domain layer e use cases
+3. **Fase 3** (1 semana): APIs REST e cache
+4. **Fase 4** (0.5 semana): Testes e documentação
+5. **Fase 5** (0.5 semana): Integração e deploy
+
+### 13.2 Riscos e Mitigações
+
+| Risco                              | Impacto | Mitigação                              |
+| ---------------------------------- | ------- | -------------------------------------- |
+| Performance de consultas           | Alto    | Implementar cache eficiente            |
+| Crescimento descontrolado de dados | Médio   | Implementar soft delete e arquivamento |
+| Inconsistência de dados            | Alto    | Validações rigorosas e transações      |
+| Falha de cache                     | Médio   | Fallback para base de dados            |
+
+### 13.3 Métricas de Sucesso
+
+- **Performance**: Tempo de resposta < 100ms para consultas em cache
+- **Disponibilidade**: 99.9% uptime
+- **Cache Hit Ratio**: > 80%
+- **Cobertura de Testes**: > 90%
+- **Tempo de Deploy**: < 5 minutos
+
+## 14. Conclusão
+
+O módulo de Parametrização Base fornece uma solução robusta e flexível para gestão de opções dinâmicas no sistema de licenciamento. A arquitetura DDD garante separação de responsabilidades, enquanto o cache otimiza a performance. A API REST bem documentada facilita a integração com o frontend e outros sistemas.
+
+A implementação seguirá as melhores práticas de desenvolvimento, incluindo testes automatizados, monitorização e documentação completa, garantindo um módulo confiável e de fácil manutenção.
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)

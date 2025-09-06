@@ -13,6 +13,7 @@ Este documento especifica a implementação dos módulos principais de parametri
 
 ## 2. Arquitetura Geral
 
+<<<<<<< HEAD
 ### 2.1 Hierarquia de Dados
 ```
 Setor (Comercial, Industrial, etc.)
@@ -23,6 +24,39 @@ Setor (Comercial, Industrial, etc.)
         ├── Entidades Envolvidas
         ├── Tipos de Processo
         └── Taxas Associadas
+=======
+### 1.2 Entidades Principais
+
+- **T_SECTOR**: Setores económicos (Agricultura, Turismo, Indústria, etc.)
+- **T_CATEGORY**: Categorias hierárquicas de atividades económicas
+- **T_LICENSE_TYPE**: Tipos de licenças com configurações específicas
+
+## 2. Modelo de Dados
+
+### 2.1 Tabela T_SECTOR
+
+```sql
+CREATE TABLE t_sector (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    sector_type_key VARCHAR(50) NOT NULL,  -- Referência para t_options (SECTOR_TYPE)
+    code VARCHAR(20) UNIQUE NOT NULL,      -- Código único do setor
+    active BOOLEAN DEFAULT TRUE,
+    sort_order INTEGER,
+    metadata JSONB,                        -- Configurações específicas
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by VARCHAR(100),
+    updated_by VARCHAR(100)
+);
+
+-- Índices
+CREATE INDEX idx_sector_type ON t_sector(sector_type_key);
+CREATE INDEX idx_sector_active ON t_sector(active);
+CREATE INDEX idx_sector_code ON t_sector(code);
+CREATE INDEX idx_sector_sort ON t_sector(sort_order NULLS LAST);
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 ```
 
 ### 2.2 Relacionamentos
@@ -30,7 +64,28 @@ Setor (Comercial, Industrial, etc.)
 - **Categoria 1:N Tipo de Licença**: Uma categoria pode ter múltiplos tipos de licença
 - **Categoria 1:N Categoria**: Categorias podem ter subcategorias (hierarquia)
 
+<<<<<<< HEAD
 ---
+=======
+```sql
+CREATE TABLE t_category (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    code VARCHAR(30) UNIQUE NOT NULL,      -- Código hierárquico (ex: AGR.001, AGR.001.001)
+    parent_id UUID REFERENCES t_category(id),
+    sector_id UUID NOT NULL REFERENCES t_sector(id),
+    level INTEGER NOT NULL DEFAULT 1,      -- Nível hierárquico (1=raiz, 2=sub, etc.)
+    path VARCHAR(500),                     -- Caminho hierárquico completo
+    active BOOLEAN DEFAULT TRUE,
+    sort_order INTEGER,
+    metadata JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by VARCHAR(100),
+    updated_by VARCHAR(100)
+);
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 
 ## 3. Módulo de Setores
 
@@ -39,6 +94,7 @@ Setor (Comercial, Industrial, etc.)
 #### 3.1.1 Listagem de Setores
 **Endpoint:** `GET /api/v1/sectors`
 
+<<<<<<< HEAD
 **Parâmetros de Query:**
 | Parâmetro | Tipo | Obrigatório | Padrão | Descrição |
 |-----------|------|-------------|--------|-----------|
@@ -50,6 +106,330 @@ Setor (Comercial, Industrial, etc.)
 | pageSize | string | Não | "20" | Tamanho da página |
 | sort | string | Não | "name" | Campo de ordenação (ex: name, code, createdAt) |
 | direction | string | Não | "ASC" | Direção da ordenação (ASC/DESC) |
+=======
+    -- Configurações de Licenciamento
+    licensing_model_key VARCHAR(50) NOT NULL,  -- Referência para t_options (LICENSING_MODEL)
+    validity_period INTEGER,                   -- Período de validade
+    validity_unit_key VARCHAR(50),            -- Referência para t_options (VALIDITY_UNIT)
+    renewable BOOLEAN DEFAULT TRUE,
+    auto_renewal BOOLEAN DEFAULT FALSE,
+
+    -- Configurações de Processo
+    requires_inspection BOOLEAN DEFAULT FALSE,
+    requires_public_consultation BOOLEAN DEFAULT FALSE,
+    max_processing_days INTEGER,
+
+    -- Configurações Financeiras
+    has_fees BOOLEAN DEFAULT TRUE,
+    base_fee DECIMAL(10,2),
+    currency_code VARCHAR(3) DEFAULT 'CVE',
+
+    -- Status e Metadados
+    active BOOLEAN DEFAULT TRUE,
+    sort_order INTEGER,
+    metadata JSONB,                           -- Configurações específicas adicionais
+
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by VARCHAR(100),
+    updated_by VARCHAR(100)
+);
+
+-- Índices
+CREATE INDEX idx_license_type_category ON t_license_type(category_id);
+CREATE INDEX idx_license_type_model ON t_license_type(licensing_model_key);
+CREATE INDEX idx_license_type_active ON t_license_type(active);
+CREATE INDEX idx_license_type_code ON t_license_type(code);
+CREATE INDEX idx_license_type_renewable ON t_license_type(renewable);
+```
+
+### 2.4 Dados Iniciais para Tipos de Setores
+
+```sql
+-- Inserir tipos de setores no sistema de opções
+INSERT INTO t_options (ccode, ckey, cvalue, locale, sort_order, description) VALUES
+('SECTOR_TYPE', 'PRIMARY', 'Setor Primário', 'pt-CV', 1, 'Agricultura, Pesca, Mineração'),
+('SECTOR_TYPE', 'SECONDARY', 'Setor Secundário', 'pt-CV', 2, 'Indústria, Construção, Manufatura'),
+('SECTOR_TYPE', 'TERTIARY', 'Setor Terciário', 'pt-CV', 3, 'Serviços, Comércio, Turismo'),
+('SECTOR_TYPE', 'QUATERNARY', 'Setor Quaternário', 'pt-CV', 4, 'Tecnologia, Investigação, Consultoria');
+```
+
+## 3. Arquitetura DDD
+
+### 3.1 Estrutura de Camadas
+
+```
+src/main/java/cv/gov/licensing/
+├── domain/
+│   ├── sector/
+│   │   ├── Sector.java                    # Aggregate Root
+│   │   ├── SectorId.java                  # Value Object
+│   │   ├── SectorCode.java                # Value Object
+│   │   ├── SectorType.java                # Value Object
+│   │   ├── SectorRepository.java          # Repository Interface
+│   │   └── SectorDomainService.java
+│   ├── category/
+│   │   ├── Category.java                  # Aggregate Root
+│   │   ├── CategoryId.java                # Value Object
+│   │   ├── CategoryCode.java              # Value Object
+│   │   ├── CategoryPath.java              # Value Object
+│   │   ├── CategoryRepository.java        # Repository Interface
+│   │   └── CategoryDomainService.java
+│   └── licensetype/
+│       ├── LicenseType.java               # Aggregate Root
+│       ├── LicenseTypeId.java             # Value Object
+│       ├── LicenseTypeCode.java           # Value Object
+│       ├── LicensingConfiguration.java    # Value Object
+│       ├── FinancialConfiguration.java    # Value Object
+│       ├── LicenseTypeRepository.java     # Repository Interface
+│       └── LicenseTypeDomainService.java
+├── application/
+│   ├── sector/
+│   │   ├── usecase/
+│   │   │   ├── CreateSectorUseCase.java
+│   │   │   ├── UpdateSectorUseCase.java
+│   │   │   ├── DeleteSectorUseCase.java
+│   │   │   ├── GetSectorUseCase.java
+│   │   │   └── ListSectorsUseCase.java
+│   │   └── service/
+│   │       └── SectorApplicationService.java
+│   ├── category/
+│   │   ├── usecase/
+│   │   │   ├── CreateCategoryUseCase.java
+│   │   │   ├── UpdateCategoryUseCase.java
+│   │   │   ├── DeleteCategoryUseCase.java
+│   │   │   ├── GetCategoryTreeUseCase.java
+│   │   │   └── MoveCategoryUseCase.java
+│   │   └── service/
+│   │       └── CategoryApplicationService.java
+│   └── licensetype/
+│       ├── usecase/
+│       │   ├── CreateLicenseTypeUseCase.java
+│       │   ├── UpdateLicenseTypeUseCase.java
+│       │   ├── DeleteLicenseTypeUseCase.java
+│       │   ├── GetLicenseTypeUseCase.java
+│       │   └── ListLicenseTypesByCategoryUseCase.java
+│       └── service/
+│           └── LicenseTypeApplicationService.java
+├── interfaces/
+│   └── rest/
+│       ├── SectorController.java
+│       ├── CategoryController.java
+│       ├── LicenseTypeController.java
+│       └── dto/
+│           ├── SectorResponse.java
+│           ├── CategoryResponse.java
+│           ├── LicenseTypeResponse.java
+│           ├── CreateSectorRequest.java
+│           ├── CreateCategoryRequest.java
+│           └── CreateLicenseTypeRequest.java
+└── infrastructure/
+    ├── persistence/
+    │   ├── SectorJpaEntity.java
+    │   ├── CategoryJpaEntity.java
+    │   ├── LicenseTypeJpaEntity.java
+    │   ├── SectorJpaRepository.java
+    │   ├── CategoryJpaRepository.java
+    │   ├── LicenseTypeJpaRepository.java
+    │   ├── SectorRepositoryAdapter.java
+    │   ├── CategoryRepositoryAdapter.java
+    │   └── LicenseTypeRepositoryAdapter.java
+    └── cache/
+        ├── SectorCacheService.java
+        ├── CategoryCacheService.java
+        └── LicenseTypeCacheService.java
+```
+
+### 3.2 Domain Layer - Entidades Principais
+
+#### 3.2.1 Sector Aggregate
+
+```java
+@Entity
+public class Sector {
+    private SectorId id;
+    private Name name;
+    private Description description;
+    private SectorCode code;
+    private SectorType sectorType;
+    private Boolean active;
+    private Integer sortOrder;
+    private Map<String, Object> metadata;
+    private AuditInfo auditInfo;
+
+    // Factory Method
+    public static Sector create(Name name, SectorCode code, SectorType sectorType) {
+        var sector = new Sector();
+        sector.id = SectorId.generate();
+        sector.name = Objects.requireNonNull(name, "Nome é obrigatório");
+        sector.code = Objects.requireNonNull(code, "Código é obrigatório");
+        sector.sectorType = Objects.requireNonNull(sectorType, "Tipo de setor é obrigatório");
+        sector.active = true;
+        sector.auditInfo = AuditInfo.create();
+        return sector;
+    }
+
+    // Business Methods
+    public void updateName(Name newName) {
+        this.name = Objects.requireNonNull(newName, "Nome é obrigatório");
+        this.auditInfo = this.auditInfo.update();
+    }
+
+    public void changeSectorType(SectorType newType) {
+        this.sectorType = Objects.requireNonNull(newType, "Tipo de setor é obrigatório");
+        this.auditInfo = this.auditInfo.update();
+    }
+
+    public void deactivate() {
+        this.active = false;
+        this.auditInfo = this.auditInfo.update();
+    }
+}
+```
+
+#### 3.2.2 Category Aggregate
+
+```java
+@Entity
+public class Category {
+    private CategoryId id;
+    private Name name;
+    private Description description;
+    private CategoryCode code;
+    private CategoryId parentId;
+    private SectorId sectorId;
+    private Integer level;
+    private CategoryPath path;
+    private Boolean active;
+    private Integer sortOrder;
+    private Map<String, Object> metadata;
+    private AuditInfo auditInfo;
+
+    // Factory Methods
+    public static Category createRoot(Name name, CategoryCode code, SectorId sectorId) {
+        var category = new Category();
+        category.id = CategoryId.generate();
+        category.name = Objects.requireNonNull(name, "Nome é obrigatório");
+        category.code = Objects.requireNonNull(code, "Código é obrigatório");
+        category.sectorId = Objects.requireNonNull(sectorId, "Setor é obrigatório");
+        category.level = 1;
+        category.path = CategoryPath.root(code);
+        category.active = true;
+        category.auditInfo = AuditInfo.create();
+        return category;
+    }
+
+    public static Category createChild(Name name, CategoryCode code,
+                                     Category parent, SectorId sectorId) {
+        var category = new Category();
+        category.id = CategoryId.generate();
+        category.name = Objects.requireNonNull(name, "Nome é obrigatório");
+        category.code = Objects.requireNonNull(code, "Código é obrigatório");
+        category.parentId = parent.getId();
+        category.sectorId = Objects.requireNonNull(sectorId, "Setor é obrigatório");
+        category.level = parent.getLevel() + 1;
+        category.path = parent.getPath().append(code);
+        category.active = true;
+        category.auditInfo = AuditInfo.create();
+        return category;
+    }
+
+    // Business Methods
+    public boolean isRoot() {
+        return parentId == null;
+    }
+
+    public boolean canHaveChildren() {
+        return level < 5; // Máximo 5 níveis
+    }
+
+    public void moveTo(Category newParent) {
+        if (newParent != null && !newParent.canHaveChildren()) {
+            throw new BusinessRuleException("Categoria pai não pode ter mais filhos");
+        }
+
+        this.parentId = newParent != null ? newParent.getId() : null;
+        this.level = newParent != null ? newParent.getLevel() + 1 : 1;
+        this.path = newParent != null ? newParent.getPath().append(this.code)
+                                     : CategoryPath.root(this.code);
+        this.auditInfo = this.auditInfo.update();
+    }
+}
+```
+
+#### 3.2.3 LicenseType Aggregate
+
+```java
+@Entity
+public class LicenseType {
+    private LicenseTypeId id;
+    private Name name;
+    private Description description;
+    private LicenseTypeCode code;
+    private CategoryId categoryId;
+    private LicensingConfiguration licensingConfig;
+    private FinancialConfiguration financialConfig;
+    private Boolean active;
+    private Integer sortOrder;
+    private Map<String, Object> metadata;
+    private AuditInfo auditInfo;
+
+    // Factory Method
+    public static LicenseType create(Name name, LicenseTypeCode code,
+                                   CategoryId categoryId,
+                                   LicensingConfiguration licensingConfig) {
+        var licenseType = new LicenseType();
+        licenseType.id = LicenseTypeId.generate();
+        licenseType.name = Objects.requireNonNull(name, "Nome é obrigatório");
+        licenseType.code = Objects.requireNonNull(code, "Código é obrigatório");
+        licenseType.categoryId = Objects.requireNonNull(categoryId, "Categoria é obrigatória");
+        licenseType.licensingConfig = Objects.requireNonNull(licensingConfig,
+                                                            "Configuração é obrigatória");
+        licenseType.active = true;
+        licenseType.auditInfo = AuditInfo.create();
+        return licenseType;
+    }
+
+    // Business Methods
+    public void updateLicensingConfiguration(LicensingConfiguration newConfig) {
+        this.licensingConfig = Objects.requireNonNull(newConfig,
+                                                     "Configuração é obrigatória");
+        this.auditInfo = this.auditInfo.update();
+    }
+
+    public void updateFinancialConfiguration(FinancialConfiguration newConfig) {
+        this.financialConfig = newConfig;
+        this.auditInfo = this.auditInfo.update();
+    }
+
+    public boolean isRenewable() {
+        return licensingConfig.isRenewable();
+    }
+
+    public boolean requiresInspection() {
+        return licensingConfig.requiresInspection();
+    }
+}
+```
+
+## 4. APIs REST
+
+### 4.1 Sector Controller
+
+#### GET /api/v1/sectors
+
+Listar todos os setores.
+
+**Parâmetros:**
+
+- `sectorType` (query, opcional): Filtrar por tipo de setor
+- `active` (query, opcional): Filtrar por status (default: true)
+- `page` (query, opcional): Página (default: 0)
+- `size` (query, opcional): Tamanho da página (default: 20)
+- `sort` (query, opcional): Ordenação (ex: name,asc)
+
+**Resposta:**
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 
 **Resposta de Sucesso (200):**
 ```json
@@ -334,6 +714,7 @@ public class SectorRequestDTO {
 
 **Payload de Requisição:** (mesmo formato da criação)
 
+<<<<<<< HEAD
 **Códigos de Status:**
 - 200: Categoria atualizada com sucesso
 - 400: Dados inválidos
@@ -350,6 +731,228 @@ public class SectorRequestDTO {
   "newParentId": "cat-003",
   "newSectorId": "sec-002",
   "newSortOrder": 5
+=======
+-- Criar tabela de setores
+CREATE TABLE t_sector (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    sector_type_key VARCHAR(50) NOT NULL,
+    code VARCHAR(20) UNIQUE NOT NULL,
+    active BOOLEAN DEFAULT TRUE,
+    sort_order INTEGER,
+    metadata JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by VARCHAR(100),
+    updated_by VARCHAR(100)
+);
+
+-- Criar tabela de categorias
+CREATE TABLE t_category (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    code VARCHAR(30) UNIQUE NOT NULL,
+    parent_id UUID REFERENCES t_category(id),
+    sector_id UUID NOT NULL REFERENCES t_sector(id),
+    level INTEGER NOT NULL DEFAULT 1,
+    path VARCHAR(500),
+    active BOOLEAN DEFAULT TRUE,
+    sort_order INTEGER,
+    metadata JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by VARCHAR(100),
+    updated_by VARCHAR(100)
+);
+
+-- Criar tabela de tipos de licenças
+CREATE TABLE t_license_type (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    code VARCHAR(30) UNIQUE NOT NULL,
+    category_id UUID NOT NULL REFERENCES t_category(id),
+    licensing_model_key VARCHAR(50) NOT NULL,
+    validity_period INTEGER,
+    validity_unit_key VARCHAR(50),
+    renewable BOOLEAN DEFAULT TRUE,
+    auto_renewal BOOLEAN DEFAULT FALSE,
+    requires_inspection BOOLEAN DEFAULT FALSE,
+    requires_public_consultation BOOLEAN DEFAULT FALSE,
+    max_processing_days INTEGER,
+    has_fees BOOLEAN DEFAULT TRUE,
+    base_fee DECIMAL(10,2),
+    currency_code VARCHAR(3) DEFAULT 'CVE',
+    active BOOLEAN DEFAULT TRUE,
+    sort_order INTEGER,
+    metadata JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by VARCHAR(100),
+    updated_by VARCHAR(100)
+);
+
+-- Criar índices
+CREATE INDEX idx_sector_type ON t_sector(sector_type_key);
+CREATE INDEX idx_sector_active ON t_sector(active);
+CREATE INDEX idx_sector_code ON t_sector(code);
+CREATE INDEX idx_sector_sort ON t_sector(sort_order NULLS LAST);
+
+CREATE INDEX idx_category_parent ON t_category(parent_id);
+CREATE INDEX idx_category_sector ON t_category(sector_id);
+CREATE INDEX idx_category_level ON t_category(level);
+CREATE INDEX idx_category_path ON t_category USING GIN(to_tsvector('portuguese', path));
+CREATE INDEX idx_category_active ON t_category(active);
+CREATE INDEX idx_category_code ON t_category(code);
+
+CREATE INDEX idx_license_type_category ON t_license_type(category_id);
+CREATE INDEX idx_license_type_model ON t_license_type(licensing_model_key);
+CREATE INDEX idx_license_type_active ON t_license_type(active);
+CREATE INDEX idx_license_type_code ON t_license_type(code);
+CREATE INDEX idx_license_type_renewable ON t_license_type(renewable);
+```
+
+### 9.2 Dados Iniciais
+
+```sql
+-- V004__insert_licensing_initial_data.sql
+
+-- Inserir tipos de setores
+INSERT INTO t_options (ccode, ckey, cvalue, locale, sort_order, description) VALUES
+('SECTOR_TYPE', 'PRIMARY', 'Setor Primário', 'pt-CV', 1, 'Agricultura, Pesca, Mineração'),
+('SECTOR_TYPE', 'SECONDARY', 'Setor Secundário', 'pt-CV', 2, 'Indústria, Construção, Manufatura'),
+('SECTOR_TYPE', 'TERTIARY', 'Setor Terciário', 'pt-CV', 3, 'Serviços, Comércio, Turismo'),
+('SECTOR_TYPE', 'QUATERNARY', 'Setor Quaternário', 'pt-CV', 4, 'Tecnologia, Investigação, Consultoria');
+
+-- Inserir setores iniciais
+INSERT INTO t_sector (name, description, sector_type_key, code, sort_order) VALUES
+('Agricultura', 'Setor agrícola e pecuário', 'PRIMARY', 'AGR', 1),
+('Pesca', 'Setor pesqueiro e aquacultura', 'PRIMARY', 'PES', 2),
+('Indústria', 'Setor industrial e manufatureiro', 'SECONDARY', 'IND', 3),
+('Construção', 'Setor da construção civil', 'SECONDARY', 'CON', 4),
+('Turismo', 'Setor de turismo e hotelaria', 'TERTIARY', 'TUR', 5),
+('Comércio', 'Setor comercial e distribuição', 'TERTIARY', 'COM', 6),
+('Tecnologia', 'Setor de tecnologia e inovação', 'QUATERNARY', 'TEC', 7);
+
+-- Inserir categorias iniciais (exemplos)
+INSERT INTO t_category (name, description, code, sector_id, level, path, sort_order)
+SELECT
+    'Agricultura Familiar',
+    'Atividades de agricultura familiar',
+    'AGR.001',
+    s.id,
+    1,
+    'AGR.001',
+    1
+FROM t_sector s WHERE s.code = 'AGR';
+
+INSERT INTO t_category (name, description, code, sector_id, level, path, sort_order)
+SELECT
+    'Hotelaria',
+    'Atividades hoteleiras e alojamento',
+    'TUR.001',
+    s.id,
+    1,
+    'TUR.001',
+    1
+FROM t_sector s WHERE s.code = 'TUR';
+
+-- Inserir tipos de licenças iniciais (exemplos)
+INSERT INTO t_license_type (
+    name, description, code, category_id, licensing_model_key,
+    validity_period, validity_unit_key, renewable, requires_inspection,
+    max_processing_days, has_fees, base_fee
+)
+SELECT
+    'Licença de Exploração Agrícola',
+    'Licença para exploração de atividades agrícolas familiares',
+    'LEA-001',
+    c.id,
+    'STANDARD',
+    24,
+    'MONTHS',
+    true,
+    true,
+    60,
+    true,
+    15000.00
+FROM t_category c
+JOIN t_sector s ON c.sector_id = s.id
+WHERE s.code = 'AGR' AND c.code = 'AGR.001';
+
+INSERT INTO t_license_type (
+    name, description, code, category_id, licensing_model_key,
+    validity_period, validity_unit_key, renewable, requires_inspection,
+    max_processing_days, has_fees, base_fee
+)
+SELECT
+    'Licença de Estabelecimento Hoteleiro',
+    'Licença para funcionamento de estabelecimentos hoteleiros',
+    'LEH-001',
+    c.id,
+    'COMPLEX',
+    36,
+    'MONTHS',
+    true,
+    true,
+    90,
+    true,
+    50000.00
+FROM t_category c
+JOIN t_sector s ON c.sector_id = s.id
+WHERE s.code = 'TUR' AND c.code = 'TUR.001';
+```
+
+## 10. Monitorização e Métricas
+
+### 10.1 Métricas de Performance
+
+```java
+@Component
+public class LicensingMetrics {
+
+    private final Counter sectorRequestsCounter;
+    private final Counter categoryRequestsCounter;
+    private final Counter licenseTypeRequestsCounter;
+    private final Timer sectorResponseTimer;
+    private final Gauge activeSectorsGauge;
+
+    public LicensingMetrics(MeterRegistry meterRegistry, SectorRepository sectorRepository) {
+        this.sectorRequestsCounter = Counter.builder("licensing.sectors.requests.total")
+            .description("Total number of sector requests")
+            .register(meterRegistry);
+
+        this.categoryRequestsCounter = Counter.builder("licensing.categories.requests.total")
+            .description("Total number of category requests")
+            .register(meterRegistry);
+
+        this.licenseTypeRequestsCounter = Counter.builder("licensing.license_types.requests.total")
+            .description("Total number of license type requests")
+            .register(meterRegistry);
+
+        this.sectorResponseTimer = Timer.builder("licensing.sectors.response.time")
+            .description("Sector response time")
+            .register(meterRegistry);
+
+        this.activeSectorsGauge = Gauge.builder("licensing.sectors.active.count")
+            .description("Number of active sectors")
+            .register(meterRegistry, this, LicensingMetrics::getActiveSectorsCount);
+    }
+
+    public void incrementSectorRequests() {
+        sectorRequestsCounter.increment();
+    }
+
+    public Timer.Sample startSectorTimer() {
+        return Timer.start(sectorResponseTimer);
+    }
+
+    private double getActiveSectorsCount() {
+        return sectorRepository.countByActiveTrue();
+    }
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 }
 ```
 
