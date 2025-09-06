@@ -1987,7 +1987,7 @@ describe('LicenseCard', () => {
     type: 'Comercial',
     status: 'ACTIVE',
     holderName: 'João Silva',
-    expiryDate: '2025-12-31'
+    expiryDate: '2024-12-31'
   };
   
   it('should render license information correctly', () => {
@@ -2177,7 +2177,7 @@ const nextConfig = {
 ---
 
 **Documento preparado por**: Equipe de Desenvolvimento Frontend  
-**Data**: Agosto 2025  
+**Data**: 2024  
 **Versão**: 1.0  
 **Status**: Aprovado para implementação
         />
@@ -2794,7 +2794,7 @@ export const LicenseFormFields: React.FC<LicenseFormFieldsProps> = ({
             onBlur={() => setFieldTouched('numero')}
             error={touched.numero && !!errors.numero}
             helperText={touched.numero && errors.numero}
-            placeholder="Ex: LIC-2025-001234"
+            placeholder="Ex: LIC-2024-001234"
             disabled={loading}
             required
           />
@@ -3461,7 +3461,7 @@ describe('LicenseWizard Interações', () => {
     render(<LicenseWizard />);
 
     // Preencher formulário
-    await user.type(screen.getByLabelText('Número da Licença'), 'LIC-2025-001');
+    await user.type(screen.getByLabelText('Número da Licença'), 'LIC-2024-001');
 
     // Submeter e verificar loading
     await user.click(screen.getByRole('button', { name: /validar/i }));

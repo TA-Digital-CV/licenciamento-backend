@@ -146,8 +146,8 @@ erDiagram
         TEXT description
         BOOLEAN is_active
         INTEGER display_order
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
+        TIMESTAMP created_date
+        TIMESTAMP last_modified_date
     }
     
     %% Licenciamento
@@ -157,8 +157,8 @@ erDiagram
         VARCHAR sector_name
         TEXT description
         BOOLEAN is_active
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
+        TIMESTAMP created_date
+        TIMESTAMP last_modified_date
     }
     
     T_LICENSE_CATEGORY {
@@ -168,8 +168,8 @@ erDiagram
         VARCHAR category_name
         TEXT description
         BOOLEAN is_active
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
+        TIMESTAMP created_date
+        TIMESTAMP last_modified_date
     }
     
     T_LICENSE_TYPE {
@@ -182,8 +182,8 @@ erDiagram
         DECIMAL base_fee
         BOOLEAN requires_renewal
         BOOLEAN is_active
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
+        TIMESTAMP created_date
+        TIMESTAMP last_modified_date
     }
     
     %% Titulares
@@ -198,8 +198,8 @@ erDiagram
         TEXT address
         VARCHAR legal_capacity_status
         VARCHAR holder_status
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
+        TIMESTAMP created_date
+        TIMESTAMP last_modified_date
     }
     
     %% Emissores
@@ -214,8 +214,8 @@ erDiagram
         VARCHAR contact_email
         VARCHAR contact_phone
         VARCHAR status
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
+        TIMESTAMP created_date
+        TIMESTAMP last_modified_date
     }
     
     %% Licenças Emitidas
@@ -233,8 +233,8 @@ erDiagram
         VARCHAR validity_period
         TEXT conditions
         BOOLEAN is_renewable
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
+        TIMESTAMP created_date
+        TIMESTAMP last_modified_date
     }
     
     %% Estabelecimentos
@@ -251,8 +251,8 @@ erDiagram
         VARCHAR municipality
         VARCHAR island
         VARCHAR status
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
+        TIMESTAMP created_date
+        TIMESTAMP last_modified_date
     }
     
     %% Processos
@@ -281,9 +281,9 @@ erDiagram
         TEXT public_notes
         JSON additional_data
         VARCHAR created_by
-        TIMESTAMP created_at
-        VARCHAR updated_by
-        TIMESTAMP updated_at
+        TIMESTAMP created_date
+        VARCHAR last_modified_by
+        TIMESTAMP last_modified_date
         INTEGER version
     }
     
@@ -337,9 +337,9 @@ erDiagram
         DATE site_visit_date
         TEXT site_visit_notes
         VARCHAR created_by
-        TIMESTAMP created_at
-        VARCHAR updated_by
-        TIMESTAMP updated_at
+        TIMESTAMP created_date
+        VARCHAR last_modified_by
+        TIMESTAMP last_modified_date
     }
     
     T_PROCESS_COMMENT {
@@ -352,8 +352,8 @@ erDiagram
         VARCHAR author_id
         VARCHAR author_role
         BOOLEAN is_official
-        TIMESTAMP created_at
-        TIMESTAMP updated_at
+        TIMESTAMP created_date
+        TIMESTAMP last_modified_date
     }
     
     %% Relacionamentos
@@ -639,7 +639,7 @@ Authorization: Bearer {token}
 {
   "analystId": "550e8400-e29b-41d4-a716-446655440006",
   "assignmentReason": "Especialista em licenças comerciais",
-  "targetDecisionDate": "2025-02-15"
+  "targetDecisionDate": "2024-02-15"
 }
 ```
 
@@ -652,7 +652,7 @@ Authorization: Bearer {token}
   "success": true,
   "data": { ... },
   "message": "Operation completed successfully",
-  "timestamp": "2025-01-15T10:30:00Z"
+  "timestamp": "2024-01-15T10:30:00Z"
 }
 ```
 
@@ -671,7 +671,7 @@ Authorization: Bearer {token}
       }
     ]
   },
-  "timestamp": "2025-01-15T10:30:00Z"
+  "timestamp": "2024-01-15T10:30:00Z"
 }
 ```
 
@@ -685,7 +685,7 @@ Authorization: Bearer {token}
     "message": "License holder does not have legal capacity",
     "details": []
   },
-  "timestamp": "2025-01-15T10:30:00Z"
+  "timestamp": "2024-01-15T10:30:00Z"
 }
 ```
 
@@ -696,15 +696,15 @@ Authorization: Bearer {token}
   "success": true,
   "data": {
     "id": "550e8400-e29b-41d4-a716-446655440005",
-    "processNumber": "LIC-2025-001234",
+    "processNumber": "LIC-2024-001234",
     "status": "SUBMITTED",
-    "submissionDate": "2025-01-15",
-    "targetDecisionDate": "2025-02-15",
+    "submissionDate": "2024-01-15",
+    "targetDecisionDate": "2024-02-15",
     "applicationFeeAmount": 150.00,
     "feePaymentStatus": "PENDING"
   },
   "message": "Processo de licenciamento criado com sucesso",
-  "timestamp": "2025-01-15T10:30:00Z"
+  "timestamp": "2024-01-15T10:30:00Z"
 }
 ```
 
