@@ -774,7 +774,11 @@ POST   /api/v1/issued-licenses/{id}/renew
       },
       "is_active": true,
 <<<<<<< HEAD
+<<<<<<< HEAD
       "created_date": "2025-01-01T00:00:00Z"
+=======
+      "created_at": "2024-01-01T00:00:00Z"
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 =======
       "created_at": "2024-01-01T00:00:00Z"
 >>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
@@ -857,7 +861,11 @@ GET /api/v1/license-holders
         }
       ],
 <<<<<<< HEAD
+<<<<<<< HEAD
       "created_date": "2025-01-10T00:00:00Z"
+=======
+      "created_at": "2024-01-10T00:00:00Z"
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 =======
       "created_at": "2024-01-10T00:00:00Z"
 >>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
@@ -890,7 +898,11 @@ GET /api/v1/license-holders
         }
       ],
 <<<<<<< HEAD
+<<<<<<< HEAD
       "created_date": "2025-01-05T00:00:00Z"
+=======
+      "created_at": "2024-01-05T00:00:00Z"
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 =======
       "created_at": "2024-01-05T00:00:00Z"
 >>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
@@ -1064,8 +1076,13 @@ GET /api/v1/issued-licenses
       "expiry_date": "2025-01-15T00:00:00Z",
       "days_to_expiry": 45,
 <<<<<<< HEAD
+<<<<<<< HEAD
       "created_date": "2025-01-15T10:30:00Z",
       "last_modified_date": "2025-01-15T10:30:00Z"
+=======
+      "created_at": "2024-01-15T10:30:00Z",
+      "updated_at": "2024-01-15T10:30:00Z"
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 =======
       "created_at": "2024-01-15T10:30:00Z",
       "updated_at": "2024-01-15T10:30:00Z"
@@ -1147,7 +1164,11 @@ GET /api/v1/issued-licenses/{id}
       }
     ],
 <<<<<<< HEAD
+<<<<<<< HEAD
     "created_date": "2025-01-10T00:00:00Z"
+=======
+    "created_at": "2024-01-10T00:00:00Z"
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 =======
     "created_at": "2024-01-10T00:00:00Z"
 >>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
@@ -1243,8 +1264,13 @@ GET /api/v1/issued-licenses/{id}
     }
   },
 <<<<<<< HEAD
+<<<<<<< HEAD
     "created_date": "2025-01-15T10:30:00Z",
     "last_modified_date": "2025-01-15T10:30:00Z"
+=======
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T10:30:00Z"
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 =======
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-15T10:30:00Z"
@@ -1306,8 +1332,13 @@ GET /api/v1/issued-licenses/{id}
     }
   ],
 <<<<<<< HEAD
+<<<<<<< HEAD
   "created_date": "2025-01-15T10:30:00Z",
   "last_modified_date": "2025-01-15T10:30:00Z"
+=======
+  "created_at": "2024-01-15T10:30:00Z",
+  "updated_at": "2024-01-15T10:30:00Z"
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 =======
   "created_at": "2024-01-15T10:30:00Z",
   "updated_at": "2024-01-15T10:30:00Z"
@@ -1378,7 +1409,11 @@ POST /api/v1/establishments/register
   "submitted_documents": ["LICENCA_TURISTICA"],
   "pending_documents": ["CERTIFICADO_SEGURANCA", "ALVARA_SANITARIO"],
 <<<<<<< HEAD
+<<<<<<< HEAD
   "created_date": "2025-01-15T10:30:00Z"
+=======
+  "created_at": "2024-01-15T10:30:00Z"
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 =======
   "created_at": "2024-01-15T10:30:00Z"
 >>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
@@ -1525,7 +1560,11 @@ POST /api/v1/issued-licenses/{id}/amendments
   "status": "pending_approval",
   "estimated_completion_days": 5,
 <<<<<<< HEAD
+<<<<<<< HEAD
   "created_date": "2025-01-20T10:00:00Z"
+=======
+  "created_at": "2024-01-20T10:00:00Z"
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 =======
   "created_at": "2024-01-20T10:00:00Z"
 >>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
@@ -1575,7 +1614,11 @@ POST /api/v1/issued-licenses/{id}/transfers
     "due_date": "2025-01-25T00:00:00Z"
   },
 <<<<<<< HEAD
+<<<<<<< HEAD
   "created_date": "2025-01-20T10:00:00Z"
+=======
+  "created_at": "2024-01-20T10:00:00Z"
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 =======
   "created_at": "2024-01-20T10:00:00Z"
 >>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
@@ -1622,7 +1665,11 @@ POST /api/v1/issued-licenses/{id}/renewals
     "payment_reference": "REN-PAY-2025-001234"
   },
 <<<<<<< HEAD
+<<<<<<< HEAD
   "created_date": "2025-12-01T10:00:00Z"
+=======
+  "created_at": "2024-12-01T10:00:00Z"
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 =======
   "created_at": "2024-12-01T10:00:00Z"
 >>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
@@ -1748,7 +1795,11 @@ POST /api/v1/issued-licenses/{id}/renewals
       "days_remaining": 15,
       "status": "pending",
 <<<<<<< HEAD
+<<<<<<< HEAD
       "created_date": "2025-01-31T00:00:00Z",
+=======
+      "created_at": "2024-01-31T00:00:00Z",
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 =======
       "created_at": "2024-01-31T00:00:00Z",
 >>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
@@ -1836,7 +1887,11 @@ POST /api/v1/issued-licenses/{id}/renewals
   "estimated_completion_minutes": 5,
   "status_url": "/api/v1/reports/uuid/status",
 <<<<<<< HEAD
+<<<<<<< HEAD
   "created_date": "2025-01-15T10:30:00Z"
+=======
+  "created_at": "2024-01-15T10:30:00Z"
+>>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
 =======
   "created_at": "2024-01-15T10:30:00Z"
 >>>>>>> parent of 2bd9194 (refactor(database): standardize timestamp column names to created_date and last_modified_date)
