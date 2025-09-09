@@ -212,6 +212,7 @@ Obter todas as opções de um código específico.
 
 **Resposta (format=list):**
 
+
 ```json
 {
   "code": "LICENSE_STATUS",
