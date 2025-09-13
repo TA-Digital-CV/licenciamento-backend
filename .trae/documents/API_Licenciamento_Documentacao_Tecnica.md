@@ -30,7 +30,7 @@ A API de Licenciamento é um sistema backend desenvolvido em Java Spring Boot qu
 | GET | `/api/v1/options` | Lista opções com filtros |
 | GET | `/api/v1/options/{optionId}` | Busca opção por ID |
 | GET | `/api/v1/options/{ccode}` | Busca opções por código |
-| GET | `/api/v1/options/{ccode}/existsByCcode` | Verifica existência por código |
+| GET | `/api/v1/options/{ccode}/{ckey}/exists` | Verifica existência por código e chave |
 | POST | `/api/v1/options` | Cria nova opção |
 | PUT | `/api/v1/options/{optionId}` | Atualiza opção |
 | PATCH | `/api/v1/options/{optionId}/enable` | Ativa opção |
@@ -53,7 +53,9 @@ A API de Licenciamento é um sistema backend desenvolvido em Java Spring Boot qu
 | GET | `/api/v1/categories/{categoryId}` | Busca categoria por ID |
 | POST | `/api/v1/categories` | Cria nova categoria |
 | PUT | `/api/v1/categories/{categoryId}` | Atualiza categoria |
-| POST | `/api/v1/categories/{categoryId}/move` | Move categoria |
+| PATCH | `/api/v1/categories/{categoryId}/move` | Move categoria |
+| PATCH | `/api/v1/categories/{categoryId}/ativar` | Ativa categoria |
+| PATCH | `/api/v1/categories/{categoryId}/desativar` | Desativa categoria |
 
 ### 2.5 License Parameters (Parâmetros de Licença)
 
@@ -64,7 +66,7 @@ A API de Licenciamento é um sistema backend desenvolvido em Java Spring Boot qu
 | POST | `/api/v1/license-parameters` | Cria novo parâmetro |
 | PUT | `/api/v1/license-parameters/{licenseParameterId}` | Atualiza parâmetro |
 | PATCH | `/api/v1/license-parameters/{licenseParameterId}/enable` | Ativa parâmetro |
-| PUT | `/api/v1/license-parameters/{licenseParameterId}/disable` | Desativa parâmetro |
+| PATCH | `/api/v1/license-parameters/{licenseParameterId}/disable` | Desativa parâmetro |
 
 ### 2.6 Legislations (Legislações)
 
@@ -75,7 +77,7 @@ A API de Licenciamento é um sistema backend desenvolvido em Java Spring Boot qu
 | POST | `/api/v1/legislations` | Cria nova legislação |
 | PUT | `/api/v1/legislations/{legislationId}` | Atualiza legislação |
 | PATCH | `/api/v1/legislations/{legislationId}/enable` | Ativa legislação |
-| PUT | `/api/v1/legislations/{legislationId}/disable` | Desativa legislação |
+| PATCH | `/api/v1/legislations/{legislationId}/disable` | Desativa legislação |
 
 ### 2.7 License Process Types (Tipos de Processo de Licença)
 
@@ -118,6 +120,16 @@ A API de Licenciamento é um sistema backend desenvolvido em Java Spring Boot qu
 | GET | `/api/v1/entities/{entitiyId}` | Busca entidade por ID |
 | POST | `/api/v1/entities` | Cria nova entidade |
 | PUT | `/api/v1/entities/{entitiyId}` | Atualiza entidade |
+| PATCH | `/api/v1/entities/{entitiyId}/enable` | Ativa entidade |
+| PATCH | `/api/v1/entities/{entitiyId}/disable` | Desativa entidade |
+
+### 2.11 Documento (Gestão de Documentos)
+
+| Método | Endpoint | Descrição |
+|--------|----------|----------|
+| GET | `/documento` | Gera link assinado temporário para acesso ao documento |
+| POST | `/documento/public/{path}` | Upload de documento público |
+| POST | `/documento/private/{folder}` | Upload de documento privado |
 
 ---
 
@@ -181,7 +193,8 @@ A API de Licenciamento é um sistema backend desenvolvido em Java Spring Boot qu
   "cvalue": "string",
   "locale": "string",
   "sort_order": "integer",
-  "metadata": {}
+  "metadata": {},
+  "description": "string"
 }
 ```
 
@@ -193,7 +206,8 @@ A API de Licenciamento é um sistema backend desenvolvido em Java Spring Boot qu
   "ckey": "string",
   "cvalue": "string",
   "locale": "string",
-  "sort_order": "integer"
+  "sort_order": "integer",
+  "description": "string"
 }
 ```
 
@@ -248,7 +262,163 @@ A API de Licenciamento é um sistema backend desenvolvido em Java Spring Boot qu
 }
 ```
 
-### 3.5 Wrapper Lists (Listas Paginadas)
+### 3.5 Category (Categoria)
+
+#### Request DTO (CategoryRequestDTO)
+```json
+{
+  "name": "string",
+  "description": "string",
+  "code": "string",
+  "parentId": "string",
+  "sectorId": "string",
+  "sortOrder": "integer",
+  "metadata": {}
+}
+```
+
+#### Response DTO (CategoryResponseDTO)
+```json
+{
+  "id": "string",
+  "code": "string",
+  "description": "string",
+  "name": "string",
+  "sectorId": "string",
+  "sectorName": "string",
+  "level": "integer",
+  "path": "string",
+  "children": [],
+  "metadata": {}
+}
+```
+
+### 3.6 Fee Category (Categoria de Taxa)
+
+#### Request DTO (FeeCategoryRequestDTO)
+```json
+{
+  "name": "string",
+  "description": "string",
+  "code": "string",
+  "categoryType": "string",
+  "sortOrder": "integer"
+}
+```
+
+#### Response DTO (FeeCategoryResponseDTO)
+```json
+{
+  "id": "string",
+  "name": "string",
+  "description": "string",
+  "code": "string",
+  "categoryType": "string",
+  "sortOrder": "integer",
+  "active": "boolean"
+}
+```
+
+### 3.7 Legal Party (Entidade Legal)
+
+#### Request DTO (LegalPartyRequestDTO)
+```json
+{
+  "organizationId": "string",
+  "entityName": "string",
+  "entityType": "string",
+  "contacts": [],
+  "licenseTypeId": "string"
+}
+```
+
+#### Response DTO (LegalPartyResponseDTO)
+```json
+{
+  "id": "string",
+  "licenseTypeId": "string",
+  "organizationId": "string",
+  "entityName": "string",
+  "entityType": "string",
+  "contacts": [],
+  "active": "boolean"
+}
+```
+
+### 3.8 Legislation (Legislação)
+
+#### Request DTO (LegislationRequestDTO)
+```json
+{
+  "name": "string",
+  "legislationType": "string",
+  "republicBulletin": "string",
+  "publicationDate": "string",
+  "description": "string",
+  "documentUrl": "string",
+  "documentName": "string",
+  "licenseTypeId": "string"
+}
+```
+
+#### Response DTO (LegislationResponseDTO)
+```json
+{
+  "id": "string",
+  "name": "string",
+  "legislationType": "string",
+  "publicationDate": "string",
+  "description": "string",
+  "documentUrl": "string",
+  "documentName": "string",
+  "active": "boolean",
+  "licenseTypeId": "string"
+}
+```
+
+### 3.9 Document (Documento)
+
+#### Response DTO (FileResponseDTO)
+```json
+{
+  "displayName": "string",
+  "fileId": "string"
+}
+```
+
+#### Response DTO (FileUrlDTO)
+```json
+{
+  "url": "string"
+}
+```
+
+### 3.10 Process Type Fee Calculation (Cálculo de Taxa)
+
+#### Request DTO (CalculateTaxProcessTypeFeeDTO)
+```json
+{
+  "licenseTypeProcessTypeId": "string",
+  "calculationParameters": {
+    "applicationValue": "number",
+    "urgentProcessing": "boolean",
+    "inspectionRequired": "boolean",
+    "companySize": "string"
+  }
+}
+```
+
+#### Response DTO (ProcessFeeTypeCalcResponseDTO)
+```json
+{
+  "totalAmount": "number",
+  "currencyCode": "string",
+  "calculationDate": "string",
+  "feeDetails": []
+}
+```
+
+### 3.11 Wrapper Lists (Listas Paginadas)
 
 Todas as listas seguem o padrão de wrapper com paginação:
 
@@ -263,6 +433,8 @@ Todas as listas seguem o padrão de wrapper com paginação:
   "content": []
 }
 ```
+
+**Nota:** Existe um erro de digitação no WrapperListFeeCategoryDTO onde "content" está escrito como "conten".
 
 ---
 

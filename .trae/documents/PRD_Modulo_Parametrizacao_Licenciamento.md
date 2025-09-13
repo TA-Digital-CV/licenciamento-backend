@@ -148,9 +148,18 @@ O módulo de parametrização consiste nas seguintes páginas principais:
 **Regras de Negócio Específicas:**
 
 1. **Modelo de Licenciamento:**
-   - PERMANENT: Licenças sem data de expiração
-   - TEMPORARY: Licenças com validade fixa
-   - RENEWABLE: Licenças que podem ser renovadas
+   - **PROVISÓRIO (TEMPORARY)**: Licenças com validade fixa e possibilidade de renovação
+     - Campos obrigatórios: Período de validade, Unidade de validade, Prazo máximo, Renovável
+     - Lógica condicional: "Renovável" ativado → habilita "Renovação Automática"
+     - "Renovável" desativado → desabilita "Renovação Automática"
+   - **DEFINITIVO (PERMANENT)**: Licenças sem data de expiração
+     - Campos desabilitados: Período de validade, Unidade de validade, Prazo máximo, Renovável, Renovação automática
+     - Todos os campos relacionados à validade ficam inativos
+     - Modelo permanente não permite renovação
+   - **HÍBRIDO (HYBRID)**: Licenças flexíveis com configuração personalizada
+     - Campos obrigatórios: Período de validade, Unidade de validade, Prazo máximo
+     - Lógica de renovação: "Renovável" ativado → habilita "Renovação Automática"
+     - Flexibilidade para configurar renovação conforme necessário
 
 2. **Validação de Períodos:**
    - Período de validade obrigatório para modelos TEMPORARY e RENEWABLE
@@ -160,7 +169,9 @@ O módulo de parametrização consiste nas seguintes páginas principais:
 3. **Dependências Condicionais:**
    - Consulta pública requer prazo específico
    - Inspeção obrigatória requer prazo de inspeção
-   - Renovação automática só aplicável a modelos RENEWABLE
+   - Renovação automática aplicável aos modelos PROVISÓRIO (TEMPORARY) e HÍBRIDO (HYBRID)
+   - Campo "Renovação Automática" habilitado apenas quando "Renovável" está ativado
+   - Modelo DEFINITIVO (PERMANENT) não possui opções de renovação
 
 4. **Estrutura de Taxas:**
    - Pode incluir taxa base, taxas adicionais e descontos
@@ -178,6 +189,76 @@ O módulo de parametrização consiste nas seguintes páginas principais:
 - **Integridade:** Verificação de dependências antes de eliminação
 - **Consistência:** Validação de combinações de campos
 - **Formato:** Validação de estruturas JSON para metadata e taxas
+
+### Controles Condicionais do Formulário
+
+**Switch de Renovação Automática:**
+
+- O campo 'Renovação Automática' deve ser controlado pelo switch 'Renovável'
+- Quando 'Renovável' está desativado, 'Renovação Automática' deve ficar desabilitado
+- Exibir texto de ajuda: 'Disponível apenas quando renovação está habilitada' quando desabilitado
+- Validação: Renovação automática pode ser ativada para modelos PROVISÓRIO (TEMPORARY) e HÍBRIDO (HYBRID) quando 'Renovável' está ativo
+- Modelo DEFINITIVO (PERMANENT): Todos os campos de renovação ficam desabilitados
+
+**Controle de Prazo Máximo:**
+
+- O campo 'Prazo Máximo (dias)' deve ser obrigatório quando:
+  - 'Requer Consulta Pública' estiver ativado, OU
+  - 'Requer Inspeção' estiver ativado
+- Validação: O prazo máximo não pode exceder o período de validade da licença
+
+**Exibição Condicional de Taxas:**
+
+- Os campos relacionados a taxas devem ser exibidos apenas quando o switch 'Possui Taxas' estiver ativado:
+  - Valor Base (campo obrigatório quando ativo)
+  - Moeda (seleção carregada dinamicamente via API CURRENCY)
+  - Campos adicionais de configuração de taxas
+- Quando 'Possui Taxas' está desativado, ocultar todos os campos de taxa
+- Validação: Se 'Possui Taxas' estiver ativado, 'Valor Base' e 'Moeda' são obrigatórios
+- Carregamento dinâmico de moedas via API das opções CURRENCY
+
+### Regras de Validação Adicionais
+
+**Dependências Condicionais Atualizadas:**
+
+- Renovação automática requer modelo PROVISÓRIO (TEMPORARY) ou HÍBRIDO (HYBRID) E switch 'Renovável' ativado
+- Modelo DEFINITIVO (PERMANENT): Desabilita automaticamente todos os campos de validade e renovação
+- Consulta pública requer prazo específico no campo 'Prazo Máximo'
+- Inspeção obrigatória requer prazo específico no campo 'Prazo Máximo'
+- Configuração de taxas requer switch 'Possui Taxas' ativado com 'Valor Base' e 'Moeda' obrigatórios
+
+**Casos de Teste Adicionais:**
+
+**CT027 - Controle de Renovação Automática por Modelo e Switch**
+
+- Selecionar modelo DEFINITIVO (PERMANENT)
+- Verificar que todos os campos de validade e renovação ficam desabilitados
+- Selecionar modelo PROVISÓRIO (TEMPORARY) ou HÍBRIDO (HYBRID)
+- Desativar switch 'Renovável'
+- Verificar que 'Renovação Automática' fica desabilitado
+- Tentar ativar 'Renovação Automática'
+- Resultado Esperado: Campo permanece desabilitado com texto de ajuda 'Disponível apenas quando renovação está habilitada'
+
+**CT028 - Sistema de Taxas Aprimorado**
+
+- Desativar switch 'Possui Taxas'
+- Verificar que campos 'Valor Base' e 'Moeda' ficam ocultos
+- Ativar switch 'Possui Taxas'
+- Verificar que campos 'Valor Base' e 'Moeda' ficam visíveis
+- Verificar carregamento dinâmico de moedas via API CURRENCY
+- Tentar guardar sem preencher 'Valor Base' ou 'Moeda'
+- Resultado Esperado: Erro de validação para campos obrigatórios
+
+**CT029 - Validação Integrada de Modelos de Licenciamento**
+
+- Selecionar modelo PROVISÓRIO (TEMPORARY)
+- Verificar campos obrigatórios: Período de validade, Unidade de validade, Prazo máximo, Renovável
+- Ativar 'Renovável' e verificar habilitação de 'Renovação Automática'
+- Selecionar modelo HÍBRIDO (HYBRID)
+- Verificar campos obrigatórios: Período de validade, Unidade de validade, Prazo máximo
+- Ativar 'Requer Consulta Pública' ou 'Requer Inspeção' e deixar 'Prazo Máximo' vazio
+- Tentar guardar
+- Resultado Esperado: Erro 'Prazo máximo obrigatório quando consulta pública ou inspeção estão ativas'
 
 #### 2.3.4 Especificações Detalhadas da Funcionalidade de Dossier
 
