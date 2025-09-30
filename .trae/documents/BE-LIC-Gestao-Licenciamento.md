@@ -193,9 +193,27 @@ erDiagram
         VARCHAR identification_type
         VARCHAR identification_number
         VARCHAR name
+        VARCHAR trade_name
+        VARCHAR issuing_country
+        DATE identification_issue_date
+        DATE identification_expiry_date
         VARCHAR email
         VARCHAR phone
-        TEXT address
+        VARCHAR website
+        VARCHAR address_street
+        VARCHAR address_parish
+        VARCHAR address_municipality
+        VARCHAR address_island
+        VARCHAR address_postal_code
+        DATE birth_date
+        VARCHAR birth_place
+        VARCHAR gender
+        VARCHAR nationality
+        VARCHAR profession
+        DATE incorporation_date
+        VARCHAR incorporation_country
+        VARCHAR business_sector
+        VARCHAR company_size
         VARCHAR legal_capacity_status
         VARCHAR holder_status
         TIMESTAMP created_date
@@ -224,7 +242,8 @@ erDiagram
         UUID license_type_id FK
         UUID holder_id FK
         UUID issuer_id FK
-        UUID establishment_id FK
+        UUID licensed_object_id
+        VARCHAR licensed_object_type
         VARCHAR license_number
         DATE issue_date
         DATE expiry_date
@@ -245,12 +264,28 @@ erDiagram
         VARCHAR trade_name
         VARCHAR establishment_type
         VARCHAR segment
+        UUID classification_id FK
+        TEXT description
         DECIMAL latitude
         DECIMAL longitude
-        TEXT address
-        VARCHAR municipality
-        VARCHAR island
+        VARCHAR address_street
+        VARCHAR address_parish
+        VARCHAR address_municipality
+        VARCHAR address_island
+        VARCHAR address_postal_code
+        VARCHAR primary_phone
+        VARCHAR email
         VARCHAR status
+        TIMESTAMP created_date
+        TIMESTAMP last_modified_date
+    }
+    
+    T_ESTABLISHMENT_CLASSIFICATION {
+        UUID id PK
+        VARCHAR classification_code
+        VARCHAR classification_name
+        TEXT description
+        BOOLEAN is_active
         TIMESTAMP created_date
         TIMESTAMP last_modified_date
     }
@@ -367,6 +402,7 @@ erDiagram
     T_LICENSE_HOLDER ||--o{ T_ISSUED_LICENSE : "holds"
     T_LICENSE_ISSUER ||--o{ T_ISSUED_LICENSE : "issues"
     T_ESTABLISHMENT ||--o{ T_ISSUED_LICENSE : "licensed for"
+    T_ESTABLISHMENT_CLASSIFICATION ||--o{ T_ESTABLISHMENT : "classifies"
     T_LICENSING_PROCESS ||--o{ T_PROCESS_STATUS_HISTORY : "has history"
     T_LICENSING_PROCESS ||--o{ T_PROCESS_DOCUMENT : "contains documents"
     T_LICENSING_PROCESS ||--o{ T_PROCESS_ANALYSIS : "has analysis"
@@ -467,6 +503,10 @@ PUT    /api/v1/categories/{id}
 GET    /api/v1/license-types
 POST   /api/v1/license-types
 PUT    /api/v1/license-types/{id}
+
+GET    /api/v1/establishment-classifications
+POST   /api/v1/establishment-classifications
+PUT    /api/v1/establishment-classifications/{id}
 ```
 
 #### 4.1.2 Gestão de Estabelecimentos

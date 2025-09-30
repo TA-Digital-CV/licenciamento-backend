@@ -123,7 +123,51 @@ A API de Licenciamento é um sistema backend desenvolvido em Java Spring Boot qu
 | PATCH | `/api/v1/entities/{entitiyId}/enable` | Ativa entidade |
 | PATCH | `/api/v1/entities/{entitiyId}/disable` | Desativa entidade |
 
-### 2.11 Documento (Gestão de Documentos)
+### 2.11 Establishments (Estabelecimentos)
+
+| Método | Endpoint | Descrição |
+|--------|----------|----------|
+| GET | `/api/v1/establishments` | Lista estabelecimentos com filtros |
+| GET | `/api/v1/establishments/{id}` | Busca estabelecimento por ID |
+| POST | `/api/v1/establishments` | Cria novo estabelecimento |
+| PUT | `/api/v1/establishments/{id}` | Atualiza estabelecimento |
+| PUT | `/api/v1/establishments/{id}/activate` | Ativa estabelecimento |
+| PUT | `/api/v1/establishments/{id}/suspend` | Suspende estabelecimento |
+| POST | `/api/v1/establishments/{id}/documents` | Adiciona documento ao estabelecimento |
+| GET | `/api/v1/establishments/nearby` | Busca estabelecimentos por proximidade |
+| POST | `/api/v1/establishments/{id}/classifications` | Adiciona classificação |
+
+### 2.12 License Holders (Titulares de Licença)
+
+| Método | Endpoint | Descrição |
+|--------|----------|----------|
+| GET | `/api/v1/license-holders` | Lista titulares com filtros |
+| GET | `/api/v1/license-holders/{id}` | Busca titular por ID |
+| POST | `/api/v1/license-holders/individual` | Cria titular pessoa física |
+| POST | `/api/v1/license-holders/company` | Cria titular pessoa jurídica |
+| PUT | `/api/v1/license-holders/{id}` | Atualiza titular |
+| PUT | `/api/v1/license-holders/{id}/suspend` | Suspende titular |
+| PUT | `/api/v1/license-holders/{id}/reactivate` | Reativa titular |
+| POST | `/api/v1/license-holders/{id}/documents` | Adiciona documento ao titular |
+| POST | `/api/v1/license-holders/{id}/representatives` | Adiciona representante legal |
+
+### 2.13 Issued Licenses (Licenças Emitidas)
+
+| Método | Endpoint | Descrição |
+|--------|----------|----------|
+| GET | `/api/v1/issued-licenses` | Lista licenças emitidas com filtros |
+| GET | `/api/v1/issued-licenses/{id}` | Busca licença por ID |
+| POST | `/api/v1/issued-licenses/definitive` | Emite licença definitiva |
+| POST | `/api/v1/issued-licenses/provisional` | Emite licença provisória |
+| PUT | `/api/v1/issued-licenses/{id}` | Atualiza licença |
+| PUT | `/api/v1/issued-licenses/{id}/suspend` | Suspende licença |
+| PUT | `/api/v1/issued-licenses/{id}/reactivate` | Reativa licença |
+| PUT | `/api/v1/issued-licenses/{id}/cancel` | Cancela licença |
+| POST | `/api/v1/issued-licenses/{id}/documents` | Adiciona documento à licença |
+| GET | `/api/v1/issued-licenses/search` | Busca avançada de licenças |
+| GET | `/api/v1/issued-licenses/reports` | Relatórios de licenças |
+
+### 2.14 Documento (Gestão de Documentos)
 
 | Método | Endpoint | Descrição |
 |--------|----------|----------|
@@ -345,7 +389,209 @@ A API de Licenciamento é um sistema backend desenvolvido em Java Spring Boot qu
 }
 ```
 
-### 3.8 Legislation (Legislação)
+### 3.8 Establishment (Estabelecimento)
+
+#### Request DTO (EstablishmentRequestDTO)
+```json
+{
+  "matricialNumber": "string",
+  "name": "string",
+  "tradeName": "string",
+  "establishmentType": "string",
+  "segment": "string",
+  "classificationCode": "string",
+  "description": "string",
+  "location": {
+    "latitude": "number",
+    "longitude": "number"
+  },
+  "address": {
+    "street": "string",
+    "parish": "string",
+    "municipality": "string",
+    "island": "string",
+    "postalCode": "string"
+  },
+  "contactInfo": {
+    "primaryPhone": "string",
+    "email": "string"
+  }
+}
+```
+
+#### Response DTO (EstablishmentResponseDTO)
+```json
+{
+  "id": "string",
+  "matricialNumber": "string",
+  "name": "string",
+  "tradeName": "string",
+  "establishmentType": "string",
+  "segment": "string",
+  "status": "string",
+  "location": {
+    "latitude": "number",
+    "longitude": "number"
+  },
+  "address": {
+    "street": "string",
+    "parish": "string",
+    "municipality": "string",
+    "island": "string",
+    "postalCode": "string"
+  },
+  "contactInfo": {
+    "primaryPhone": "string",
+    "email": "string"
+  },
+  "active": "boolean",
+  "createdAt": "string",
+  "lastModifiedAt": "string"
+}
+```
+
+### 3.9 License Holder (Titular de Licença)
+
+#### Individual Holder Request DTO
+```json
+{
+  "holderType": "INDIVIDUAL",
+  "identification": {
+    "type": "string",
+    "number": "string",
+    "issuingCountry": "string",
+    "issueDate": "string",
+    "expiryDate": "string"
+  },
+  "name": "string",
+  "contactInfo": {
+    "primaryPhone": "string",
+    "email": "string",
+    "address": {
+      "street": "string",
+      "municipality": "string",
+      "island": "string",
+      "postalCode": "string"
+    }
+  },
+  "personalInfo": {
+    "birthDate": "string",
+    "birthPlace": "string",
+    "gender": "string",
+    "nationality": "string",
+    "profession": "string"
+  }
+}
+```
+
+#### Company Holder Request DTO
+```json
+{
+  "holderType": "COMPANY",
+  "identification": {
+    "type": "COMPANY_REGISTRATION",
+    "number": "string",
+    "issuingCountry": "string",
+    "issueDate": "string"
+  },
+  "name": "string",
+  "tradeName": "string",
+  "contactInfo": {
+    "primaryPhone": "string",
+    "email": "string",
+    "website": "string",
+    "address": {
+      "street": "string",
+      "municipality": "string",
+      "island": "string",
+      "postalCode": "string"
+    }
+  },
+  "companyInfo": {
+    "incorporationDate": "string",
+    "incorporationCountry": "string",
+    "businessSector": "string",
+    "companySize": "string"
+  }
+}
+```
+
+#### License Holder Response DTO
+```json
+{
+  "id": "string",
+  "holderType": "string",
+  "identification": {
+    "type": "string",
+    "number": "string",
+    "issuingCountry": "string"
+  },
+  "name": "string",
+  "tradeName": "string",
+  "contactInfo": {
+    "primaryPhone": "string",
+    "email": "string",
+    "address": {
+      "street": "string",
+      "municipality": "string",
+      "island": "string"
+    }
+  },
+  "legalCapacityStatus": "string",
+  "status": "string",
+  "active": "boolean",
+  "createdAt": "string",
+  "lastModifiedAt": "string"
+}
+```
+
+### 3.10 Issued License (Licença Emitida)
+
+#### Request DTO (IssuedLicenseRequestDTO)
+```json
+{
+  "licenseTypeId": "string",
+  "holderId": "string",
+  "issuerId": "string",
+  "licensedObjectId": "string",
+  "licensedObjectType": "string",
+  "licenseCategory": "string",
+  "issueDate": "string",
+  "expiryDate": "string",
+  "conditions": "string",
+  "feeAmount": "number",
+  "paymentReference": "string",
+  "paymentDate": "string"
+}
+```
+
+#### Response DTO (IssuedLicenseResponseDTO)
+```json
+{
+  "id": "string",
+  "licenseNumber": "string",
+  "licenseTypeId": "string",
+  "licenseTypeName": "string",
+  "holderId": "string",
+  "holderName": "string",
+  "issuerId": "string",
+  "issuerName": "string",
+  "licensedObjectId": "string",
+  "licensedObjectType": "string",
+  "licenseCategory": "string",
+  "status": "string",
+  "issueDate": "string",
+  "expiryDate": "string",
+  "conditions": "string",
+  "feeAmount": "number",
+  "paymentStatus": "string",
+  "active": "boolean",
+  "createdAt": "string",
+  "lastModifiedAt": "string"
+}
+```
+
+### 3.11 Legislation (Legislação)
 
 #### Request DTO (LegislationRequestDTO)
 ```json
@@ -376,7 +622,7 @@ A API de Licenciamento é um sistema backend desenvolvido em Java Spring Boot qu
 }
 ```
 
-### 3.9 Document (Documento)
+### 3.12 Document (Documento)
 
 #### Response DTO (FileResponseDTO)
 ```json
