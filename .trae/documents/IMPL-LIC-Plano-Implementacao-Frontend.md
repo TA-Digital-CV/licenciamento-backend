@@ -4288,7 +4288,7 @@ export interface PagedResponse<T> {
 // src/utils/validators.ts
 import { z } from 'zod';
 
-// Validação de CPF/CNPJ para Cabo Verde
+// Validação de CNI/NIPC para Cabo Verde
 export const documentNumberSchema = z
   .string()
   .min(1, 'Número do documento é obrigatório')

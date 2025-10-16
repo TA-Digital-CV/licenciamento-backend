@@ -392,7 +392,7 @@ erDiagram
 
 - **LicenseNumber**: Número único da licença
 - **ProcessNumber**: Número único do processo
-- **Identification**: Dados de identificação (CPF/CNPJ)
+- **Identification**: Dados de identificação (CNI/NIPC)
 - **ContactInfo**: Informações de contato
 - **FeeInfo**: Informações de taxas e pagamentos
 - **AuditInfo**: Informações de auditoria

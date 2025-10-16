@@ -230,7 +230,7 @@ O frontend de gestão de licenças emitidas consiste nas seguintes páginas prin
 
 | Campo                      | Tipo        | Obrigatório | Validação                      | Descrição                |
 | -------------------------- | ----------- | ----------- | ------------------------------ | ------------------------ |
-| Tipo de Identificação      | Seleção     | Sim         | CPF, RG, PASSAPORTE            | Tipo de documento        |
+| Tipo de Identificação      | Seleção     | Sim         | CNI, CERTIDAO_NASCIMENTO, PASSAPORTE            | Tipo de documento        |
 | Número de Identificação    | Texto       | Sim         | Formato válido, único          | Número do documento      |
 | Nome Completo              | Texto       | Sim         | 3-200 caracteres               | Nome da pessoa           |
 | Data de Nascimento         | Data        | Sim         | Idade >= 18 anos               | Data de nascimento       |
@@ -247,7 +247,7 @@ O frontend de gestão de licenças emitidas consiste nas seguintes páginas prin
 
 | Campo                      | Tipo             | Obrigatório | Validação                      | Descrição                  |
 | -------------------------- | ---------------- | ----------- | ------------------------------ | -------------------------- |
-| Tipo de Identificação      | Seleção          | Sim         | CNPJ, NIF, REGISTRO\_COMERCIAL | Tipo de documento          |
+| Tipo de Identificação      | Seleção          | Sim         | NIPC, NIF, REGISTRO\_COMERCIAL | Tipo de documento          |
 | Número de Identificação    | Texto            | Sim         | Formato válido, único          | Número do documento        |
 | Razão Social               | Texto            | Sim         | 3-200 caracteres               | Nome oficial da empresa    |
 | Nome Fantasia              | Texto            | Não         | 3-200 caracteres               | Nome comercial             |
@@ -598,9 +598,9 @@ flowchart TD
     D -->|Física| E[Formulário Pessoa Física]
     D -->|Jurídica| F[Formulário Pessoa Jurídica]
     E --> G[Preencher Dados Pessoais]
-    G --> H[Validar CPF/RG]
+    G --> H[Validar CNI/CERTIDAO_NASCIMENTO]
     F --> I[Preencher Dados Empresariais]
-    I --> J[Validar CNPJ/NIF]
+    I --> J[Validar NIPC/NIF]
     J --> K[Selecionar Representante Legal]
     H --> L[Validar Endereço]
     K --> L
